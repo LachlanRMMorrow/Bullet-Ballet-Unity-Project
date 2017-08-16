@@ -1,0 +1,47 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Health : MonoBehaviour {
+
+    /// <summary>
+    /// max health of this object
+    /// </summary>
+    public float m_MaxHealth;
+    /// <summary>
+    /// current health of this object
+    /// set to max health on start
+    /// </summary>
+    private float m_CurrentHealth;
+
+    /// <summary>
+    /// slider for this health object to display health at
+    /// </summary>
+    public UnityEngine.UI.Slider m_SliderReference;
+
+    void Awake() {
+        m_CurrentHealth = m_MaxHealth;
+        updateSlider();
+    }
+
+    public void dealDamage(float a_Damage) {
+        m_CurrentHealth -= a_Damage;
+
+        if (m_CurrentHealth <= 0) {
+            noHealth();
+        }
+        updateSlider();
+    }
+
+    private void noHealth() {
+        Destroy(gameObject);//TEMP DESTROY
+    }
+
+    private void updateSlider() {
+        //if there is a slider attached
+        if (m_SliderReference != null) {
+            m_SliderReference.value = m_CurrentHealth / m_MaxHealth;
+        }
+    }
+
+}
