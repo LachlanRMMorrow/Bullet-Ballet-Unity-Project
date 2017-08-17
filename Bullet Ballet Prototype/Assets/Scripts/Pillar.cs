@@ -26,7 +26,7 @@ public class Pillar : MonoBehaviour {
         Vector3 direction = m_BulletObject.rotation * Vector3.forward;
 
         for (int i = 0; i < 4; i++) {
-            for (int q = 0; q < 4; q++) {
+            for (int q = 0; q < 8; q++) {
                 int randomChild = Random.Range(0, 21);
                 Rigidbody middlePeice = m_PillarTransforms.GetChild(i).GetChild(1).GetChild(0).GetChild(randomChild).GetComponent<Rigidbody>();
                 middlePeice.AddForce(direction * 20, ForceMode.Impulse);
