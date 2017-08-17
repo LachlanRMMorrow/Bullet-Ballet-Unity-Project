@@ -26,6 +26,15 @@ public class SlowMoManager : MonoBehaviour {
     /// </summary>
 	private bool m_IsSlowmoOn = false;
 
+    /// <summary>
+    /// how long the slowmo should last if we used a trigger to start it
+    /// </summary>
+    private float m_TriggerSlowMoLength;
+    private float m_TriggerStartTime;
+    /// <summary>
+    /// did we use the trigger to start this slowmo
+    /// </summary>
+    private bool m_TriggerDidUse = false;
 
     //debug ui elements to render what this class is doing
     public UnityEngine.UI.Text m_SlowmoText;
@@ -46,8 +55,24 @@ public class SlowMoManager : MonoBehaviour {
 	void Update () {
 		controllerInput();
 
+
+
 		if (m_IsSlowmoOn) {
-			m_EnergyLeft -= m_EnergyDecrement * Time.unscaledDeltaTime;
+
+            //if we used the trigger, then run this instead
+            if (m_TriggerDidUse) {
+
+                if(Time.unscaledTime - m_TriggerStartTime > m_TriggerSlowMoLength) {
+                    //time is up, lets finish it
+                    m_IsSlowmoOn = false;
+                    m_TriggerDidUse = false;
+                    updateTimeScale();
+                }
+
+                return;// no need to do the rest or update the ui since the energy left wont change
+            }
+
+            m_EnergyLeft -= m_EnergyDecrement * Time.unscaledDeltaTime;
 			if(m_EnergyLeft <= 0) {
 				m_IsSlowmoOn = false;
 				updateTimeScale();
@@ -74,6 +99,7 @@ public class SlowMoManager : MonoBehaviour {
         }
 
         if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton)) {
+            m_TriggerDidUse = false;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
 			m_IsSlowmoOn = !m_IsSlowmoOn;
 			updateTimeScale();
 		}
@@ -112,5 +138,14 @@ public class SlowMoManager : MonoBehaviour {
 		}
         updateTimeScale();
 	}
+
+    public void startTriggerSlowmo(float a_SlowMoTime) {        
+        m_TriggerSlowMoLength = a_SlowMoTime;
+        m_TriggerStartTime = Time.unscaledTime;
+        m_TriggerDidUse = true;
+        //start the slowmo
+        m_IsSlowmoOn = true;
+        updateTimeScale();
+    }
 
 }
