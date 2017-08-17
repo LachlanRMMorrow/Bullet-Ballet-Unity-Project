@@ -181,7 +181,6 @@ public class AI : MonoBehaviour {
         int layerMask = (1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemies"));
         //raycast from AI in the player direction for 1000 units, excluding anything on the Bullets Layer
         if (Physics.Raycast(m_VisibleObject.transform.position, normPlayerDir(), out hit, 1000, layerMask)) {
-            print("whew " + hit.transform.name);
             //not the best way but it works
             //if (hit.transform.GetComponent<PlayerMovement>() != null) {
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
