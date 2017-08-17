@@ -12,6 +12,11 @@ public class ToggleSlowMoTrigger : MonoBehaviour {
     /// </summary>
     public float m_SlowMoTime;
 
+    /// <summary>
+    /// simple flag to check if this trigger should be deleted after it triggers the slow mo
+    /// </summary>
+    public bool m_DeleteAfterTrigger = false;
+
     // Use this for initialization
     void Start() {
 
@@ -28,6 +33,11 @@ public class ToggleSlowMoTrigger : MonoBehaviour {
             SlowMoManager smm = FindObjectOfType<SlowMoManager>();
             //start the trigger
             smm.startTriggerSlowmo(m_SlowMoTime);
+
+            if (m_DeleteAfterTrigger) {
+                //delete gameobject
+                Destroy(gameObject);
+            }
         }
     }
 
