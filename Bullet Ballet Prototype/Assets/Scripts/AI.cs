@@ -81,7 +81,7 @@ public class AI : MonoBehaviour {
 	protected NavMeshAgent m_NavMesh;
 
 	private static int m_RoomLayer = -1;
-	public int m_CurrentRoom = 0;
+	public int m_CurrentRoom = -1;
 	/// <summary>
 	/// has this AI been in the same room as the player?
 	/// </summary>

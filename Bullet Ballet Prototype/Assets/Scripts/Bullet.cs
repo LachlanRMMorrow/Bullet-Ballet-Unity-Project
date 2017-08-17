@@ -32,7 +32,18 @@ public class Bullet : MonoBehaviour {
     /// </summary>
     /// <param name="collision"></param>
     void OnTriggerEnter(Collider collision) {
+        checkDestruction(collision.gameObject);
         bulletHit(collision.gameObject);
+    }
+
+    private void checkDestruction(GameObject a_Object) {
+        if (a_Object.gameObject.tag == "Destructible") {
+            //get Pillar script from transform
+            Pillar pillar = a_Object.GetComponentInParent<Pillar>();
+            if(pillar != null) {
+                pillar.pillarHit(transform);
+            }
+        }
     }
 
     virtual protected void bulletHit(GameObject a_Object) {
