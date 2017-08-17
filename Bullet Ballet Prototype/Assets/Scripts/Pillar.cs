@@ -7,19 +7,30 @@ public class Pillar : MonoBehaviour {
     public Transform m_PillarTransforms;
     public Transform m_PillarCollider;
 
+    public int m_MaxHealth = 2;
+    private int m_CurrentHealth = 0;
+
     void Awake() {
+        m_CurrentHealth = m_MaxHealth;
         swapPillars(true);
     }
 
     public void pillarHit(Transform m_BulletObject) {
+        m_CurrentHealth--;
+        if(m_CurrentHealth != 0) {
+            return;
+        }
         m_PillarCollider.gameObject.SetActive(false);
         swapPillars(false);
-
-        Vector3 direction = Vector3.Scale(new Vector3(1,0,1),m_BulletObject.position - m_PillarTransforms.position).normalized;
+        
+        Vector3 direction = m_BulletObject.rotation * Vector3.forward;
 
         for (int i = 0; i < 4; i++) {
-            Rigidbody middlePeice = m_PillarTransforms.GetChild(i).GetChild(1).GetChild(0).GetChild(11).GetComponent<Rigidbody>();
-            middlePeice.AddForce(direction * 50, ForceMode.Impulse);
+            for (int q = 0; q < 4; q++) {
+                int randomChild = Random.Range(0, 21);
+                Rigidbody middlePeice = m_PillarTransforms.GetChild(i).GetChild(1).GetChild(0).GetChild(randomChild).GetComponent<Rigidbody>();
+                middlePeice.AddForce(direction * 20, ForceMode.Impulse);
+            }
         }
     }
 
