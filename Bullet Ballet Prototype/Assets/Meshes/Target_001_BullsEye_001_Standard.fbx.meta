@@ -8,18 +8,33 @@ ModelImporter:
     100000: //RootNode
     100002: Piece_Bar
     100004: Piece_Base
+    100006: Bar
+    100008: Base
+    100010: Target
     400000: //RootNode
     400002: Piece_Bar
     400004: Piece_Base
+    400006: Bar
+    400008: Base
+    400010: Target
     2300000: //RootNode
     2300002: Piece_Bar
     2300004: Piece_Base
+    2300006: Bar
+    2300008: Base
+    2300010: Target
     3300000: //RootNode
     3300002: Piece_Bar
     3300004: Piece_Base
+    3300006: Bar
+    3300008: Base
+    3300010: Target
     4300000: Target_001_BullsEye_001_Standard
     4300002: Piece_Base
     4300004: Piece_Bar
+    4300006: Target
+    4300008: Base
+    4300010: Bar
     9500000: //RootNode
   materials:
     importMaterials: 1
