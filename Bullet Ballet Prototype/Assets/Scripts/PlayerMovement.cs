@@ -9,17 +9,45 @@ public class PlayerMovement : MonoBehaviour {
 
     private NavMeshAgent m_NavMesh;
 
-	// Use this for initialization
-	void Start () {
-        m_NavMesh = GetComponent<NavMeshAgent>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private Vector3[] m_Positions;
 
-    public void pathUpdated(Vector3 a_WaypointPos) {
-        m_NavMesh.SetDestination(a_WaypointPos);
+    private int m_CurrentIndex = 1;
+
+    private bool m_PathOver = true;
+
+    // Use this for initialization
+    void Start() {
+        m_NavMesh = GetComponent<NavMeshAgent>();
     }
+
+    // Update is called once per frame
+    void Update() {
+        if (m_PathOver || m_Positions.Length == 0) {
+            return;
+        }
+        //print(m_CurrentIndex + " / " + m_Positions.Length);
+        //print(Vector3.Distance(m_Positions[m_CurrentIndex], transform.position));
+        if (Vector3.Distance(m_Positions[m_CurrentIndex], transform.position) < 1.0f) {
+            m_CurrentIndex++;
+            if (m_CurrentIndex >= m_Positions.Length - 1) {
+                m_PathOver = true;
+            } else {
+                m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
+            }
+        }
+    }
+
+    public void pathUpdated(Vector3[] a_Waypoints) {
+        if(a_Waypoints.Length == 0) {
+            m_NavMesh.SetDestination(transform.position);
+            return;
+        }
+        m_CurrentIndex = 2;
+        m_PathOver = false;
+        m_Positions = a_Waypoints;
+        m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
+        //m_NavMesh.SetDestination(a_WaypointPos);
+    }
+
 }
+

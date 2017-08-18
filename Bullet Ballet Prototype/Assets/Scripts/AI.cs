@@ -179,10 +179,9 @@ public class AI : MonoBehaviour {
         //eg. get the layer of the Bullets, which is 9
         //convert to a bitmask (000100000000)
         int layerMask = (1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemies"));
-        //raycast from AI in the player direction for 1000 units, excluding anything on the Bullets Layer
+        //raycast from AI in the player direction for 1000 units, checking for walls, players and enemies
         if (Physics.Raycast(m_VisibleObject.transform.position, normPlayerDir(), out hit, 1000, layerMask)) {
-            //not the best way but it works
-            //if (hit.transform.GetComponent<PlayerMovement>() != null) {
+            //is this object the player
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
                 return true;
             }

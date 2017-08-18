@@ -11,6 +11,16 @@ public class PlayerPathing : MonoBehaviour {
 
     private JInput.Controller m_Controller;
 
+    /// <summary>
+    /// list of all points across the path
+    /// the last position will always hold the current position
+    /// </summary>
+    private List<Vector3> m_Positions = new List<Vector3>();
+
+    public LineRenderer m_Line;
+
+    private Vector3 m_LastPos;
+
     // Use this for initialization
     void Awake() {
         m_Player = FindObjectOfType<PlayerMovement>();
@@ -23,16 +33,15 @@ public class PlayerPathing : MonoBehaviour {
         }
 
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void FixedUpdate() {
         m_Controller = JInput.CurrentController.currentController;
         if (m_Controller == null) {
             return;
         }
-
-        if (m_Controller.WasButtonPressed(Keys.singleton.m_PlanningModeApply)) {
-            applyWaypoint();
+        if(m_Player == null) {
+            return;
         }
 
         //move point
@@ -41,17 +50,44 @@ public class PlayerPathing : MonoBehaviour {
             0,
             -m_Controller.getAxisValue(Keys.singleton.m_PlanningWayPointMovementY));
 
+        //update position of object
         Vector3 pos = transform.position;
-        pos += leftStick * m_MoveSpeed * Time.unscaledDeltaTime;
-        transform.position = pos;
+        Vector3 movement = leftStick * m_MoveSpeed * Time.unscaledDeltaTime;
 
+        //RaycastHit hit;
+        //if (GetComponent<Rigidbody>().SweepTest(movement.normalized / 2, out hit, 0.25f)) {
+        //    pos += movement/8;
+        //    print(hit.distance);
+        //} else {
+            pos += movement;
+        //}
+        //transform.position = pos;
+        GetComponent<Rigidbody>().MovePosition(pos);
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+
+        //todo: a better way to do this would be to use a dot, and use the difference in angle
+        if (Vector3.Distance(pos, m_LastPos) > 1) {
+            //m_Positions.Insert(m_Positions.Count-1,pos);
+            m_Positions.Add(Vector3.zero);
+            m_LastPos = pos;
+        }
+        //apply the current position to the last element in the array
+        m_Positions[m_Positions.Count - 1] = transform.position;
+
+        //update line
+        m_Line.positionCount = m_Positions.Count;
+        m_Line.SetPositions(m_Positions.ToArray());
     }
 
     private void applyWaypoint() {
-        if(m_PathMarker != null) {
+
+        if (m_PathMarker != null) {
             m_PathMarker.transform.position = transform.position;
             if (m_Player != null) {
-                m_Player.pathUpdated(m_PathMarker.transform.position);
+                if(m_Positions.Count >= 3) {
+
+                m_Player.pathUpdated(m_Positions.ToArray());
+                }
             }
         }
     }
@@ -59,14 +95,20 @@ public class PlayerPathing : MonoBehaviour {
     private void stateChanged(GameStates a_NewState) {
         switch (a_NewState) {
             case GameStates.Action:
+                applyWaypoint();
                 gameObject.SetActive(false);
-
                 break;
             case GameStates.Planning:
                 gameObject.SetActive(true);
+                m_Positions.Clear();
+                m_Line.positionCount = 0;
+                transform.position = Vector3.Scale(new Vector3(1, 0, 1), m_Player.transform.position);
+                m_LastPos = transform.position;
+                m_Positions.Add(transform.position);
+                m_Positions.Add(transform.position);
                 break;
         }
-        
+
     }
 
 }
