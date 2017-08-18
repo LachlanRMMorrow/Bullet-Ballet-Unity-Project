@@ -47,9 +47,9 @@ public class GameStateManager : MonoBehaviour {
     [HideInInspector]
     public EventGameState m_StateChanged = new EventGameState();
 
-	public UnityEngine.UI.Image m_StateModeDebugText;
-	public Sprite m_StateModeDebugText1;
-	public Sprite m_StateModeDebugText2;
+    public UnityEngine.UI.Image m_StateModeDebugText;
+    public Sprite m_StateModeDebugText1;
+    public Sprite m_StateModeDebugText2;
 
     /// <summary>
     /// changes the game state to a_State
@@ -96,19 +96,28 @@ public class GameStateManager : MonoBehaviour {
             return;
         }
 
-        //swap planning mode from button press
-        if (m_Controller.WasButtonPressed(Keys.singleton.m_PlanningModeSwap)) {
-            switch (currentState) {
-                case GameStates.Action:
-                    setCurrentState(GameStates.Planning);
-                    break;
-                case GameStates.Planning:
-                    setCurrentState(GameStates.Action);
-                    break;
+        ////swap planning mode from button press
+        //if (m_Controller.WasButtonPressed(Keys.singleton.m_PlanningModeSwap)) {
+        //    switch (currentState) {
+        //        case GameStates.Action:
+        //            setCurrentState(GameStates.Planning);
+        //            break;
+        //        case GameStates.Planning:
+        //            setCurrentState(GameStates.Action);
+        //            break;
+        //    }
+        //
+        //}
+
+        if (currentState == GameStates.Action) {
+            if (m_Controller.WasButtonPressed(Keys.singleton.m_PlanningModeSwap)) {
+                setCurrentState(GameStates.Planning);
             }
-
+        } else {
+            if (m_Controller.WasButtonReleased(Keys.singleton.m_PlanningModeSwap)) {
+                setCurrentState(GameStates.Action);
+            }
         }
-
 
     }
 
@@ -120,21 +129,24 @@ public class GameStateManager : MonoBehaviour {
         if (a_State == GameStates.Action) {
             Time.timeScale = 1.0f;
         } else {
-            Time.timeScale = 0.0f;
+            Time.timeScale = 0.1f;
+            //Time.timeScale = 1.0f;
         }
+        Time.fixedDeltaTime = 0.02F * Time.timeScale;
     }
 
     private void updateScreenText(GameStates a_State) {
-        if(m_StateModeDebugText == null) {
+        if (m_StateModeDebugText == null) {
             return;
         }
 
         switch (a_State) {
-		case GameStates.Action:
-			m_StateModeDebugText.sprite = m_StateModeDebugText1;
+            case GameStates.Action:
+                m_StateModeDebugText.sprite = m_StateModeDebugText1;
                 break;
             case GameStates.Planning:
-			m_StateModeDebugText.sprite = m_StateModeDebugText2;
+                m_StateModeDebugText.sprite = m_StateModeDebugText2;
                 break;
-        }    }
+        }
+    }
 }
