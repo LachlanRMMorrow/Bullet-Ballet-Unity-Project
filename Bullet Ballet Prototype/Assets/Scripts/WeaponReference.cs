@@ -23,6 +23,10 @@ public class WeaponReference {
     public Sprite m_BulletUIImage;
     public Sprite m_BulletShotUIImage;
 
+    public AudioClip m_ShotSound;
+    public AudioClip m_BulletCasingSound;
+    public AudioClip m_ReloadSound;
+
     //shoots a bullet from m_SpawnPoint
     //gives it a constantForce forward
     //then deletes after 5 seconds
