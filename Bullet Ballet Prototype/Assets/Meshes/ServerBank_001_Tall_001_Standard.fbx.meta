@@ -6,10 +6,15 @@ ModelImporter:
   serializedVersion: 21
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Glass
     400000: //RootNode
+    400002: Glass
     2300000: //RootNode
+    2300002: Glass
     3300000: //RootNode
+    3300002: Glass
     4300000: ServerBank_001_Tall_001_Standard
+    4300002: Glass
   materials:
     importMaterials: 1
     materialName: 0
