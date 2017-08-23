@@ -169,11 +169,13 @@ public class SoundManager : MonoBehaviour
         Destroy(sfxSource);
     }
 
+
     public static void PlaySFX(AudioClip sfxClip)
     {
         SoundManager soundMan = GetInstance();
         AudioSource source = soundMan.GetSFXSource();
         source.volume = GetSFXVolume();
+        source.pitch = Time.timeScale;
         source.clip = sfxClip;
         source.Play();
 
@@ -185,10 +187,22 @@ public class SoundManager : MonoBehaviour
         SoundManager soundMan = GetInstance();
         AudioSource source = soundMan.GetSFXSource();
         source.volume = GetSFXVolume();
+        source.pitch = Time.timeScale;
         source.clip = sfxClip;
-        source.pitch = Random.Range(0.85f, 1.2f);
+        source.pitch = Random.Range(0.85f, 1.5f);
         source.Play();
+        soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+    }
 
+    public static void PlaySFXRandomizedDelayed(AudioClip sfxClip, float delay)
+    {
+        SoundManager soundMan = GetInstance();
+        AudioSource source = soundMan.GetSFXSource();
+        source.volume = GetSFXVolume();
+        source.pitch = Time.timeScale;
+        source.clip = sfxClip;
+        source.pitch = Random.Range(0.85f, 1.5f);
+        source.PlayDelayed(delay);
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
     }
 
@@ -197,6 +211,7 @@ public class SoundManager : MonoBehaviour
         SoundManager soundMan = GetInstance();
         AudioSource source = soundMan.GetSFXSource();
         source.volume = GetSFXVolume() * volumeMultplier;
+        source.pitch = Time.timeScale;
         source.clip = sfxClip;
         source.loop = true;
         source.Play();

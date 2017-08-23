@@ -14,6 +14,7 @@ public class WeaponReference {
     public int m_MaxAmmo = 5;
 
     public float m_WeaponShootCooldown = 0.5f;
+    public float m_BulletCasingSoundDelay = 0.5f;
 
     public float m_TimeToReload = 1.5f;
 
@@ -34,12 +35,25 @@ public class WeaponReference {
         //spawns a object using it's prefab at m_SpwanPoint
         GameObject newBullet = Object.Instantiate(m_BulletPrefab, m_SpawnPoint.position, m_SpawnPoint.rotation);
 
+        SoundManager.PlaySFXRandomized(m_ShotSound);
+        PlayShellCasingSound();
 
 
         //destroy after 5 seconds
         Object.Destroy(newBullet, 5.0f);
         return newBullet;
     }
+
+    public void PlayReloadSound()
+    {
+        SoundManager.PlaySFX(m_ReloadSound);
+    }
+
+    public void PlayShellCasingSound()
+    {
+        SoundManager.PlaySFXRandomizedDelayed(m_BulletCasingSound, m_BulletCasingSoundDelay);
+    }
+
 
 
    

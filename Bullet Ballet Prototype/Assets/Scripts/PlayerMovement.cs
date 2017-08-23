@@ -6,6 +6,7 @@ using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class PlayerMovement : MonoBehaviour {
+    public AudioClip clip;
 
     private NavMeshAgent m_NavMesh;
 
@@ -18,6 +19,8 @@ public class PlayerMovement : MonoBehaviour {
     // Use this for initialization
     void Start() {
         m_NavMesh = GetComponent<NavMeshAgent>();
+
+        SoundManager.PlayBGM(clip, true, 2.0f);
     }
 
     // Update is called once per frame
