@@ -12,6 +12,9 @@ public class SlowMoManager : MonoBehaviour {
 
 	public float m_DeltaTimeScale = 0.25f;
 
+    public AudioClip m_SlowMoStart;
+    public AudioClip m_SlowMoEnd;
+
     [SerializeField]
     private float m_PlayerWeaponSpeedScale = 0.5f;
     /// <summary>
@@ -129,11 +132,12 @@ public class SlowMoManager : MonoBehaviour {
 		switch (a_NewState) {
 			case GameStates.Action:
 				enabled = true;
-
+                SoundManager.PlaySFXNonTimeScaled(m_SlowMoStart);
 				break;
 			case GameStates.Planning:
 				enabled = false;
 				m_IsSlowmoOn = false;
+                SoundManager.PlaySFXNonTimeScaled(m_SlowMoEnd);
 				break;
 		}
         updateTimeScale();
