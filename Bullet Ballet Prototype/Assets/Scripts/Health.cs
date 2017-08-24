@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Health : MonoBehaviour {
+    public AudioClip m_DamageSound;
 
     /// <summary>
     /// max health of this object
@@ -26,7 +27,7 @@ public class Health : MonoBehaviour {
 
     public void dealDamage(float a_Damage) {
         m_CurrentHealth -= a_Damage;
-
+        SoundManager.PlaySFXRandomized(m_DamageSound);
         if (m_CurrentHealth <= 0) {
             noHealth();
         }

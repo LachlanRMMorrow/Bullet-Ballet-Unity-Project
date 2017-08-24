@@ -182,6 +182,17 @@ public class SoundManager : MonoBehaviour
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
     }
 
+    public static void PlaySFXNonTimeScaled(AudioClip sfxClip)
+    {
+        SoundManager soundMan = GetInstance();
+        AudioSource source = soundMan.GetSFXSource();
+        source.volume = GetSFXVolume();
+        source.clip = sfxClip;
+        source.Play();
+
+        soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+    }
+
     public static void PlaySFXRandomized(AudioClip sfxClip)
     {
         SoundManager soundMan = GetInstance();
@@ -193,6 +204,7 @@ public class SoundManager : MonoBehaviour
         source.Play();
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
     }
+
 
     public static void PlaySFXRandomizedDelayed(AudioClip sfxClip, float delay)
     {
