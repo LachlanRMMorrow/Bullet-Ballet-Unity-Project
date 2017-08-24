@@ -155,9 +155,11 @@ public class SoundManager : MonoBehaviour
         return sfxSource;
     }
 
-    IEnumerator RemoveSFXSource(AudioSource sfxSource)
-    {
-        yield return new WaitForSeconds(sfxSource.clip.length);
+    IEnumerator RemoveSFXSource(AudioSource sfxSource) {
+        //was causing errors due to the clip being null
+        if (sfxSource.clip != null) {
+            yield return new WaitForSeconds(sfxSource.clip.length);
+        }
         sfxSources.Remove(sfxSource);
         Destroy(sfxSource);
     }
