@@ -15,6 +15,8 @@ public class EventGameState : UnityEngine.Events.UnityEvent<GameStates> { }
 
 public class GameStateManager : MonoBehaviour {
 
+
+
     /// <summary>
     /// singleton for the gamestateManager
     /// </summary>

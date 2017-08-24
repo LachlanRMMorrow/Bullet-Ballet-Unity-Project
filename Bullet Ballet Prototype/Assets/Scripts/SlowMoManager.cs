@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class SlowMoManager : MonoBehaviour {
 
-	float m_EnergyLeft;
+    public GameObject pauseMenu;
+
+    float m_EnergyLeft;
 	public float m_MaxEnergy = 100;
 	
 	public float m_EnergyDecrement;
@@ -101,6 +103,17 @@ public class SlowMoManager : MonoBehaviour {
             return;
         }
 
+        if (controller.WasButtonPressed(JInput.ControllerButtons.L1))
+        {
+            if (pauseMenu.activeInHierarchy == false)
+                pauseMenu.SetActive(true);
+ 
+            else
+                pauseMenu.SetActive(false);
+        }
+
+
+
         if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton)) {
             m_TriggerDidUse = false;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
 			m_IsSlowmoOn = !m_IsSlowmoOn;
@@ -132,13 +145,13 @@ public class SlowMoManager : MonoBehaviour {
 		switch (a_NewState) {
 			case GameStates.Action:
 				enabled = true;
-                SoundManager.PlaySFXNonTimeScaled(m_SlowMoStart);
+                SoundManager.PlaySFXNonTimeScaled(m_SlowMoEnd);
 				break;
 			case GameStates.Planning:
 				enabled = false;
-				m_IsSlowmoOn = false;
-                SoundManager.PlaySFXNonTimeScaled(m_SlowMoEnd);
-				break;
+                m_IsSlowmoOn = false;
+                SoundManager.PlaySFXNonTimeScaled(m_SlowMoStart);
+                break;
 		}
         updateTimeScale();
 	}

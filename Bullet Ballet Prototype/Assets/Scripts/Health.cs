@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Health : MonoBehaviour {
     public AudioClip m_DamageSound;
+    public GameObject m_deathScreen;
 
     /// <summary>
     /// max health of this object
@@ -35,6 +36,10 @@ public class Health : MonoBehaviour {
     }
 
     private void noHealth() {
+        if (CompareTag("Player"))
+        {
+            death();
+        }
         Destroy(gameObject);//TEMP DESTROY
     }
 
@@ -43,6 +48,13 @@ public class Health : MonoBehaviour {
         if (m_SliderReference != null) {
             m_SliderReference.value = m_CurrentHealth / m_MaxHealth;
         }
+    }
+
+    private void death()
+    {
+        m_deathScreen.SetActive(true);
+        Time.timeScale = 0;
+
     }
 
 }
