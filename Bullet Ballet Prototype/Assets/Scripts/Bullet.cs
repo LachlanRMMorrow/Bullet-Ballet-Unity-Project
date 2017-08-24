@@ -83,6 +83,7 @@ public class Bullet : MonoBehaviour {
         }
 
 
+
         if (health != null) {//if there is a health script attacked
             health.dealDamage(m_BulletDamage);
         } else {

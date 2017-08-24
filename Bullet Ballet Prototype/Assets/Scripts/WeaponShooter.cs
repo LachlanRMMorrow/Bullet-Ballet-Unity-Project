@@ -109,7 +109,7 @@ public class WeaponShooter : MonoBehaviour {
             if (m_CurrentAmmo == getWeapon().m_MaxAmmo) {
                 return;
             }
-
+            getWeapon().PlayReloadSound();
             //set up last time to current time, and set reloading to true
             m_LastTime = Time.unscaledTime;
             m_IsReloading = true;
