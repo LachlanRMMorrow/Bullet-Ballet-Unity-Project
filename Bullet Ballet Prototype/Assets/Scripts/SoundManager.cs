@@ -195,39 +195,22 @@ public class SoundManager : MonoBehaviour
         source.clip = sfxClip;
         source.Play();
 
-        //if (soundMan.sfxSources == null)
-        //{
-        //    source.Play();
+        soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
 
-        //    soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
-        //}
+    }
 
+    public AudioSource PlayAndStoreSFX(AudioClip sfxClip)
+    {
+        SoundManager soundMan = GetInstance();
+        AudioSource source = soundMan.GetSFXSource();
+        source.volume = GetSFXVolume();
+        source.clip = sfxClip;
 
-
-        //if (soundMan.sfxSources != null)
-        //{
-
-        //    foreach (AudioSource audio in soundMan.sfxSources)
-        //    {
-        //        clipName = audio.clip.ToString();
-
-        //        if (clipName == "SlowMoActivate_01_Edited (UnityEngine.AudioClip)" || clipName == "SlowMoDeactivate_01_Edited (UnityEngine.AudioClip)")
-        //        {
-        //            Destroy(audio);
-        //            source.Play();
-
-        //            soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
-        //        }
-        //        else
-        //        {
-        //            source.Play();
-
-        //            soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
-        //        }
-        //    }
-        //}
+        source.Play();
 
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+
+        return source;
 
     }
 
