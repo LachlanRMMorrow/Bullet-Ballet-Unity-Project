@@ -29,6 +29,8 @@ public class Door : MonoBehaviour {
     /// </summary>
     private bool m_Open = false;
 
+    public bool change = false;
+
     void Start() {
         if (m_LeftDoor.m_DoorTransform != null) {
             m_LeftDoor.m_StartingPos = m_LeftDoor.m_DoorTransform.position;
@@ -40,6 +42,10 @@ public class Door : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (change) {
+            change = false;
+            startDoorMovement(!m_Open);
+        }
         if (m_IsInteractedWith) {
             float percentage = (Time.time - m_OpenStartTime) / m_OpenLength;
 
@@ -67,8 +73,15 @@ public class Door : MonoBehaviour {
     /// </summary>
     /// <param name="a_DoorMovement">true will mean open, false will be closed</param>
     void startDoorMovement(bool a_DoorMovement) {
-        m_OpenStartTime = Time.time;
-        m_IsInteractedWith = true;
+        //if the rooms are already opening/closing then we should update the time to have it seem like the doors havent changed
+        if (m_IsInteractedWith) {
+            float percentage = (Time.time - m_OpenStartTime) / m_OpenLength;
+            m_OpenStartTime = Time.time - (1-percentage * m_OpenLength);
+
+        } else {
+            m_OpenStartTime = Time.time;
+            m_IsInteractedWith = true;
+        }
         m_Open = a_DoorMovement;
     }
 
