@@ -21,7 +21,7 @@ public class LevelSwap : MonoBehaviour
 
         //Debug.Log(other.name);
 
-        if (other == playerCollider)
+        if (other == playerCollider && enemies.Count <= 0)
         {
             Debug.Log(enemies);
             endOfLevelScreen.SetActive(true);
