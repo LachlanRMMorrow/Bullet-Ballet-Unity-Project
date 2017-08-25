@@ -14,6 +14,8 @@ public class SlowMoManager : MonoBehaviour {
 
 	public float m_DeltaTimeScale = 0.25f;
 
+    AudioSource audio;
+
     public AudioClip m_SlowMoStart;
     public AudioClip m_SlowMoEnd;
 
@@ -59,7 +61,6 @@ public class SlowMoManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		controllerInput();
-
 
 
 		if (m_IsSlowmoOn) {
@@ -124,11 +125,35 @@ public class SlowMoManager : MonoBehaviour {
 
 	private void updateTimeScale() {
 		if (m_IsSlowmoOn) {
-			Time.timeScale = m_DeltaTimeScale;
+            if (audio != null)
+            {
+                SoundManager soundMan = SoundManager.GetInstance();
+                audio.volume = 0;
+                audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
+            }
+            else
+            {
+                SoundManager soundMan = SoundManager.GetInstance();
+                audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
+            }
+            Time.timeScale = m_DeltaTimeScale;
             m_PlayerSpeedScale = m_PlayerWeaponSpeedScale;
-		} else {
+        }
+        else
+        {
             //reset time.timeScale and m_PlayerSpeedScale back to 1
-			Time.timeScale = m_PlayerSpeedScale = 1.0f;
+            Time.timeScale = m_PlayerSpeedScale = 1.0f;
+            if (audio != null)
+            {
+                SoundManager soundMan = SoundManager.GetInstance();
+                audio.volume = 0;
+                audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
+            }
+            else
+            {
+                SoundManager soundMan = SoundManager.GetInstance();
+                audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
+            }
         }
 	}
 
@@ -145,12 +170,32 @@ public class SlowMoManager : MonoBehaviour {
 		switch (a_NewState) {
 			case GameStates.Action:
 				enabled = true;
-                SoundManager.PlaySFXNonTimeScaled(m_SlowMoEnd);
-				break;
+                //if (audio != null)
+                //{
+                //    SoundManager soundMan = SoundManager.GetInstance();
+                //    audio.volume = 0;
+                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
+                //}
+                //else
+                //{
+                //    SoundManager soundMan = SoundManager.GetInstance();
+                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
+                //}
+                break;
 			case GameStates.Planning:
 				enabled = false;
                 m_IsSlowmoOn = false;
-                SoundManager.PlaySFXNonTimeScaled(m_SlowMoStart);
+                //if (audio != null)
+                //{
+                //    SoundManager soundMan = SoundManager.GetInstance();
+                //    audio.volume = 0;
+                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
+                //}
+                //else
+                //{
+                //    SoundManager soundMan = SoundManager.GetInstance();
+                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
+                //}
                 break;
 		}
         updateTimeScale();
