@@ -563,7 +563,9 @@ public class MostlyImportant : MonoBehaviour {
 	void Update () {
         //print a line of the script every 30 frames
         if (Time.frameCount % 30 == 0) {
-            print(m_Script[m_CurrentText++]);
+            if (m_CurrentText < m_Script.Length) {
+                print(m_Script[m_CurrentText++]);
+            }
         }
 	}
 }
