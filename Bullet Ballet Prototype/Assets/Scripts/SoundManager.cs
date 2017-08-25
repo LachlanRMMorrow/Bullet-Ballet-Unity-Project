@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    static public string clipName;
 
     static SoundManager _instance;
 
@@ -13,7 +14,7 @@ public class SoundManager : MonoBehaviour
     static float currentVolumeNormalized_SFX = 1f;
     static bool isMuted = false;
 
-    List<AudioSource> sfxSources;
+    public List<AudioSource> sfxSources;
     AudioSource bgmSource;
 
 
@@ -22,7 +23,7 @@ public class SoundManager : MonoBehaviour
         if (!_instance)
         {
             GameObject soundManager = new GameObject("SoundManager");
-            _instance = soundManager.AddComponent<SoundManager>();//??
+            _instance = soundManager.AddComponent<SoundManager>();
             _instance.Initialize();
         }
 
@@ -32,7 +33,7 @@ public class SoundManager : MonoBehaviour
     void Initialize()
     {
         //Add BGM sound Source
-        bgmSource = gameObject.AddComponent<AudioSource>(); //??
+        bgmSource = gameObject.AddComponent<AudioSource>();
         bgmSource.loop = true;
         bgmSource.playOnAwake = false;
         bgmSource.volume = GetBGMVolume();
@@ -155,12 +156,15 @@ public class SoundManager : MonoBehaviour
         return sfxSource;
     }
 
-    IEnumerator RemoveSFXSource(AudioSource sfxSource)
-    {
-        yield return new WaitForSeconds(sfxSource.clip.length);
+    IEnumerator RemoveSFXSource(AudioSource sfxSource) {
+        //was causing errors due to the clip being null
+        if (sfxSource.clip != null) {
+            yield return new WaitForSeconds(sfxSource.clip.length);
+        }
         sfxSources.Remove(sfxSource);
         Destroy(sfxSource);
     }
+
 
     IEnumerator RemoveSFXSourceFixedLength(AudioSource sfxSource, float length)
     {
@@ -179,6 +183,7 @@ public class SoundManager : MonoBehaviour
         source.clip = sfxClip;
         source.Play();
 
+
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
     }
 
@@ -190,7 +195,40 @@ public class SoundManager : MonoBehaviour
         source.clip = sfxClip;
         source.Play();
 
+        //if (soundMan.sfxSources == null)
+        //{
+        //    source.Play();
+
+        //    soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+        //}
+
+
+
+        //if (soundMan.sfxSources != null)
+        //{
+
+        //    foreach (AudioSource audio in soundMan.sfxSources)
+        //    {
+        //        clipName = audio.clip.ToString();
+
+        //        if (clipName == "SlowMoActivate_01_Edited (UnityEngine.AudioClip)" || clipName == "SlowMoDeactivate_01_Edited (UnityEngine.AudioClip)")
+        //        {
+        //            Destroy(audio);
+        //            source.Play();
+
+        //            soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+        //        }
+        //        else
+        //        {
+        //            source.Play();
+
+        //            soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+        //        }
+        //    }
+        //}
+
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+
     }
 
     public static void PlaySFXRandomized(AudioClip sfxClip)
@@ -198,9 +236,8 @@ public class SoundManager : MonoBehaviour
         SoundManager soundMan = GetInstance();
         AudioSource source = soundMan.GetSFXSource();
         source.volume = GetSFXVolume();
-        source.pitch = Time.timeScale;
+        source.pitch = Time.timeScale * Random.Range(0.85f, 1.5f);
         source.clip = sfxClip;
-        source.pitch = Random.Range(0.85f, 1.5f);
         source.Play();
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
     }
@@ -211,10 +248,10 @@ public class SoundManager : MonoBehaviour
         SoundManager soundMan = GetInstance();
         AudioSource source = soundMan.GetSFXSource();
         source.volume = GetSFXVolume();
-        source.pitch = Time.timeScale;
+        source.pitch = Time.timeScale * Random.Range(0.85f, 1.1f);
         source.clip = sfxClip;
-        source.pitch = Random.Range(0.85f, 1.5f);
         source.PlayDelayed(delay);
+
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
     }
 
