@@ -18,6 +18,19 @@ public class EndofLevelMenu : MonoBehaviour
         exitToDesktop.onClick.AddListener(ExitToDesktop);
 	}
 
+    void OnValidate()
+    {
+        if (nextLevel == null)
+        nextLevel = GameObject.Find("Next Level ES").GetComponent<Button>();
+
+        if (exitToMenu == null)
+            exitToMenu = GameObject.Find("Exit To Menu ES").GetComponent<Button>();
+
+        if (exitToDesktop == null)
+            exitToDesktop = GameObject.Find("Exit To Desktop ES").GetComponent<Button>();
+
+    }
+
     void NextLevel()
     {
         SceneManager.LoadScene(1);
