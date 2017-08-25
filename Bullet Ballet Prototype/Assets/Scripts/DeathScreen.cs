@@ -19,6 +19,19 @@ public class DeathScreen : MonoBehaviour
         exitToMenu.onClick.AddListener(ExitToMenu);
 	}
 	
+    void OnValidate()
+    {
+        if (restart == null)
+        restart = GameObject.Find("Restart DS").GetComponent<Button>();
+
+        if (exitToDesktop == null)
+            exitToDesktop = GameObject.Find("Exit to Desktop DS").GetComponent<Button>();
+
+        if (exitToMenu == null)
+            exitToMenu = GameObject.Find("Exit to Menu DS").GetComponent<Button>();
+    }
+
+
     void Restart()
     {
         scene = SceneManager.GetActiveScene().buildIndex;

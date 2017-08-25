@@ -105,7 +105,7 @@ public class SlowMoManager : MonoBehaviour {
             return;
         }
 
-        if (controller.WasButtonPressed(JInput.ControllerButtons.L1))
+        if (controller.WasButtonPressed(JInput.ControllerButtons.Start))
         {
             if (pauseMenu.activeInHierarchy == false)
             {

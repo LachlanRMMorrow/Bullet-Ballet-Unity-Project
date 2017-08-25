@@ -14,12 +14,36 @@ public class PauseMenu : MonoBehaviour {
     public Button exitToDesktop;
 
 	void Start ()
-    {
+    { 
         resume.onClick.AddListener(Resume);
         options.onClick.AddListener(Options);
         exitToMenu.onClick.AddListener(ExitToMenu);
         exitToDesktop.onClick.AddListener(ExitToDesktop);
 	}
+
+    void OnValidate()
+    {
+        if(resume == null)
+        {
+            resume = GameObject.Find("Resume").GetComponent<Button>();
+        }
+
+        if (options == null)
+        {
+            options = GameObject.Find("Options").GetComponent<Button>();
+        }
+        
+        if (exitToMenu == null)
+        {
+            exitToMenu = GameObject.Find("Exit To Menu").GetComponent<Button>();
+        }
+
+        if (exitToDesktop == null)
+        {
+            exitToDesktop = GameObject.Find("Exit To Desktop").GetComponent<Button>();
+        }
+        
+    }
 
     void Resume()
     {
