@@ -123,12 +123,23 @@ public class PlayerArms : MonoBehaviour {
             //limit the m_MovingTo transform
             limitArmMovements(a_Arm);
 
+            Vector3 rot2 = a_Arm.m_MovingTo.rotation.eulerAngles;
+            //arm rotation is off by 90 degrees
+            if (a_Arm.m_IsRight) {
+                rot2.y -= 90;
+            } else {
+                rot2.y += 90;
+            }
+            Quaternion quat = Quaternion.Euler(rot2);
+
             //move model to moveTo
-            rotateArm(a_Arm.m_Model, a_Arm.m_MovingTo.rotation);
+            rotateArm(a_Arm.m_Model, quat);
 
             //get models rotation without the x or z
             Vector3 rot = a_Arm.m_Model.rotation.eulerAngles;
             rot.x = rot.z = 0;
+            //shooting is also 90 degrees off
+            rot.y -= 90;
             Quaternion flatRot = Quaternion.Euler(rot);
 
 
