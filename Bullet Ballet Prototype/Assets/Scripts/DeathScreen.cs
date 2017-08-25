@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class DeathScreen : MonoBehaviour
 {
+    int scene;
 
     public Button restart;
     public Button exitToDesktop;
@@ -20,7 +21,8 @@ public class DeathScreen : MonoBehaviour
 	
     void Restart()
     {
-        SceneManager.LoadScene("L1F1 - Addison");
+        scene = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(scene);
     }
 
     void ExitToDesktop()
@@ -30,7 +32,7 @@ public class DeathScreen : MonoBehaviour
 
     void ExitToMenu()
     {
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene(0);
     }
 
 

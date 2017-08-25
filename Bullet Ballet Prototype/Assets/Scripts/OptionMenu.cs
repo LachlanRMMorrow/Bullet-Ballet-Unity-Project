@@ -40,6 +40,6 @@ public class OptionMenu : MonoBehaviour {
 
     void Back()
     {
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene(0);
     }
 }

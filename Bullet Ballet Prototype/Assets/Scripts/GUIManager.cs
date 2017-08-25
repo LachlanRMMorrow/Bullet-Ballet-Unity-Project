@@ -25,7 +25,7 @@ public class GUIManager : MonoBehaviour {
 	void NewGame()
     {
         
-        SceneManager.LoadScene("Level Select");
+        SceneManager.LoadScene(2);
     }
 
     void Resume()
@@ -35,7 +35,7 @@ public class GUIManager : MonoBehaviour {
 
     void Options()
     {
-        SceneManager.LoadScene("Options");
+        SceneManager.LoadScene(3);
     }
 
     void Exit()

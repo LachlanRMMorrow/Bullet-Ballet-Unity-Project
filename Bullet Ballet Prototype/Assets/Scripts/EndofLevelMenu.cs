@@ -20,12 +20,12 @@ public class EndofLevelMenu : MonoBehaviour
 
     void NextLevel()
     {
-        SceneManager.LoadScene("L1F1 - Addison");
+        SceneManager.LoadScene(1);
     }
 
     void ExitToMenu()
     {
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene(0);
     }
 
     void ExitToDesktop()

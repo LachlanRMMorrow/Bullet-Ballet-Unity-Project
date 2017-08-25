@@ -19,12 +19,12 @@ public class LevelMenu : MonoBehaviour {
 
     void Level1()
     {
-        SceneManager.LoadScene("L1F1 Tutorial - Addison");
+        SceneManager.LoadScene(4);
     }
 
     void Level2()
     {
-        SceneManager.LoadScene("L1F1 - Addison");
+        SceneManager.LoadScene(1);
     }
 
     void Level3()
