@@ -5,6 +5,7 @@ using UnityEngine;
 public class SlowMoManager : MonoBehaviour {
 
     public GameObject pauseMenu;
+    public GameObject resume;
 
     float m_EnergyLeft;
 	public float m_MaxEnergy = 100;
@@ -107,8 +108,12 @@ public class SlowMoManager : MonoBehaviour {
         if (controller.WasButtonPressed(JInput.ControllerButtons.L1))
         {
             if (pauseMenu.activeInHierarchy == false)
+            {
                 pauseMenu.SetActive(true);
- 
+                GameObject eS = GameObject.Find("EventSystem");
+                eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(resume);
+            }
+
             else
                 pauseMenu.SetActive(false);
         }

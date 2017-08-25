@@ -109,6 +109,18 @@ public class PlayerArms : MonoBehaviour {
     private void rotateArm(Transform a_Mover, Quaternion a_MoveTo) {
 
         //get the difference between our angle and the arm
+        float quatAngle = Quaternion.Angle(a_Mover.rotation, a_MoveTo);
+        //how long it should take to complete by using rotate speed
+        float timeToComplete = quatAngle / m_RotateSpeed;
+        //how far do we have to move towards the final angle at the same speed
+        float percentage = Mathf.Min(1.0f, Time.unscaledDeltaTime / timeToComplete);
+        //apply angle via slerp between current angle and our final angle
+        a_Mover.rotation = Quaternion.Slerp(a_Mover.rotation, a_MoveTo, percentage);
+    }
+
+    private void rotateArmLocal(Transform a_Mover, Quaternion a_MoveTo) {
+
+        //get the difference between our angle and the arm
         float quatAngle = Quaternion.Angle(a_Mover.localRotation, a_MoveTo);
         //how long it should take to complete by using rotate speed
         float timeToComplete = quatAngle / m_RotateSpeed;
@@ -125,11 +137,7 @@ public class PlayerArms : MonoBehaviour {
 
             Vector3 rot2 = a_Arm.m_MovingTo.rotation.eulerAngles;
             //arm rotation is off by 90 degrees
-            if (a_Arm.m_IsRight) {
-                rot2.y -= 90;
-            } else {
                 rot2.y += 90;
-            }
             Quaternion quat = Quaternion.Euler(rot2);
 
             //move model to moveTo
@@ -148,7 +156,7 @@ public class PlayerArms : MonoBehaviour {
 
         } else {
             //move model arm to default
-            rotateArm(a_Arm.m_Model, a_Arm.m_StartingRot);
+            rotateArmLocal(a_Arm.m_Model, a_Arm.m_StartingRot);
         }
     }
 
