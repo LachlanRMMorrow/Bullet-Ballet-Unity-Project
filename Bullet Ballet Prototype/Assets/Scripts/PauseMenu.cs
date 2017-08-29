@@ -15,7 +15,7 @@ public class PauseMenu : MonoBehaviour {
 
 	void Start ()
     { 
-        resume.onClick.AddListener(Resume);
+        //resume.onClick.AddListener(Resume);
         options.onClick.AddListener(Options);
         exitToMenu.onClick.AddListener(ExitToMenu);
         exitToDesktop.onClick.AddListener(ExitToDesktop);
