@@ -4,21 +4,27 @@ using UnityEngine;
 
 public class SlowMoManager : MonoBehaviour {
 
+    /** ?? */
+
     public GameObject pauseMenu;
     public GameObject resume;
 
+    /** Energy */
+
+    [Header("Energy data")]
+    public float m_MaxEnergy = 100;
     float m_EnergyLeft;
-	public float m_MaxEnergy = 100;
-	
-	public float m_EnergyDecrement;
-	public float m_EnergyIncrement;
 
-	public float m_DeltaTimeScale = 0.25f;
+    public float m_EnergyDecrement;
+    public float m_EnergyIncrement;
 
-    AudioSource audio;
+    /** Time Scales */
 
-    public AudioClip m_SlowMoStart;
-    public AudioClip m_SlowMoEnd;
+    [Header("Time Speed Scales")]
+    public float m_NormalSpeed = 1.0f;
+    public float m_FixedUpdateScale = 0.02f;
+    public float m_PlanningModeTimeScale = 0.1f;
+    public float m_SlowMoTimeScale = 0.25f;
 
     [SerializeField]
     private float m_PlayerWeaponSpeedScale = 0.5f;
@@ -29,92 +35,97 @@ public class SlowMoManager : MonoBehaviour {
     /// </summary>
     public static float m_PlayerSpeedScale = 1.0f;
 
+    /** Audio */
+    [Header("Audio")]
+    public AudioClip m_SlowMoStart;
+    public AudioClip m_SlowMoEnd;
+
+    private AudioSource m_LastUsedAudio;
+
+
+    /** Slow-mo flags */
+
     /// <summary>
     /// bool to check if the slowmo is on or not
     /// </summary>
-	private bool m_IsSlowmoOn = false;
+    private bool m_IsSlowmoOn = false;
 
+    /** Trigger slowMo */
+
+    //private variables which are set when the slowmo trigger is started
     /// <summary>
     /// how long the slowmo should last if we used a trigger to start it
     /// </summary>
     private float m_TriggerSlowMoLength;
     private float m_TriggerStartTime;
     /// <summary>
-    /// did we use the trigger to start this slowmo
+    /// did we use the trigger to start the current slowmo?
     /// </summary>
     private bool m_TriggerDidUse = false;
 
-    //debug ui elements to render what this class is doing
-    public UnityEngine.UI.Text m_SlowmoText;
+    [Header("UI Elements")]
     public UnityEngine.UI.Slider m_SlowmoSlider;
-    private string m_TextPrefix;
 
-	// Use this for initialization
-	void Awake () {
-		GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
-		m_EnergyLeft = m_MaxEnergy;
-		if(m_SlowmoText != null) {
-			m_TextPrefix = m_SlowmoText.text;
-		}
-		updateUi();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		controllerInput();
+    // Use this for initialization
+    void Awake() {
+        GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
+        m_EnergyLeft = m_MaxEnergy;
+
+        updateUi();
+    }
+
+    // Update is called once per frame
+    void Update() {
+        controllerInput();
 
 
-		if (m_IsSlowmoOn) {
+        if (m_IsSlowmoOn) {
 
             //if we used the trigger, then run this instead
             if (m_TriggerDidUse) {
 
-                if(Time.unscaledTime - m_TriggerStartTime > m_TriggerSlowMoLength) {
+                if (Time.unscaledTime - m_TriggerStartTime > m_TriggerSlowMoLength) {
                     //time is up, lets finish it
                     m_IsSlowmoOn = false;
                     m_TriggerDidUse = false;
-                    updateTimeScale();
+                    updateTimeScale(true);
                 }
 
                 return;// no need to do the rest or update the ui since the energy left wont change
             }
 
             m_EnergyLeft -= m_EnergyDecrement * Time.unscaledDeltaTime;
-			if(m_EnergyLeft <= 0) {
-				m_IsSlowmoOn = false;
-				updateTimeScale();
-			}
-		} else {
-			m_EnergyLeft += m_EnergyIncrement * Time.unscaledDeltaTime;
-			if (m_EnergyLeft >= m_MaxEnergy) {
-				m_EnergyLeft = m_MaxEnergy;
-			}
-		}
+            if (m_EnergyLeft <= 0) {
+                m_IsSlowmoOn = false;
+                updateTimeScale(true);
+            }
+        } else {
+            m_EnergyLeft += m_EnergyIncrement * Time.unscaledDeltaTime;
+            if (m_EnergyLeft >= m_MaxEnergy) {
+                m_EnergyLeft = m_MaxEnergy;
+            }
+        }
 
 
-		updateUi();
-	}
+        updateUi();
+    }
 
     /// <summary>
     /// check controller input to see if the slow mo button was pressed
     /// </summary>
 	private void controllerInput() {
-		//controller, turn on/off
-		JInput.Controller controller = JInput.CurrentController.currentController;
+        //controller, turn on/off
+        JInput.Controller controller = JInput.CurrentController.currentController;
         if (controller == null) {
             return;
         }
 
-        if (controller.WasButtonPressed(JInput.ControllerButtons.Start))
-        {
-            if (pauseMenu.activeInHierarchy == false)
-            {
+        if (controller.WasButtonPressed(JInput.ControllerButtons.Start)) {
+            if (pauseMenu.activeInHierarchy == false) {
                 pauseMenu.SetActive(true);
                 GameObject eS = GameObject.Find("EventSystem");
                 eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(resume);
-            }
-
-            else
+            } else
                 pauseMenu.SetActive(false);
         }
 
@@ -122,97 +133,80 @@ public class SlowMoManager : MonoBehaviour {
 
         if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton)) {
             m_TriggerDidUse = false;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
-			m_IsSlowmoOn = !m_IsSlowmoOn;
-			updateTimeScale();
-		}
-	}
+            m_IsSlowmoOn = !m_IsSlowmoOn;
+            updateTimeScale(true);
 
-
-	private void updateTimeScale() {
-		if (m_IsSlowmoOn) {
-            if (audio != null)
-            {
-                SoundManager soundMan = SoundManager.GetInstance();
-                audio.volume = 0;
-                audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
-            }
-            else
-            {
-                SoundManager soundMan = SoundManager.GetInstance();
-                audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
-            }
-            Time.timeScale = m_DeltaTimeScale;
-            m_PlayerSpeedScale = m_PlayerWeaponSpeedScale;
-        }
-        else
-        {
-            //reset time.timeScale and m_PlayerSpeedScale back to 1
-            Time.timeScale = m_PlayerSpeedScale = 1.0f;
-            if (audio != null)
-            {
-                SoundManager soundMan = SoundManager.GetInstance();
-                audio.volume = 0;
-                audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
-            }
-            else
-            {
-                SoundManager soundMan = SoundManager.GetInstance();
-                audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
+            //play the audio
+            if (m_IsSlowmoOn) {
+                playAudio(m_SlowMoStart);
+            } else {
+                playAudio(m_SlowMoEnd);
             }
         }
-	}
+    }
 
-	private void updateUi() {
-		if (m_SlowmoText != null) {
-			m_SlowmoText.text = m_TextPrefix + " " + Mathf.FloorToInt(m_EnergyLeft);
-		}
-        if(m_SlowmoSlider != null) {
+
+    private void updateTimeScale(bool a_UpdateTimeScale) {
+
+        if (a_UpdateTimeScale) {
+            if (m_IsSlowmoOn) {
+
+                Time.timeScale = m_SlowMoTimeScale;
+                m_PlayerSpeedScale = m_PlayerWeaponSpeedScale;
+
+            } else {
+                //reset time.timeScale and m_PlayerSpeedScale back to m_NormalSpeed
+                Time.timeScale = m_PlayerSpeedScale = m_NormalSpeed;
+
+            }
+        } 
+        //update fixed delta time
+        Time.fixedDeltaTime = m_FixedUpdateScale * Time.timeScale;
+    }
+
+    private void playAudio(AudioClip a_Clip) {
+        //if the last audio that was played is still being played, then remove it... (well just make it's volume 0)
+        if (m_LastUsedAudio != null) {
+            m_LastUsedAudio.volume = 0;
+            m_LastUsedAudio.Pause();
+        }
+        //then start the new sound
+        SoundManager soundMan = SoundManager.GetInstance();
+        m_LastUsedAudio = soundMan.PlayAndStoreSFX(a_Clip);
+    }
+
+    private void updateUi() {
+        if (m_SlowmoSlider != null) {
             m_SlowmoSlider.value = m_EnergyLeft / m_MaxEnergy;
         }
-	}
+    }
 
-	private void stateChanged(GameStates a_NewState) {
-		switch (a_NewState) {
-			case GameStates.Action:
-				enabled = true;
-                //if (audio != null)
-                //{
-                //    SoundManager soundMan = SoundManager.GetInstance();
-                //    audio.volume = 0;
-                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
-                //}
-                //else
-                //{
-                //    SoundManager soundMan = SoundManager.GetInstance();
-                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoEnd);
-                //}
+    private void stateChanged(GameStates a_NewState) {
+        switch (a_NewState) {
+            case GameStates.Action:
+                enabled = true;
+
+                Time.timeScale = m_NormalSpeed;
+                playAudio(m_SlowMoEnd);
                 break;
-			case GameStates.Planning:
-				enabled = false;
+            case GameStates.Planning:
+                enabled = false;
                 m_IsSlowmoOn = false;
-                //if (audio != null)
-                //{
-                //    SoundManager soundMan = SoundManager.GetInstance();
-                //    audio.volume = 0;
-                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
-                //}
-                //else
-                //{
-                //    SoundManager soundMan = SoundManager.GetInstance();
-                //    audio = soundMan.PlayAndStoreSFX(m_SlowMoStart);
-                //}
-                break;
-		}
-        updateTimeScale();
-	}
 
-    public void startTriggerSlowmo(float a_SlowMoTime) {        
+                Time.timeScale = m_PlanningModeTimeScale;
+                playAudio(m_SlowMoStart);
+                break;
+        }
+        updateTimeScale(false);
+    }
+
+    public void startTriggerSlowmo(float a_SlowMoTime) {
         m_TriggerSlowMoLength = a_SlowMoTime;
         m_TriggerStartTime = Time.unscaledTime;
         m_TriggerDidUse = true;
         //start the slowmo
         m_IsSlowmoOn = true;
-        updateTimeScale();
+        updateTimeScale(true);
     }
 
 }

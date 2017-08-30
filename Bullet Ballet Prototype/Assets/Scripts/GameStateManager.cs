@@ -87,7 +87,6 @@ public class GameStateManager : MonoBehaviour {
     /// also invoke the unityEvent to allow classes to do their setup
     /// </summary>
     void Start() {
-        m_Singleton.m_StateChanged.AddListener(updateTimeScale);
         m_Singleton.m_StateChanged.AddListener(updateScreenText);
         m_Singleton.m_StateChanged.Invoke(currentState);
     }
@@ -121,20 +120,6 @@ public class GameStateManager : MonoBehaviour {
             }
         }
 
-    }
-
-    /// <summary>
-    /// function to set up the timescale between modes
-    /// </summary>
-    /// <param name="a_State">the next state</param>
-    private void updateTimeScale(GameStates a_State) {
-        if (a_State == GameStates.Action) {
-            Time.timeScale = 1.0f;
-        } else {
-            Time.timeScale = 0.1f;
-            //Time.timeScale = 1.0f;
-        }
-        Time.fixedDeltaTime = 0.02F * Time.timeScale;
     }
 
     private void updateScreenText(GameStates a_State) {
