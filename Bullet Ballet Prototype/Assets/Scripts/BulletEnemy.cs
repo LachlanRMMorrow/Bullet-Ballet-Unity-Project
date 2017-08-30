@@ -16,16 +16,16 @@ public class BulletEnemy : Bullet {
         base.Awake();
     }
     protected override void bulletHit(GameObject a_Object) {
-        //base.bulletHit(a_Object);
-        bulletCollision();
-
-        //did hit the player?
-        if (a_Object.layer == LayerMask.NameToLayer("Player")) {
-            //todo: leave body?
-
-            spawnBlood(a_Object.transform.position, transform.rotation);
-            dealDamage(a_Object);
-        }
+        base.bulletHit(a_Object);
+        //bulletCollision();
+        //
+        ////did hit the player?
+        //if (a_Object.layer == LayerMask.NameToLayer("Player")) {
+        //    //todo: leave body?
+        //
+        //    spawnBlood(a_Object.transform.position, transform.rotation);
+        //    dealDamage(a_Object);
+        //}
     }
 
 }

@@ -49,8 +49,8 @@ public class Bullet : MonoBehaviour {
     virtual protected void bulletHit(GameObject a_Object) {
         bulletCollision();
 
-        //did hit a enemy?
-        if (a_Object.layer == LayerMask.NameToLayer("Enemies")) {
+        //ok well it seems to have a issue where the enemy bullets are using this function
+        if (a_Object.layer == LayerMask.NameToLayer("Enemies")|| a_Object.layer == LayerMask.NameToLayer("Player")) {
             //todo: leave body?
 
             spawnBlood(a_Object.transform.position, transform.rotation);
