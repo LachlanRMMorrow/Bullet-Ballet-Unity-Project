@@ -224,7 +224,8 @@ public class CameraManager : MonoBehaviour {
 
         RaycastHit hit;
         //check against everything that is not a Bullets/Eneimes or Player
-        int layerMask = ~(1 << LayerMask.NameToLayer("Bullets") | 1 << LayerMask.NameToLayer("Enemies") | 1 << LayerMask.NameToLayer("Player"));
+        //int layerMask = ~(1 << LayerMask.NameToLayer("Bullets") | 1 << LayerMask.NameToLayer("Enemies") | 1 << LayerMask.NameToLayer("Player"));
+        int layerMask = (1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Default"));
         //add left arm
         if (m_PlayerArmLeft.gameObject.activeInHierarchy) {
             //check AI for LayerMask explination
