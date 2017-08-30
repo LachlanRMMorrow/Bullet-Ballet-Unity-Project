@@ -32,7 +32,11 @@ public class Bullet : MonoBehaviour {
     /// </summary>
     /// <param name="collision"></param>
     void OnTriggerEnter(Collider collision) {
+        //todo: make these two functions into their own class
+        //have another class with the unity event system that we just invoke
+        //so then it's a lot more modular 
         checkDestruction(collision.gameObject);
+        checkTarget(collision.gameObject);
         bulletHit(collision.gameObject);
     }
 
@@ -40,9 +44,25 @@ public class Bullet : MonoBehaviour {
         if (a_Object.gameObject.tag == "Destructible") {
             //get Pillar script from transform
             Pillar pillar = a_Object.GetComponentInParent<Pillar>();
-            if(pillar != null) {
+            if (pillar != null) {
                 pillar.pillarHit(transform);
             }
+        }
+    }
+
+    /// <summary>
+    /// code for checking if we hit the enemy, and modifying that object
+    /// </summary>
+    /// <param name="a_Object"></param>
+    private void checkTarget(GameObject a_Object) {
+        if (a_Object.tag == "EnemyTarget") {
+            Animator animator = a_Object.GetComponent<Animator>();
+            if (animator != null) {
+                animator.SetTrigger("Target Hit");
+            }
+            //remove components
+            a_Object.GetComponent<BoxCollider>().enabled = false;
+            a_Object.GetComponent<UnityEngine.AI.NavMeshObstacle>().enabled = false;
         }
     }
 
