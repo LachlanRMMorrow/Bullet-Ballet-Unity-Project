@@ -23,6 +23,11 @@ public class WeaponUI : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+        //remove all transforms which are currently under this weapon ui
+        for(int i = transform.childCount-1; i > 0; i--) {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+
         runWeaponUpdate();
     }
 
