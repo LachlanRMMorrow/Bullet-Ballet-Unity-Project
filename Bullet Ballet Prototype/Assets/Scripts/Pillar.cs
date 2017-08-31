@@ -2,34 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pillar : MonoBehaviour {
+[RequireComponent(typeof(Health))]
+public class Pillar : BulletHitHandlerBase {
 
     public Transform m_PillarTransforms;
     public Transform m_PillarCollider;
 
-    public int m_MaxHealth = 2;
-    private int m_CurrentHealth = 0;
+    Health m_Health;
 
-    void Awake() {
-        m_CurrentHealth = m_MaxHealth;
+    public override void Awake() {
+        base.Awake();
+        
         swapPillars(true);
+
+        m_Health = GetComponent<Health>();
+
+        //small hack to get the colliders bullet info.. since when passing them through to this class's version
+        m_BulletHitHandler = m_PillarCollider.GetComponent<BulletHitHandler>();
+        
     }
 
-    public void pillarHit(Transform m_BulletObject) {
-        m_CurrentHealth--;
-        if(m_CurrentHealth != 0) {
-            return;
-        }
-        m_PillarCollider.gameObject.SetActive(false);
-        swapPillars(false);
-        
-        Vector3 direction = m_BulletObject.rotation * Vector3.forward;
+    protected override void hit() {
+        base.hit();
 
-        for (int i = 0; i < 4; i++) {
-            for (int q = 0; q < 8; q++) {
-                int randomChild = Random.Range(0, 21);
-                Rigidbody middlePeice = m_PillarTransforms.GetChild(i).GetChild(1).GetChild(0).GetChild(randomChild).GetComponent<Rigidbody>();
-                middlePeice.AddForce(direction * 20, ForceMode.Impulse);
+        m_Health.dealDamage(1.0f);
+
+        if (m_Health.isDead()) {
+
+            m_PillarCollider.gameObject.SetActive(false);
+            swapPillars(false);
+
+            Vector3 direction = m_BulletHitHandler.m_BulletHit.rotation * Vector3.forward;
+
+            for (int i = 0; i < 4; i++) {
+                for (int q = 0; q < 8; q++) {
+                    int randomChild = Random.Range(0, 21);
+                    Rigidbody middlePeice = m_PillarTransforms.GetChild(i).GetChild(1).GetChild(0).GetChild(randomChild).GetComponent<Rigidbody>();
+                    middlePeice.AddForce(direction * 20, ForceMode.Impulse);
+                }
             }
         }
     }

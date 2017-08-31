@@ -35,12 +35,25 @@ public class Health : MonoBehaviour {
         updateSlider();
     }
 
+    public float getHealthLeft() {
+        return m_CurrentHealth;
+    }
+
+    public bool isDead() {
+        return m_CurrentHealth <= 0;
+    }
+
     private void noHealth() {
-        if (CompareTag("Player"))
+        bool isPlayer = CompareTag("Player");
+        //death if is player tag
+        if (isPlayer)
         {
             death();
         }
-        Destroy(gameObject);//TEMP DESTROY
+        //destroy if is Player or is Enemies tag
+        if (isPlayer || CompareTag("Enemy")) {
+            Destroy(gameObject);//TEMP DESTROY
+        }
     }
 
     private void updateSlider() {
