@@ -16,45 +16,51 @@ public class PlayerShoot : MonoBehaviour {
     //move to a weapon class
     private bool m_HasShot = false;
     public WeaponShooter m_CurrentWeapon;
-    
+
+    public bool m_CanShoot = true;
 
     // Use this for initialization
-    void Start () {
+    void Start() {
 
-        if(m_ShootPoint == null) {
+        if (m_ShootPoint == null) {
             m_ShootPoint = transform;
         }
 
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update() {
 
         JInput.Controller controller = JInput.CurrentController.currentController;
-        if(controller == null) {
+        if (controller == null) {
             return;
         }
 
         //does this script use the left trigger?
         bool triggerLeft = m_ShootTrigger == TriggerAxes.LeftTrigger;
 
-        ///shoot
-
-        //is the trigger down more then 80% of the way
-        bool isTriggerDown = controller.getTriggerValue(triggerLeft) >= 0.8f;
+        //can this arm shoot or not?
+        if (m_CanShoot) {
 
 
-        if (isTriggerDown) {
-            //check if the player has not shot already
-            //this is so the player has to release the trigger to fire again
-            if (!m_HasShot) {
-                m_HasShot = true;
+            ///shoot
 
-                m_CurrentWeapon.shoot(m_ShootPoint);
+            //is the trigger down more then 80% of the way
+            bool isTriggerDown = controller.getTriggerValue(triggerLeft) >= 0.8f;
+
+
+            if (isTriggerDown) {
+                //check if the player has not shot already
+                //this is so the player has to release the trigger to fire again
+                if (!m_HasShot) {
+                    m_HasShot = true;
+
+                    m_CurrentWeapon.shoot(m_ShootPoint);
+                }
+            } else {//trigger is released, allow player to shoot again
+                m_HasShot = false;
             }
-        }else {//trigger is released, allow player to shoot again
-            m_HasShot = false;
         }
 
         ///reload
@@ -62,7 +68,7 @@ public class PlayerShoot : MonoBehaviour {
         if (controller.WasButtonPressed(reloadButton)) {
             m_CurrentWeapon.reload();
         }
-	}
+    }
 
     void OnValidate() {
         //no referenced weapon

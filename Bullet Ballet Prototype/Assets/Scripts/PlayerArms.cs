@@ -17,6 +17,7 @@ public class PlayerArms : MonoBehaviour {
         internal Quaternion m_StartingRot;
         internal bool m_HasDir;
         internal bool m_IsRight = true;
+        internal PlayerShoot m_ArmShootScript;
     }
 
     public Arms m_LeftArm;
@@ -41,6 +42,9 @@ public class PlayerArms : MonoBehaviour {
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
 
         m_LeftArm.m_IsRight = false;
+
+        m_LeftArm.m_ArmShootScript = m_LeftArm.m_ShootingArm.GetComponent<PlayerShoot>();
+        m_RightArm.m_ArmShootScript = m_RightArm.m_ShootingArm.GetComponent<PlayerShoot>();
     }
 
     // Update is called once per frame
@@ -79,10 +83,11 @@ public class PlayerArms : MonoBehaviour {
         }
         //set the moveTo arms to be active or not depending if the sicks have high enough values
         m_LeftArm.m_MovingTo.gameObject.SetActive(m_LeftArm.m_HasDir);
-        m_LeftArm.m_ShootingArm.gameObject.SetActive(m_LeftArm.m_HasDir);
+        //m_LeftArm.m_ShootingArm.gameObject.SetActive(m_LeftArm.m_HasDir);
+        m_LeftArm.m_ArmShootScript.m_CanShoot = m_LeftArm.m_HasDir;
         m_RightArm.m_MovingTo.gameObject.SetActive(m_RightArm.m_HasDir);
-        m_RightArm.m_ShootingArm.gameObject.SetActive(m_RightArm.m_HasDir);
-
+        //m_RightArm.m_ShootingArm.gameObject.SetActive(m_RightArm.m_HasDir);
+        m_RightArm.m_ArmShootScript.m_CanShoot = m_RightArm.m_HasDir;
 
         moveArms(m_LeftArm);
         moveArms(m_RightArm);
@@ -278,8 +283,10 @@ public class PlayerArms : MonoBehaviour {
     /// hides both arms
     /// </summary>
     private void hideArms() {
-        m_LeftArm.m_ShootingArm.gameObject.SetActive(false);
-        m_RightArm.m_ShootingArm.gameObject.SetActive(false);
+        //m_LeftArm.m_ShootingArm.gameObject.SetActive(false);
+        //m_RightArm.m_ShootingArm.gameObject.SetActive(false);
+        m_LeftArm.m_ArmShootScript.m_CanShoot = false;
+        m_RightArm.m_ArmShootScript.m_CanShoot = false;
         //m_LeftArm.gameObject.SetActive(false);
         //m_RightArm.gameObject.SetActive(false);
     }
