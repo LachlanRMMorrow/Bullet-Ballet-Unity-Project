@@ -30,7 +30,12 @@ public class PlayerPathing : MonoBehaviour {
 
         if (m_PathMarker == null) {
             Debug.LogError("There is no WaypointMarker!");
-        }
+        }      
+        
+        //update position of this object to the players starting pos
+        Vector3 pos = m_Player.transform.position;
+        pos.y = transform.position.y;
+        transform.position = pos;
 
     }
 
