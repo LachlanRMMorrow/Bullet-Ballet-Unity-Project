@@ -93,7 +93,14 @@ public class SettingsManager : MonoBehaviour
 
     void OnMasterVolumeMute()
     {
-
+        if (masterVolumeMuteToggle.isOn == true)
+        {
+            SoundManager.SetGlobalVolume(0);
+        }
+        else
+        {
+            SoundManager.SetGlobalVolume(1);
+        }
     }
 
     void OnMusicMute()
