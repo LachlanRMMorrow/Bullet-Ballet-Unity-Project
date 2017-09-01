@@ -15,9 +15,9 @@ public class EndofLevelMenu : MonoBehaviour
 
 	void Start ()
     {
-        nextLevel.onClick.AddListener(NextLevel);
-        exitToMenu.onClick.AddListener(ExitToMenu);
-        exitToDesktop.onClick.AddListener(ExitToDesktop);
+        //nextLevel.onClick.AddListener(NextLevel);
+        //exitToMenu.onClick.AddListener(ExitToMenu);
+        //exitToDesktop.onClick.AddListener(ExitToDesktop);
 	}
 
     public void EndOfLeveActive()

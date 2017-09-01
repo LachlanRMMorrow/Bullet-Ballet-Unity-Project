@@ -14,9 +14,9 @@ public class DeathScreen : MonoBehaviour
 
 	void Start ()
     {
-        restart.onClick.AddListener(Restart);
-        exitToDesktop.onClick.AddListener(ExitToDesktop);
-        exitToMenu.onClick.AddListener(ExitToMenu);
+        //restart.onClick.AddListener(Restart);
+        //exitToDesktop.onClick.AddListener(ExitToDesktop);
+        //exitToMenu.onClick.AddListener(ExitToMenu);
 	}
 	
     public void DeathScreenActive()
