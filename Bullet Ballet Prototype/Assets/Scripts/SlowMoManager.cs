@@ -21,12 +21,17 @@ public class SlowMoManager : MonoBehaviour {
     /** Time Scales */
 
     [Header("Time Speed Scales")]
+    [Range(0, 2)]
     public float m_NormalSpeed = 1.0f;
+    [Range(0, 2)]
     public float m_FixedUpdateScale = 0.02f;
+    [Range(0, 2)]
     public float m_PlanningModeTimeScale = 0.1f;
+    [Range(0, 2)]
     public float m_SlowMoTimeScale = 0.25f;
 
     [SerializeField]
+    [Range(0, 2)]
     private float m_PlayerWeaponSpeedScale = 0.5f;
     /// <summary>
     /// static version of the player weapon speed
@@ -159,7 +164,7 @@ public class SlowMoManager : MonoBehaviour {
                 Time.timeScale = m_PlayerSpeedScale = m_NormalSpeed;
 
             }
-        } 
+        }
         //update fixed delta time
         Time.fixedDeltaTime = m_FixedUpdateScale * Time.timeScale;
     }
