@@ -27,6 +27,7 @@ public class LevelSwap : MonoBehaviour
             endOfLevelScreen.SetActive(true);
             GameObject eS = GameObject.Find("EventSystem");
             eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(nextLevel);
+            eS.GetComponent<EndofLevelMenu>().EndOfLeveActive();
         }
     }
 

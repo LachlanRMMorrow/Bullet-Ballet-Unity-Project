@@ -69,6 +69,7 @@ public class Health : MonoBehaviour {
         m_deathScreen.SetActive(true);
         GameObject eS = GameObject.Find("EventSystem");
         eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(m_restartButton);
+        eS.GetComponent<DeathScreen>().DeathScreenActive();
         Time.timeScale = 0;
 
     }
