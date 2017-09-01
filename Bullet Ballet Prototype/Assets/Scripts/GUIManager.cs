@@ -32,7 +32,7 @@ public class GUIManager : MonoBehaviour {
 	public void NewGame()
     {
         
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(1);
     }
 
     public void Resume()
@@ -49,12 +49,13 @@ public class GUIManager : MonoBehaviour {
 
     public void NextLevel()
     {
-        SceneManager.LoadScene(1);
+        scene = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(scene + 1);
     }
 
     public void OptionsMainMenu()
     {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(2);
     }
 
     public void OptionsPauseMenu()
@@ -64,6 +65,7 @@ public class GUIManager : MonoBehaviour {
 
     public void ExitToMenu()
     {
+        SoundManager.StopBGM(false, 0);
         SceneManager.LoadScene(0);
     }
 
@@ -76,12 +78,12 @@ public class GUIManager : MonoBehaviour {
 
     public void Level1()
     {
-        SceneManager.LoadScene(4);
+        SceneManager.LoadScene(3);
     }
 
     public void Level2()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(4);
     }
 
 
