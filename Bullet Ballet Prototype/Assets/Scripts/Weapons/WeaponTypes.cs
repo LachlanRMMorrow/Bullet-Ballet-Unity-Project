@@ -10,6 +10,7 @@ public enum WeaponTypes {
 	AI_BerettaM9,
 	AI_M1911,
 	AI_ColtPhthon357,
+	AI_WaterPistol,
     //Add new weapons here ^
     WEAPON_TYPES_SIZE
 }
