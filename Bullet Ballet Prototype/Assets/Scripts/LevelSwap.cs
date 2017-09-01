@@ -19,19 +19,22 @@ public class LevelSwap : MonoBehaviour
     {
         enemies.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
 
-        //Debug.Log(other.name);
+        Debug.Log("Hit");
 
         if (other == playerCollider && enemies.Count <= 0)
         {
+            
             Debug.Log(enemies);
             endOfLevelScreen.SetActive(true);
             GameObject eS = GameObject.Find("EventSystem");
             eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(nextLevel);
             eS.GetComponent<EndofLevelMenu>().EndOfLeveActive();
         }
+
+        enemies.Clear();
     }
 
-
+    
 
 	void Update ()
     {
