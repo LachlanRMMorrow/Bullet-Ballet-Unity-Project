@@ -6,44 +6,55 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
 
-    public GameObject pauseMenu;
+     GameObject pauseMenu;
 
-    public Button resume;
-    public Button options;
-    public Button exitToMenu;
-    public Button exitToDesktop;
+     public Button resume;
+     public Button options;
+     public Button exitToMenu;
+     public Button exitToDesktop;
 
 	void Start ()
     { 
         //resume.onClick.AddListener(Resume);
-        options.onClick.AddListener(Options);
-        exitToMenu.onClick.AddListener(ExitToMenu);
-        exitToDesktop.onClick.AddListener(ExitToDesktop);
+        //options.onClick.AddListener(Options);
+        //exitToMenu.onClick.AddListener(ExitToMenu);
+        //exitToDesktop.onClick.AddListener(ExitToDesktop);
 	}
 
-    void OnValidate()
+    public void PauseActive()
     {
-        if(resume == null)
+        if (pauseMenu ==  null)
         {
-            resume = GameObject.Find("Resume").GetComponent<Button>();
+            pauseMenu = GameObject.Find("Pause Menu");
         }
 
-        if (options == null)
+        if (resume == null)
         {
-            options = GameObject.Find("Options").GetComponent<Button>();
+            resume = GameObject.Find("Resume").GetComponent<Button>();
+            resume.onClick.AddListener(Resume);
         }
-        
+
+        //if (options == null)
+        //{
+        //    options = GameObject.Find("Options").GetComponent<Button>();
+        //    options.onClick.AddListener(Options);
+        //}
+
         if (exitToMenu == null)
         {
             exitToMenu = GameObject.Find("Exit To Menu").GetComponent<Button>();
+            exitToMenu.onClick.AddListener(ExitToMenu);
         }
 
         if (exitToDesktop == null)
         {
             exitToDesktop = GameObject.Find("Exit To Desktop").GetComponent<Button>();
+            exitToDesktop.onClick.AddListener(ExitToDesktop);
         }
-        
     }
+
+
+    
 
     void Resume()
     {
@@ -58,6 +69,7 @@ public class PauseMenu : MonoBehaviour {
 
     void ExitToMenu()
     {
+        SoundManager.StopBGM(false, 0);
         SceneManager.LoadScene(0);
     }
 

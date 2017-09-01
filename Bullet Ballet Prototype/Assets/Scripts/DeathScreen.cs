@@ -8,9 +8,9 @@ public class DeathScreen : MonoBehaviour
 {
     int scene;
 
-    public Button restart;
-    public Button exitToDesktop;
-    public Button exitToMenu;
+   public Button restart;
+   public Button exitToDesktop;
+   public Button exitToMenu;
 
 	void Start ()
     {
@@ -19,16 +19,28 @@ public class DeathScreen : MonoBehaviour
         exitToMenu.onClick.AddListener(ExitToMenu);
 	}
 	
-    void OnValidate()
+    public void DeathScreenActive()
     {
         if (restart == null)
-        restart = GameObject.Find("Restart DS").GetComponent<Button>();
+        {
+restart = GameObject.Find("Restart DS").GetComponent<Button>();
+            restart.onClick.AddListener(Restart);
+        }
+        
 
         if (exitToDesktop == null)
+        {
             exitToDesktop = GameObject.Find("Exit to Desktop DS").GetComponent<Button>();
+            exitToDesktop.onClick.AddListener(ExitToDesktop);
+        }
+
 
         if (exitToMenu == null)
-            exitToMenu = GameObject.Find("Exit to Menu DS").GetComponent<Button>();
+        {
+exitToMenu = GameObject.Find("Exit to Menu DS").GetComponent<Button>();
+            exitToMenu.onClick.AddListener(ExitToMenu);
+        }
+            
     }
 
 
@@ -45,6 +57,7 @@ public class DeathScreen : MonoBehaviour
 
     void ExitToMenu()
     {
+        SoundManager.StopBGM(false, 0);
         SceneManager.LoadScene(0);
     }
 

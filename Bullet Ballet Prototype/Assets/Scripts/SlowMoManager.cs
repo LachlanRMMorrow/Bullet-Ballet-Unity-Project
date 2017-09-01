@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class SlowMoManager : MonoBehaviour {
 
-    /** ?? */
+    /** Pause Variables */
 
     public GameObject pauseMenu;
     public GameObject resume;
+    public GameObject player;
+
+    public static bool m_isPaused;
 
     /** Energy */
 
@@ -125,18 +128,38 @@ public class SlowMoManager : MonoBehaviour {
             return;
         }
 
-        if (controller.WasButtonPressed(JInput.ControllerButtons.Start)) {
-            if (pauseMenu.activeInHierarchy == false) {
+        if (controller.WasButtonPressed(JInput.ControllerButtons.Start))
+        {
+            if (pauseMenu.activeInHierarchy == false)
+            {
+                //GameObject player = GameObject.Find("Player");
+                player.GetComponent<PlayerMovement>().enabled = false;
+                player.GetComponent<PlayerArms>().enabled = false;
+
+
+                updateTimeScale(false);
+                Time.timeScale = 0;
                 pauseMenu.SetActive(true);
                 GameObject eS = GameObject.Find("EventSystem");
                 eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(resume);
-            } else
+                eS.GetComponent<PauseMenu>().PauseActive();
+            }
+            else
+            {
+                //GameObject player = GameObject.Find("Player");
+                player.GetComponent<PlayerMovement>().enabled = true;
+                player.GetComponent<PlayerArms>().enabled = true;
+
                 pauseMenu.SetActive(false);
+                Time.timeScale = 1;
+            }
+            m_isPaused = pauseMenu.activeInHierarchy;
+
         }
 
 
 
-        if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton)) {
+        if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton) && pauseMenu.activeInHierarchy == false) {
             m_TriggerDidUse = false;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
             m_IsSlowmoOn = !m_IsSlowmoOn;
             updateTimeScale(true);

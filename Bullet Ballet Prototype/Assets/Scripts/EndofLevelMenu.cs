@@ -6,9 +6,11 @@ using UnityEngine.SceneManagement;
 
 public class EndofLevelMenu : MonoBehaviour
 {
-    public Button nextLevel;
-    public Button exitToMenu;
-    public Button exitToDesktop;
+    int scene;
+
+     Button nextLevel;
+     Button exitToMenu;
+     Button exitToDesktop;
 
 
 	void Start ()
@@ -18,26 +20,40 @@ public class EndofLevelMenu : MonoBehaviour
         exitToDesktop.onClick.AddListener(ExitToDesktop);
 	}
 
-    void OnValidate()
+    public void EndOfLeveActive()
     {
         if (nextLevel == null)
-        nextLevel = GameObject.Find("Next Level ES").GetComponent<Button>();
+        {
+nextLevel = GameObject.Find("Next Level ES").GetComponent<Button>();
+            nextLevel.onClick.AddListener(NextLevel);
+        }
+        
 
         if (exitToMenu == null)
-            exitToMenu = GameObject.Find("Exit To Menu ES").GetComponent<Button>();
+        {
+exitToMenu = GameObject.Find("Exit To Menu ES").GetComponent<Button>();
+            exitToMenu.onClick.AddListener(ExitToMenu);
+        }
+            
 
         if (exitToDesktop == null)
-            exitToDesktop = GameObject.Find("Exit To Desktop ES").GetComponent<Button>();
+        {
+exitToDesktop = GameObject.Find("Exit To Desktop ES").GetComponent<Button>();
+            exitToDesktop.onClick.AddListener(ExitToDesktop);
+        }
+            
 
     }
 
     void NextLevel()
     {
-        SceneManager.LoadScene(1);
+        scene = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(scene + 1);
     }
 
     void ExitToMenu()
     {
+        SoundManager.StopBGM(false, 0);
         SceneManager.LoadScene(0);
     }
 
