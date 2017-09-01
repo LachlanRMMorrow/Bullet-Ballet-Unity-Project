@@ -187,6 +187,19 @@ public class SoundManager : MonoBehaviour
         soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
     }
 
+    public static void PlaySFXPitchShift(AudioClip sfxClip, float pitch)
+    {
+        SoundManager soundMan = GetInstance();
+        AudioSource source = soundMan.GetSFXSource();
+        source.volume = GetSFXVolume();
+        source.pitch = Time.timeScale / pitch;
+        source.clip = sfxClip;
+        source.Play();
+
+
+        soundMan.StartCoroutine(soundMan.RemoveSFXSource(source));
+    }
+
     public static void PlaySFXNonTimeScaled(AudioClip sfxClip)
     {
         SoundManager soundMan = GetInstance();
