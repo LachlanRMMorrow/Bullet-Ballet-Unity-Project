@@ -5,6 +5,7 @@ using UnityEngine;
 public class Health : MonoBehaviour {
     public AudioClip m_DamageSound;
     public GameObject m_deathScreen;
+    public GameObject m_restartButton;
 
     /// <summary>
     /// max health of this object
@@ -66,6 +67,8 @@ public class Health : MonoBehaviour {
     private void death()
     {
         m_deathScreen.SetActive(true);
+        GameObject eS = GameObject.Find("EventSystem");
+        eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(m_restartButton);
         Time.timeScale = 0;
 
     }
