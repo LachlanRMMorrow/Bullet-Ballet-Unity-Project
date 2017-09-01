@@ -141,7 +141,6 @@ public class SlowMoManager : MonoBehaviour {
                 Time.timeScale = 0;
                 pauseMenu.SetActive(true);
                 GameObject eS = GameObject.Find("EventSystem");
-                eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(resume);
                 eS.GetComponent<PauseMenu>().PauseActive();
             }
             else
