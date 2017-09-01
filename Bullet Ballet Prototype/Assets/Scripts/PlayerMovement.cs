@@ -25,6 +25,9 @@ public class PlayerMovement : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (SlowMoManager.m_isPaused) {
+            return;
+        }
         if (m_PathOver || m_Positions.Length == 0) {
             return;
         }

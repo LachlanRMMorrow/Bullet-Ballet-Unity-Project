@@ -92,6 +92,9 @@ public class GameStateManager : MonoBehaviour {
     }
 
     void Update() {
+        if (SlowMoManager.m_isPaused) {
+            return;
+        }
         m_Controller = JInput.CurrentController.currentController;
         if (m_Controller == null) {
             return;

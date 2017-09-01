@@ -51,6 +51,8 @@ public class PauseMenu : MonoBehaviour {
             exitToDesktop = GameObject.Find("Exit To Desktop").GetComponent<Button>();
             exitToDesktop.onClick.AddListener(ExitToDesktop);
         }
+        exitToMenu.Select();
+        resume.Select();
     }
 
 
@@ -58,6 +60,7 @@ public class PauseMenu : MonoBehaviour {
 
     void Resume()
     {
+        SlowMoManager.m_isPaused = false;
         pauseMenu.SetActive(false);
         Time.timeScale = 1;
     }
