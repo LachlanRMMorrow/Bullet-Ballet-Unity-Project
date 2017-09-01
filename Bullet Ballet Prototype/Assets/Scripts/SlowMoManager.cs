@@ -133,8 +133,8 @@ public class SlowMoManager : MonoBehaviour {
             if (pauseMenu.activeInHierarchy == false)
             {
                 //GameObject player = GameObject.Find("Player");
-                player.GetComponent<PlayerMovement>().enabled = false;
-                player.GetComponent<PlayerArms>().enabled = false;
+                //player.GetComponent<PlayerMovement>().enabled = false;
+                //player.GetComponent<PlayerArms>().enabled = false;
 
 
                 updateTimeScale(false);
@@ -147,8 +147,8 @@ public class SlowMoManager : MonoBehaviour {
             else
             {
                 //GameObject player = GameObject.Find("Player");
-                player.GetComponent<PlayerMovement>().enabled = true;
-                player.GetComponent<PlayerArms>().enabled = true;
+                //player.GetComponent<PlayerMovement>().enabled = true;
+                //player.GetComponent<PlayerArms>().enabled = true;
 
                 pauseMenu.SetActive(false);
                 Time.timeScale = 1;

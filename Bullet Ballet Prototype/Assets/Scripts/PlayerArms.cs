@@ -49,6 +49,9 @@ public class PlayerArms : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (SlowMoManager.m_isPaused) {
+            return;
+        }
         JInput.Controller controller = JInput.CurrentController.currentController;
         if (controller == null) {
             return;

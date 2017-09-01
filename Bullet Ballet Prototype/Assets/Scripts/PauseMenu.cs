@@ -58,6 +58,7 @@ public class PauseMenu : MonoBehaviour {
 
     void Resume()
     {
+        SlowMoManager.m_isPaused = false;
         pauseMenu.SetActive(false);
         Time.timeScale = 1;
     }

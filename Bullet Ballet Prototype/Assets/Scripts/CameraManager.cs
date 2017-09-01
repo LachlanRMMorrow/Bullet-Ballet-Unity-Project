@@ -129,7 +129,9 @@ public class CameraManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
+        if (SlowMoManager.m_isPaused) {
+            return;
+        }
         runScreenShake();
 
         setCamPos();
