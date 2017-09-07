@@ -195,12 +195,12 @@ public class PlayerArms : MonoBehaviour {
         }
 
         //print(quatRot.eulerAngles.y - currentY);
-        float dotRes = Quaternion.Dot(transform.rotation, quatRot);
+        //float dotRes = Quaternion.Dot(transform.rotation, quatRot);
         //if(dotRes <= -0.99f) {
         //    //quatRot *= Quaternion.Euler(new Vector3(0, 180, 0));
         //    return;
         //}
-        print(dotRes);
+        //print(dotRes);
 
         //transform.rotation = Quaternion.Euler(rot);
         transform.rotation = quatRot;
