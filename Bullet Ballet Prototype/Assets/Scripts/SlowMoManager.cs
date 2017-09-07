@@ -136,8 +136,10 @@ public class SlowMoManager : MonoBehaviour {
             {                
                
                 Time.timeScale = 0;
+                pauseMenu.SetActive(!m_isPaused);
                 GameObject eS = GameObject.Find("EventSystem");
                 eS.GetComponent<PauseMenu>().PauseActive();
+                
             }
             else//if paused then:
             {
