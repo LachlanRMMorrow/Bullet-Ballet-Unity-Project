@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerArms : MonoBehaviour {
+    //todo: we can remove the m_MovingTo and the m_ShootingArm, since those objects are now empty/not being used
 
     /// <summary>
     /// m_Model: moves from facing down to m_Movingto, if joystick has no direction for that arm it moves to m_StartingRot
