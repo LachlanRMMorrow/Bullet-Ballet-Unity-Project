@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerArms : MonoBehaviour {
+    //todo: we can remove the m_MovingTo and the m_ShootingArm, since those objects are now empty/not being used
 
     /// <summary>
     /// m_Model: moves from facing down to m_Movingto, if joystick has no direction for that arm it moves to m_StartingRot
@@ -169,13 +170,13 @@ public class PlayerArms : MonoBehaviour {
     }
 
     private void calcPlayerRotation() {
-        float desiredRotY = 0;
         Quaternion quatRot = Quaternion.identity;
         int added = 0;
 
+        float currentY = transform.rotation.eulerAngles.y;
+
         if (m_RightArm.m_HasDir) {
             quatRot = m_RightArm.m_MovingTo.rotation;
-            desiredRotY += (m_RightArm.m_MovingTo.rotation.eulerAngles.y + 180) % 360;
             added++;
         }
         if (m_LeftArm.m_HasDir) {
@@ -185,19 +186,21 @@ public class PlayerArms : MonoBehaviour {
                 quatRot = Quaternion.Slerp(quatRot, m_LeftArm.m_MovingTo.rotation, 0.5f);
 
             }
-            desiredRotY += (m_LeftArm.m_MovingTo.rotation.eulerAngles.y + 180) % 360;
+            //print(Quaternion.Dot(m_RightArm.m_MovingTo.rotation, m_LeftArm.m_MovingTo.rotation));
             added++;
         }
 
         if (added == 0) {
             return;
-        } else {
-            desiredRotY /= added;
-            desiredRotY -= 180;
         }
 
-        Vector3 rot = transform.rotation.eulerAngles;
-        rot.y = desiredRotY;
+        //print(quatRot.eulerAngles.y - currentY);
+        float dotRes = Quaternion.Dot(transform.rotation, quatRot);
+        //if(dotRes <= -0.99f) {
+        //    //quatRot *= Quaternion.Euler(new Vector3(0, 180, 0));
+        //    return;
+        //}
+        print(dotRes);
 
         //transform.rotation = Quaternion.Euler(rot);
         transform.rotation = quatRot;

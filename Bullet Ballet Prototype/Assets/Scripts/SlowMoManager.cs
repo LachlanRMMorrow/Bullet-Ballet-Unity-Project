@@ -128,37 +128,33 @@ public class SlowMoManager : MonoBehaviour {
             return;
         }
 
+        //pause menu if
         if (controller.WasButtonPressed(JInput.ControllerButtons.Start))
         {
-            if (pauseMenu.activeInHierarchy == false)
-            {
-                //GameObject player = GameObject.Find("Player");
-                //player.GetComponent<PlayerMovement>().enabled = false;
-                //player.GetComponent<PlayerArms>().enabled = false;
-
-
-                updateTimeScale(false);
+            //if not paused then:
+            if (!m_isPaused)
+            {                
+               
                 Time.timeScale = 0;
-                pauseMenu.SetActive(true);
                 GameObject eS = GameObject.Find("EventSystem");
                 eS.GetComponent<PauseMenu>().PauseActive();
             }
-            else
+            else//if paused then:
             {
-                //GameObject player = GameObject.Find("Player");
-                //player.GetComponent<PlayerMovement>().enabled = true;
-                //player.GetComponent<PlayerArms>().enabled = true;
-
-                pauseMenu.SetActive(false);
-                Time.timeScale = 1;
+                Time.timeScale = m_NormalSpeed;
             }
-            m_isPaused = pauseMenu.activeInHierarchy;
 
+            //flip the pause
+            m_isPaused = !m_isPaused;
+            //open screen if game is paused, close it if it's not paused
+            pauseMenu.SetActive(m_isPaused);
+            //update timescale, (false to tell it no to change the time scale)
+            updateTimeScale(false);
         }
 
 
-
-        if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton) && pauseMenu.activeInHierarchy == false) {
+        //slow mo start if, also checks if the game is paused or not
+        if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton) && !m_isPaused) {
             m_TriggerDidUse = false;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
             m_IsSlowmoOn = !m_IsSlowmoOn;
             updateTimeScale(true);

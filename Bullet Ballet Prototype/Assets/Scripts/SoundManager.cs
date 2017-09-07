@@ -304,6 +304,11 @@ public class SoundManager : MonoBehaviour
         currentVolumeNormalized_SFX = newVolume;
     }
 
+    public static void SetMusicVolume(float newVolume)
+    {
+        currentVolumeNormalized_BGM = newVolume;
+    }
+
 
 
     public static void AdjustSoundImmediate()
