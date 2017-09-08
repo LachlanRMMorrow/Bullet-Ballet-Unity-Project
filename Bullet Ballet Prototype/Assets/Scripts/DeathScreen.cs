@@ -8,9 +8,11 @@ public class DeathScreen : MonoBehaviour
 {
     int scene;
 
-   public Button restart;
-   public Button exitToDesktop;
-   public Button exitToMenu;
+    public Button restart;
+    public Button exitToDesktop;
+    public Button exitToMenu;
+
+    public GameObject m_DeathScreenHolder;
 
 	void Start ()
     {
@@ -21,6 +23,9 @@ public class DeathScreen : MonoBehaviour
 	
     public void DeathScreenActive()
     {
+        m_DeathScreenHolder.SetActive(true);
+        Time.timeScale = 0;
+
         if (restart == null)
         {
 restart = GameObject.Find("Restart DS").GetComponent<Button>();
@@ -61,5 +66,16 @@ exitToMenu = GameObject.Find("Exit to Menu DS").GetComponent<Button>();
         SceneManager.LoadScene(0);
     }
 
+    void OnValidate() {
+        if (m_DeathScreenHolder == null) {
+            //gets death Screen, using the 2nd child
+            m_DeathScreenHolder = GameObject.Find("Canvas").transform.GetChild(2).gameObject;
+        }
+    }
+
+    public static void runDeathScreen() {
+        //finds EventSystem, gets this script and calls DeathScreenActive
+        GameObject.Find("EventSystem").GetComponent<DeathScreen>().DeathScreenActive();
+    }
 
 }

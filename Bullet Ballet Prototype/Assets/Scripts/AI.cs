@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(Health))]
 public class AI : MonoBehaviour {
 
     /// <summary>
@@ -96,7 +98,7 @@ public class AI : MonoBehaviour {
 
         //add a random 90 degree rotation to the starting 
         //and store the starting position
-        float rotateAmount = 90 * Random.Range(0, 4);//can be 0,90,180,270
+        float rotateAmount = 90 * UnityEngine.Random.Range(0, 4);//can be 0,90,180,270
         m_StartRotation = transform.rotation;//get rotation
         m_StartRotation *= Quaternion.Euler(new Vector3(0, rotateAmount, 0));//add rotation
         transform.rotation = m_StartRotation;//apply new rotation
@@ -117,7 +119,12 @@ public class AI : MonoBehaviour {
         //}
 
         m_CameraManager = FindObjectOfType<CameraManager>();
+
+        Health health = GetComponent<Health>();
+        health.m_ObjectDiedEvent.AddListener(AiKilled);
     }
+
+
 
     // Update is called once per frame
     protected virtual void Update() {
@@ -293,6 +300,13 @@ public class AI : MonoBehaviour {
         if (m_RoomLayer == other.gameObject.layer) {
             m_CurrentRoom = other.GetComponent<RoomScript>().m_RoomID;
         }
+    }
+
+    /// <summary>
+    /// called using unity event system when this object is out of health
+    /// </summary>
+    private void AiKilled() {
+        Destroy(gameObject);
     }
 
 }
