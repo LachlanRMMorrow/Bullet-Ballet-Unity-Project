@@ -131,12 +131,21 @@ public class SlowMoManager : MonoBehaviour {
         //pause menu if
         if (controller.WasButtonPressed(JInput.ControllerButtons.Start))
         {
+            GameObject eS = GameObject.Find("EventSystem");
+            PauseMenu pm = eS.GetComponent<PauseMenu>();
+            GUIManager gM = eS.GetComponent<GUIManager>();
+    
+            
             //open screen if game is paused, close it if it's not paused
             if (pauseMenu != null) {
                 pauseMenu.SetActive(!m_isPaused);
+                gM.ScreenBlur(!m_isPaused);
+                
             }else {
                 Debug.LogError("SlowMo Manager is missing reference in pauseMenu");
             }
+
+
             //if not paused then:
             if (!m_isPaused)
             {
@@ -145,9 +154,9 @@ public class SlowMoManager : MonoBehaviour {
                 Time.timeScale = 0;
 
                 //get pauseMenu from the EventSystem and call the PauseActive function
-                GameObject eS = GameObject.Find("EventSystem");
+                
                 if (eS != null) {
-                    PauseMenu pm = eS.GetComponent<PauseMenu>();
+                    
                     if (pm != null) {
                         pm.PauseActive();
                     } else {
@@ -163,6 +172,8 @@ public class SlowMoManager : MonoBehaviour {
                 Time.timeScale = m_NormalSpeed;
             }
 
+           
+            
             //flip the pause
             m_isPaused = !m_isPaused;
             //update timescale, (false to tell it no to change the time scale)
