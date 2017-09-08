@@ -26,12 +26,15 @@ public class PlayerArms : MonoBehaviour {
 
     public float m_RotateSpeed = 200.0f;
 
+
     [Header("Player/Arm Rotation")]
     public bool m_RotateToFaceArms = true;
+    [Range(1,25)]
+    public float m_PlayerBodyRotateSpeed = 10.0f;
 
-    [Range(0, 180)]
+    [Range(80, 180)]
     public float m_BehindAngle = 45.0f;
-    [Range(0, 180)]
+    [Range(80, 180)]
     public float m_SideAngle = 45.0f;
 
     // Use this for initialization
@@ -194,16 +197,8 @@ public class PlayerArms : MonoBehaviour {
             return;
         }
 
-        //print(quatRot.eulerAngles.y - currentY);
-        //float dotRes = Quaternion.Dot(transform.rotation, quatRot);
-        //if(dotRes <= -0.99f) {
-        //    //quatRot *= Quaternion.Euler(new Vector3(0, 180, 0));
-        //    return;
-        //}
-        //print(dotRes);
-
-        //transform.rotation = Quaternion.Euler(rot);
-        transform.rotation = quatRot;
+        float percentage = Time.unscaledDeltaTime * m_PlayerBodyRotateSpeed;
+        transform.rotation = Quaternion.Slerp(transform.rotation, quatRot, percentage);
     }
 
     private void limitArmMovements(Arms a_Arm) {
