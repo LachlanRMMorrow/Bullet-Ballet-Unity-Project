@@ -122,6 +122,10 @@ public class AI : MonoBehaviour {
 
         Health health = GetComponent<Health>();
         health.m_ObjectDiedEvent.AddListener(AiKilled);
+
+        //get TellParentAboutCollision from collider within the model
+        TellParentAboutCollision tpac = GetComponentInChildren<TellParentAboutCollision>();
+        tpac.m_TriggerEnter.AddListener(OnTriggerEnter);
     }
 
 
@@ -278,7 +282,7 @@ public class AI : MonoBehaviour {
 
     protected void updateLastKnownPosition() {
         //IT WOULD BE BETTER TO NOT RUN THIS EVERY FRAME, BUT GOOD AS A EXAMPLE/TEST
-        if (m_CurrentRoom == RoomHolder.m_PlayersCurrentRoom) {
+        if (m_CurrentRoom == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoom == -1) {
             m_HasBeenInTheSameRoom = true;
             m_VisibleObject.SetActive(true);
             m_LastKnownPositionObject.SetActive(false);

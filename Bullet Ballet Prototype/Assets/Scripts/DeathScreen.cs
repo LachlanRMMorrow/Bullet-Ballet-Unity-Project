@@ -14,8 +14,11 @@ public class DeathScreen : MonoBehaviour
 
     public GameObject m_DeathScreenHolder;
 
+    GUIManager manager;
+
 	void Start ()
     {
+        manager = GetComponent<GUIManager>();
         //restart.onClick.AddListener(Restart);
         //exitToDesktop.onClick.AddListener(ExitToDesktop);
         //exitToMenu.onClick.AddListener(ExitToMenu);
@@ -23,6 +26,7 @@ public class DeathScreen : MonoBehaviour
 	
     public void DeathScreenActive()
     {
+        manager.ScreenBlur(true);
         m_DeathScreenHolder.SetActive(true);
         Time.timeScale = 0;
 
@@ -51,12 +55,14 @@ exitToMenu = GameObject.Find("Exit to Menu DS").GetComponent<Button>();
 
     void Restart()
     {
+        manager.ScreenBlur(false);
         scene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(scene);
     }
 
     void ExitToDesktop()
     {
+        manager.ScreenBlur(false);
         Application.Quit();
     }
 
@@ -69,7 +75,7 @@ exitToMenu = GameObject.Find("Exit to Menu DS").GetComponent<Button>();
     void OnValidate() {
         if (m_DeathScreenHolder == null) {
             //gets death Screen, using the 2nd child
-            m_DeathScreenHolder = GameObject.Find("Canvas").transform.GetChild(2).gameObject;
+            m_DeathScreenHolder = GameObject.Find("Canvas").transform.Find("Death Screen").gameObject;
         }
     }
 

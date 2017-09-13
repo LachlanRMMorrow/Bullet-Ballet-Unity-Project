@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GUIManager : MonoBehaviour {
 
+    public UnityEngine.PostProcessing.PostProcessingProfile screenBlur;
+
     int scene;
 
     public GameObject pauseMenu;
@@ -18,16 +20,26 @@ public class GUIManager : MonoBehaviour {
     public Button options;
     public Button exit;
 
-	// Use this for initialization
-	void Start ()
-    {
+    
 
+    // Use this for initialization
+    void Start ()
+    {
+        screenBlur = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
         //newGame.onClick.AddListener(NewGame);
         //resume.onClick.AddListener(Resume);
         //options.onClick.AddListener(Options);
         //exit.onClick.AddListener(Exit);
 
+        //remove screen blur on start
+        ScreenBlur(false);
     }
+
+    void OnApplicationQuit() {
+        //remove screen blur on application finish (also called when stopping game in inspector)
+        ScreenBlur(false);
+    }
+
 	//*************************** Main Menu *************************************
 	public void NewGame()
     {
@@ -104,5 +116,17 @@ public class GUIManager : MonoBehaviour {
     public void Back()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void ScreenBlur(bool acitve)
+    {
+        if (acitve == true)
+        {
+            screenBlur.depthOfField.enabled = true;
+        }
+        else
+        {
+            screenBlur.depthOfField.enabled = false;
+        }
     }
 }

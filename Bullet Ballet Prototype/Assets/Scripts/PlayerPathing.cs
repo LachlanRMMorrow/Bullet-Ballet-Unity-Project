@@ -90,7 +90,6 @@ public class PlayerPathing : MonoBehaviour {
             m_Player.transform.position += right;
             //how many positions do we want to change
             int numOfPositions = 10;
-            //scale of the right
             if (numOfPositions >= m_Positions.Count) {
                 return;
             }
