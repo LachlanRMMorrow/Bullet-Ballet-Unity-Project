@@ -72,16 +72,21 @@ public class DeathScreen : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    //void OnValidate() {
-    //    if (m_DeathScreenHolder == null) {
-    //        //gets death Screen, using the 2nd child
-    //        m_DeathScreenHolder = GameObject.Find("Canvas").transform.Find("Death Screen").gameObject;
-    //    }
-    //}
+    void OnValidate()
+    {
+        if (m_DeathScreenHolder == null)
+        {
+            //gets death Screen, using the 2nd child
+            m_DeathScreenHolder = GameObject.Find("Canvas").transform.Find("Death Screen").gameObject;
+            
+        }
+    }
 
     public static void runDeathScreen() {
         //finds EventSystem, gets this script and calls DeathScreenActive
         GameObject.Find("EventSystem").GetComponent<DeathScreen>().DeathScreenActive();
+        GameObject.Find("Exit to Desktop DS").GetComponent<Button>().Select();
+        GameObject.Find("Restart DS").GetComponent<Button>().Select();
     }
 
 }
