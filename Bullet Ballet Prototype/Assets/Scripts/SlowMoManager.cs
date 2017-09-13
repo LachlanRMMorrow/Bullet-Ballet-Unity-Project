@@ -7,6 +7,7 @@ public class SlowMoManager : MonoBehaviour {
     /** Pause Variables */
 
     public GameObject pauseMenu;
+    public GameObject optionsMenu;
     public GameObject resume;
     public GameObject player;
 
@@ -78,7 +79,8 @@ public class SlowMoManager : MonoBehaviour {
     void Awake() {
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
         m_EnergyLeft = m_MaxEnergy;
-
+        updateTimeScale(true);
+        Debug.Log(Time.deltaTime);
         updateUi();
     }
 
@@ -134,50 +136,65 @@ public class SlowMoManager : MonoBehaviour {
             GameObject eS = GameObject.Find("EventSystem");
             PauseMenu pm = eS.GetComponent<PauseMenu>();
             GUIManager gM = eS.GetComponent<GUIManager>();
-    
-            
-            //open screen if game is paused, close it if it's not paused
-            if (pauseMenu != null) {
-                pauseMenu.SetActive(!m_isPaused);
-                gM.ScreenBlur(!m_isPaused);
-                
-            }else {
-                Debug.LogError("SlowMo Manager is missing reference in pauseMenu");
-            }
-
-
-            //if not paused then:
-            if (!m_isPaused)
+            //TODO change check for multiple menus to be cleaner after testing
+            if (optionsMenu.activeInHierarchy == false)
             {
 
-                //update timescale
-                Time.timeScale = 0;
+                //open screen if game is paused, close it if it's not paused
+                if (pauseMenu != null)
+                {
 
-                //get pauseMenu from the EventSystem and call the PauseActive function
-                
-                if (eS != null) {
-                    
-                    if (pm != null) {
-                        pm.PauseActive();
-                    } else {
-                        Debug.LogError("EventSystem is missing Component, PauseMenu");
-                    }
-                } else {
-                    Debug.LogError("There Is no Object called EventSystem in the scene");
+                    pauseMenu.SetActive(!m_isPaused);
+                    gM.ScreenBlur(!m_isPaused);
+
+
+
                 }
-            }
-            else//if paused then:
-            {
-                //update timescale
-                Time.timeScale = m_NormalSpeed;
-            }
+                else
+                {
+                    Debug.LogError("SlowMo Manager is missing reference in pauseMenu");
+                }
 
-           
-            
-            //flip the pause
-            m_isPaused = !m_isPaused;
-            //update timescale, (false to tell it no to change the time scale)
-            updateTimeScale(false);
+
+                //if not paused then:
+                if (!m_isPaused)
+                {
+
+                    //update timescale
+                    Time.timeScale = 0;
+
+                    //get pauseMenu from the EventSystem and call the PauseActive function
+
+                    if (eS != null)
+                    {
+
+                        if (pm != null)
+                        {
+                            pm.PauseActive();
+                        }
+                        else
+                        {
+                            Debug.LogError("EventSystem is missing Component, PauseMenu");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("There Is no Object called EventSystem in the scene");
+                    }
+                }
+                else//if paused then:
+                {
+                    //update timescale
+                    Time.timeScale = m_NormalSpeed;
+                }
+
+
+
+                //flip the pause
+                m_isPaused = !m_isPaused;
+                //update timescale, (false to tell it no to change the time scale)
+                updateTimeScale(false);
+            }
         }
 
 
