@@ -32,8 +32,18 @@ public class WeaponReference {
     //gives it a constantForce forward
     //then deletes after 5 seconds
     public GameObject fireProjectile(Transform m_SpawnPoint) {
+
+        //get rot
+        Vector3 pos = m_SpawnPoint.rotation.eulerAngles;
+        //only keep the y rotation
+        pos.x = pos.z = 0;
+        //put back into quaternion form
+        Quaternion rot = Quaternion.Euler(pos);
+
+
         //spawns a object using it's prefab at m_SpwanPoint
-        GameObject newBullet = Object.Instantiate(m_BulletPrefab, m_SpawnPoint.position, m_SpawnPoint.rotation);
+        GameObject newBullet = Object.Instantiate(m_BulletPrefab, m_SpawnPoint.position, rot);
+
 
         SoundManager.PlaySFXRandomized(m_ShotSound);
         PlayShellCasingSound();
