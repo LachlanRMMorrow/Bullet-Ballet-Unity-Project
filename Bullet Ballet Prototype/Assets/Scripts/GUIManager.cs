@@ -31,7 +31,15 @@ public class GUIManager : MonoBehaviour {
         //options.onClick.AddListener(Options);
         //exit.onClick.AddListener(Exit);
 
+        //remove screen blur on start
+        ScreenBlur(false);
     }
+
+    void OnApplicationQuit() {
+        //remove screen blur on application finish (also called when stopping game in inspector)
+        ScreenBlur(false);
+    }
+
 	//*************************** Main Menu *************************************
 	public void NewGame()
     {
