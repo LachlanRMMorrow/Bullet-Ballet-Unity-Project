@@ -137,7 +137,7 @@ public class SlowMoManager : MonoBehaviour {
             PauseMenu pm = eS.GetComponent<PauseMenu>();
             GUIManager gM = eS.GetComponent<GUIManager>();
             //TODO change check for multiple menus to be cleaner after testing
-            if (optionsMenu.activeInHierarchy == false)
+            if (optionsMenu == null || optionsMenu.activeInHierarchy == false)
             {
 
                 //open screen if game is paused, close it if it's not paused
