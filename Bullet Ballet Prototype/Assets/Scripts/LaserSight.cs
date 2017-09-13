@@ -16,9 +16,12 @@ public class LaserSight : MonoBehaviour {
     [Range(0, 20)]
     public float m_Distance = 10;
 
+    public LayerMask m_LayerMask;
+
     // Use this for initialization
     void Awake() {
         m_LineRender = GetComponent<LineRenderer>();
+        
     }
 
     // Update is called once per frame
@@ -38,8 +41,7 @@ public class LaserSight : MonoBehaviour {
 
             //raycast only hitting the walls, cover and default object
             RaycastHit hit;
-            int layerMask = (1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Cover") | 1 << LayerMask.NameToLayer("Default"));
-            if (Physics.Raycast(transform.position, forward, out hit, m_Distance, layerMask)) {
+            if (Physics.Raycast(transform.position, forward, out hit, m_Distance, m_LayerMask.value)) {
                 //and object is not the floor
                 position = hit.point;
 
@@ -61,6 +63,7 @@ public class LaserSight : MonoBehaviour {
             m_LineRender.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             m_LineRender.receiveShadows = false;
             m_LineRender.widthMultiplier = 0.1f;
+            m_LayerMask.value = (1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Cover") | 1 << LayerMask.NameToLayer("Default"));
         }
     }
 }

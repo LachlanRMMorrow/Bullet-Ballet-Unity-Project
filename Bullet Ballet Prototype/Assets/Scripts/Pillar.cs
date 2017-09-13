@@ -16,6 +16,7 @@ public class Pillar : BulletHitHandlerBase {
         swapPillars(true);
 
         m_Health = GetComponent<Health>();
+        m_Health.m_ObjectDiedEvent.AddListener(pillarKilled);
 
         //small hack to get the colliders bullet info.. since when passing them through to this class's version
         m_BulletHitHandler = m_PillarCollider.GetComponent<BulletHitHandler>();
@@ -25,21 +26,24 @@ public class Pillar : BulletHitHandlerBase {
     protected override void hit() {
         base.hit();
 
+        //deal damage to the health script
         m_Health.dealDamage(1.0f);
+    }
 
-        if (m_Health.isDead()) {
+    /// <summary>
+    /// called by Health when it's ran out of health
+    /// </summary>
+    void pillarKilled() {
+        m_PillarCollider.gameObject.SetActive(false);
+        swapPillars(false);
 
-            m_PillarCollider.gameObject.SetActive(false);
-            swapPillars(false);
+        Vector3 direction = m_BulletHitHandler.m_BulletHit.rotation * Vector3.forward;
 
-            Vector3 direction = m_BulletHitHandler.m_BulletHit.rotation * Vector3.forward;
-
-            for (int i = 0; i < 4; i++) {
-                for (int q = 0; q < 8; q++) {
-                    int randomChild = Random.Range(0, 21);
-                    Rigidbody middlePeice = m_PillarTransforms.GetChild(i).GetChild(1).GetChild(0).GetChild(randomChild).GetComponent<Rigidbody>();
-                    middlePeice.AddForce(direction * 20, ForceMode.Impulse);
-                }
+        for (int i = 0; i < 4; i++) {
+            for (int q = 0; q < 8; q++) {
+                int randomChild = Random.Range(0, 21);
+                Rigidbody middlePeice = m_PillarTransforms.GetChild(i).GetChild(1).GetChild(0).GetChild(randomChild).GetComponent<Rigidbody>();
+                middlePeice.AddForce(direction * 20, ForceMode.Impulse);
             }
         }
     }

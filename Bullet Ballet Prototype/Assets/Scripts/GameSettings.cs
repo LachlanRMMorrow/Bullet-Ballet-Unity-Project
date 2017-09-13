@@ -1,10 +1,13 @@
 ﻿public class GameSettings
 {
     public bool fullscreen;
+    public int vSync;
+    public bool motionBlur;
+    public bool postProcessingBool;
+    public int resolutionIndex;
     public int textureQuality;
     public int antialiasing;
-    public int vSync;
-    public int resolutionIndex;
+    public float gamma;
     public float masterVolume;
     public float bgmMusicVolume;
     public float sfxVolume;

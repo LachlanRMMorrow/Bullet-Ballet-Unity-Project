@@ -30,8 +30,8 @@ public class PlayerPathing : MonoBehaviour {
 
         if (m_PathMarker == null) {
             Debug.LogError("There is no WaypointMarker!");
-        }      
-        
+        }
+
         //update position of this object to the players starting pos
         Vector3 pos = m_Player.transform.position;
         pos.y = transform.position.y;
@@ -45,7 +45,7 @@ public class PlayerPathing : MonoBehaviour {
         if (m_Controller == null) {
             return;
         }
-        if(m_Player == null) {
+        if (m_Player == null) {
             return;
         }
 
@@ -64,7 +64,7 @@ public class PlayerPathing : MonoBehaviour {
         //    pos += movement/8;
         //    print(hit.distance);
         //} else {
-            pos += movement;
+        pos += movement;
         //}
         //transform.position = pos;
         GetComponent<Rigidbody>().MovePosition(pos);
@@ -79,6 +79,31 @@ public class PlayerPathing : MonoBehaviour {
         //apply the current position to the last element in the array
         m_Positions[m_Positions.Count - 1] = transform.position;
 
+
+        //NOTE TIHS WILL MOST LIKELY BE MOVED INTO ANOTHER SCRIPT 
+        //SIMPLE TEST TO CHECK THE DIVE PATH RECAULATION
+        if (m_Controller.WasButtonPressed(JInput.ControllerButtons.Square)) {
+            //get a position that is 4 units to the right
+            Vector3 right = m_Player.transform.right * 4;
+            Vector3 modifyedRight = right;
+            //(test) move the player there
+            m_Player.transform.position += right;
+            //how many positions do we want to change
+            int numOfPositions = 10;
+            if (numOfPositions >= m_Positions.Count) {
+                return;
+            }
+            for (int i = 0; i < numOfPositions; i++) {
+                //apply offset of position
+                m_Positions[i] += modifyedRight;
+                //calc how far we are through the positions
+                //it's from 0 to 1, we want 1 to 0
+                float scale = 1 - ((i + 1) / (float)numOfPositions);
+                //update the modified right
+                modifyedRight = right * scale;
+            }
+        }
+
         //update line
         m_Line.positionCount = m_Positions.Count;
         m_Line.SetPositions(m_Positions.ToArray());
@@ -89,15 +114,18 @@ public class PlayerPathing : MonoBehaviour {
         if (m_PathMarker != null) {
             m_PathMarker.transform.position = transform.position;
             if (m_Player != null) {
-                if(m_Positions.Count >= 3) {
+                if (m_Positions.Count >= 3) {
 
-                m_Player.pathUpdated(m_Positions.ToArray());
+                    m_Player.pathUpdated(m_Positions.ToArray());
                 }
             }
         }
     }
 
     private void stateChanged(GameStates a_NewState) {
+        if (m_Player == null) {
+            return;
+        }
         switch (a_NewState) {
             case GameStates.Action:
                 applyWaypoint();

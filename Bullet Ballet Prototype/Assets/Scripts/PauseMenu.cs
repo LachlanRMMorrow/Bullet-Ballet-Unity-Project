@@ -6,15 +6,22 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour {
 
-     GameObject pauseMenu;
+
+
+    GameObject pauseMenu;
+    public GameObject optionsMenu;
 
      public Button resume;
      public Button options;
      public Button exitToMenu;
      public Button exitToDesktop;
 
-	void Start ()
-    { 
+    GUIManager manager;
+
+    void Start ()
+    {
+       
+        manager = GetComponent<GUIManager>();
         //resume.onClick.AddListener(Resume);
         //options.onClick.AddListener(Options);
         //exitToMenu.onClick.AddListener(ExitToMenu);
@@ -23,9 +30,16 @@ public class PauseMenu : MonoBehaviour {
 
     public void PauseActive()
     {
+        manager.ScreenBlur(true);
         if (pauseMenu ==  null)
         {
             pauseMenu = GameObject.Find("Pause Menu");
+        }
+
+        if (optionsMenu == null)
+        {
+            optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
+            print(optionsMenu.transform.name);
         }
 
         if (resume == null)
@@ -34,11 +48,11 @@ public class PauseMenu : MonoBehaviour {
             resume.onClick.AddListener(Resume);
         }
 
-        //if (options == null)
-        //{
-        //    options = GameObject.Find("Options").GetComponent<Button>();
-        //    options.onClick.AddListener(Options);
-        //}
+        if (options == null)
+        {
+            options = GameObject.Find("Options").GetComponent<Button>();
+            options.onClick.AddListener(Options);
+        }
 
         if (exitToMenu == null)
         {
@@ -55,23 +69,28 @@ public class PauseMenu : MonoBehaviour {
         resume.Select();
     }
 
-
+    
     
 
-    void Resume()
+    public void Resume()
     {
         SlowMoManager.m_isPaused = false;
+        manager.ScreenBlur(false);
         pauseMenu.SetActive(false);
+        Debug.Log("dasda");
         Time.timeScale = 1;
     }
 
     void Options()
     {
-
+        pauseMenu.SetActive(false);
+        optionsMenu.SetActive(true);
+        optionsMenu.GetComponent<Toggle>().Select();
     }
 
     void ExitToMenu()
     {
+        manager.ScreenBlur(false);
         SoundManager.StopBGM(false, 0);
         SceneManager.LoadScene(0);
     }
@@ -80,5 +99,7 @@ public class PauseMenu : MonoBehaviour {
     {
         Application.Quit();
     }
-	
+
+    
+
 }
