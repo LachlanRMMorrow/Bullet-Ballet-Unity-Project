@@ -92,6 +92,15 @@ public class CameraManager : MonoBehaviour {
     /// starting position for the camera
     /// </summary>
     private Vector3 m_StartingCamPos;
+    public float m_MinHeight = 10;
+    private Transform m_WaypointMoverTransform;
+    [Range(0,10)]
+    public float m_HeightScale = 4.0f;
+    /// <summary>
+    /// scale to change how quick the camera move up or down in planning mode
+    /// </summary>
+    [Range(0,10)]
+    public float m_PlanningZoomSpeedScale = 4.0f;
 
     [Header("Camera Shake")]
     /// <summary>
@@ -125,6 +134,14 @@ public class CameraManager : MonoBehaviour {
         if (m_ShakeUIHolder != null) {
             m_ShakeUIStartPoint = m_ShakeUIHolder.position;
         }
+
+        //hard code the connection to this
+        m_WaypointMoverTransform = m_WaypointMarkerTransform.parent.GetChild(0);
+        //if the object is null or the names match
+        if(m_WaypointMoverTransform == null || m_WaypointMarkerTransform.name == m_WaypointMoverTransform.name) {
+            Debug.LogError("Camera Manager: Cant find WaypointMover object");
+            m_WaypointMoverTransform = m_WaypointMarkerTransform;
+        }
     }
 
     // Update is called once per frame
@@ -139,7 +156,7 @@ public class CameraManager : MonoBehaviour {
 
     private void runScreenShake() {
         //prevent shake in anything other then Action mode
-        if(GameStateManager.currentState != GameStates.Action) {
+        if (GameStateManager.currentState != GameStates.Action) {
             return;
         }
         if (m_RunningShake) {
@@ -171,6 +188,9 @@ public class CameraManager : MonoBehaviour {
         if (m_PlayerTransform == null) {
             return;
         }
+        if (SlowMoManager.m_isPaused) {
+            return;
+        }
         Vector3 moveToPos = Vector3.zero;
         //change what the camera will do depending the on the game state
         switch (GameStateManager.currentState) {
@@ -190,16 +210,16 @@ public class CameraManager : MonoBehaviour {
                     break;
                 }
             case GameStates.Planning:
-                moveToPos = m_PlanningModeCamPos.position;
-                if (m_Camera.orthographic) {
-                    lerpCameraOrtho(m_StartingOrthoSize, 1.0f);
-                } else {
-                    lerpCameraOrtho(m_StartingCamPos.y, m_ZoomSpeedScale);
-                }
+                //get a position in the middle
+                moveToPos = (m_PlayerTransform.position + m_WaypointMoverTransform.position) / 2.0f;
+                //get the distance between
+                float distance = 10 + Vector3.Distance(m_PlayerTransform.position, moveToPos) * m_HeightScale;
+                distance = Mathf.Max(m_MinHeight, distance);
+
+                lerpCameraOrtho(distance, m_PlanningZoomSpeedScale);
                 break;
-            case GameStates.Paused:
-                return;
         }
+        //set xz positions
         m_CameraTransform.position = Vector3.Lerp(
             Vector3.Scale(new Vector3(1, 0, 1), m_CameraTransform.position),
             Vector3.Scale(new Vector3(1, 0, 1), moveToPos),
