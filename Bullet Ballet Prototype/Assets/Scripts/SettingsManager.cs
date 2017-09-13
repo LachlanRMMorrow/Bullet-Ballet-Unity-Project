@@ -189,6 +189,10 @@ public class SettingsManager : MonoBehaviour
 
     public void OnResolutionChange()
     {
+		//this may make the last resultion unselectable, might need to fix?
+		if (resolutionDropdown.value >= resolutions.Length) {
+			resolutionDropdown.value = resolutions.Length - 1;
+		}
         Screen.SetResolution(resolutions[resolutionDropdown.value].width, resolutions[resolutionDropdown.value].height, Screen.fullScreen);
         gameSettings.resolutionIndex = resolutionDropdown.value;
     }
