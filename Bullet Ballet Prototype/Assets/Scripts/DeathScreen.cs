@@ -84,9 +84,9 @@ public class DeathScreen : MonoBehaviour
 
     public static void runDeathScreen() {
         //finds EventSystem, gets this script and calls DeathScreenActive
-        GameObject.Find("EventSystem").GetComponent<DeathScreen>().DeathScreenActive();
-        GameObject.Find("Exit to Desktop DS").GetComponent<Button>().Select();
-        GameObject.Find("Restart DS").GetComponent<Button>().Select();
+        DeathScreen ds = GameObject.Find("EventSystem").GetComponent<DeathScreen>();ds.DeathScreenActive();
+        ds.exitToDesktop.Select();
+        ds.restart.Select();
     }
 
 }
