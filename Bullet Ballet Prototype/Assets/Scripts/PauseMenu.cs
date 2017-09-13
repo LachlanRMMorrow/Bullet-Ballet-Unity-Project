@@ -97,6 +97,7 @@ public class PauseMenu : MonoBehaviour {
     {
         Time.timeScale = 1;
         manager.ScreenBlur(false);
+        pauseMenu.SetActive(false);
         SoundManager.StopBGM(false, 0);
         SceneManager.LoadScene(0);
         

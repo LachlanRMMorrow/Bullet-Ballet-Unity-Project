@@ -79,7 +79,7 @@ public class SlowMoManager : MonoBehaviour {
     void Awake() {
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
         m_EnergyLeft = m_MaxEnergy;
-        updateTimeScale(true);
+        m_isPaused = false;
         Debug.Log(Time.deltaTime);
         updateUi();
     }
