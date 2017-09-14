@@ -109,6 +109,7 @@ public class SlowMoManager : MonoBehaviour {
             m_EnergyLeft -= m_EnergyDecrement * Time.unscaledDeltaTime;
             if (m_EnergyLeft <= 0) {
                 m_IsSlowmoOn = false;
+                playAudio(m_SlowMoEnd);
                 updateTimeScale(true);
             }
         } else {
