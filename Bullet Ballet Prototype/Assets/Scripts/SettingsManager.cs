@@ -10,6 +10,7 @@ public class SettingsManager : MonoBehaviour
     public GameObject graphicsMenu;
     public GameObject soundsMenu;
     public GameObject inGameOptionsMenu;
+    public GameObject pauseMenu;
 
 
     public Toggle fullscreenToggle;
@@ -27,6 +28,9 @@ public class SettingsManager : MonoBehaviour
     public Toggle bgmMusicMuteToggle;
     public Toggle sfxMuteToggle;
     public Button applyButton;
+
+    public Button applyButtonIG;
+    public Button backButtonIG;
 
 
     public bool test;
@@ -49,14 +53,20 @@ public class SettingsManager : MonoBehaviour
 
         gameSettings = new GameSettings();
 
+        postProcessing = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
+
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 2)
         {
+            applyButton = GameObject.Find("Apply").GetComponent<Button>();
             GetUiElements();
         }
         else
         {
+            pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
             inGameOptionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
             inGameOptionsMenu.SetActive(true);
+            applyButtonIG = GameObject.Find("ApplyIG").GetComponent<Button>();
+            backButtonIG = GameObject.Find("BackButtonIG").GetComponent<Button>();
             GetUiElements();
             inGameOptionsMenu.SetActive(false);
         }
@@ -90,7 +100,22 @@ public class SettingsManager : MonoBehaviour
         masterVolumeMuteToggle = GameObject.Find("Master Volume Mute").GetComponent<Toggle>();
         bgmMusicMuteToggle = GameObject.Find("SFX Volume Mute").GetComponent<Toggle>();
         sfxMuteToggle = GameObject.Find("Music Volume Mute").GetComponent<Toggle>();
-        applyButton = GameObject.Find("Apply").GetComponent<Button>();
+        
+        if (applyButton != null)
+        {
+            applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
+        }
+
+        if (applyButtonIG != null)
+        {
+            applyButtonIG.onClick.AddListener(delegate { OnApplyButtonClickIG(); });
+        }
+
+        if (backButtonIG != null)
+        {
+            backButtonIG.onClick.AddListener(delegate { OnBackButtonClickIG(); });
+        }
+
 
         fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
         vSyncToggle.onValueChanged.AddListener(delegate { OnVSyncChange(); });
@@ -106,7 +131,9 @@ public class SettingsManager : MonoBehaviour
         masterVolumeMuteToggle.onValueChanged.AddListener(delegate { OnMasterVolumeMute(); });
         bgmMusicMuteToggle.onValueChanged.AddListener(delegate { OnMusicMute(); });
         sfxMuteToggle.onValueChanged.AddListener(delegate { OnSFXMute(); });
-        applyButton.onClick.AddListener(OnApplyButtonClick);
+        
+
+        
     }
 
     public void OnFullscreenToggle()
@@ -133,8 +160,16 @@ public class SettingsManager : MonoBehaviour
             gameSettings.motionBlur = postProcessing.motionBlur.enabled = true;
         }
         else
-        {
-            gameSettings.motionBlur = postProcessing.motionBlur.enabled = false;
+        { 
+            if (postProcessing == null)
+            {
+                
+            }
+            else
+            {
+                gameSettings.motionBlur = postProcessing.motionBlur.enabled = false;
+            }
+            
         }
     }
 
@@ -238,6 +273,25 @@ public class SettingsManager : MonoBehaviour
     public void OnApplyButtonClick()
     {
         SaveSettings();
+    }
+
+    public void OnApplyButtonClickIG()
+    {
+        SaveSettings();
+        GameObject optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
+        optionsMenu.SetActive(false);
+        pauseMenu.SetActive(true);
+        pauseMenu.transform.Find("Options").GetComponent<Button>().Select();
+        pauseMenu.transform.Find("Resume").GetComponent<Button>().Select();
+    }
+
+    public void OnBackButtonClickIG()
+    {
+        GameObject optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
+        optionsMenu.SetActive(false);
+        pauseMenu.SetActive(true);
+        pauseMenu.transform.Find("Options").GetComponent<Button>().Select();
+        pauseMenu.transform.Find("Resume").GetComponent<Button>().Select();
     }
 
     public void SaveSettings()

@@ -39,7 +39,6 @@ public class PauseMenu : MonoBehaviour {
         if (optionsMenu == null)
         {
             optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
-            print(optionsMenu.transform.name);
         }
 
         if (resume == null)
@@ -85,14 +84,23 @@ public class PauseMenu : MonoBehaviour {
     {
         pauseMenu.SetActive(false);
         optionsMenu.SetActive(true);
-        optionsMenu.GetComponent<Toggle>().Select();
+        Toggle fullScreen = optionsMenu.transform.Find("Fullscreen").GetComponent<Toggle>();
+        Toggle vSync = optionsMenu.transform.Find("Verticle Sync").GetComponent<Toggle>();
+
+        vSync.Select();
+        fullScreen.Select();
+
+       
     }
 
     void ExitToMenu()
     {
+        Time.timeScale = 1;
         manager.ScreenBlur(false);
+        pauseMenu.SetActive(false);
         SoundManager.StopBGM(false, 0);
         SceneManager.LoadScene(0);
+        
     }
 
     void ExitToDesktop()

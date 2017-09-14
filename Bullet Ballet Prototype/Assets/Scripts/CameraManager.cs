@@ -236,10 +236,15 @@ public class CameraManager : MonoBehaviour {
     private Vector3 calcActionModePos(MaxDistance a_MinMax) {
 
         Vector3 pos = m_PlayerTransform.position;
+
         if (Vector3.Distance(m_PlayerTransform.position, m_WaypointMarkerTransform.position) > 2) {
             pos += a_MinMax.AddValue(m_WaypointMarkerTransform.position);
-            pos /= 2;
+            pos /= 2.0f;
         }
+
+        //quick hack to make the player more visible?
+        float dist = Vector3.Distance(pos, m_PlayerTransform.position);
+        pos = m_PlayerTransform.position + pos.normalized * (dist * 0.5f);
 
         Vector3 armRaycastAverage = Vector3.zero;
         int valuesAdded = 0;
