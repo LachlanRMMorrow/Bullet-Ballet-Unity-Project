@@ -208,12 +208,9 @@ public class SettingsManager : MonoBehaviour
 
     public void OnMasterVolumeChange()
     {
-        //gameSettings.bgmMusicVolume = bgmMusicVolumeSlider.value;
-        //gameSettings.sfxVolume = sfxVolumeSlider.value;
         gameSettings.masterVolume = masterVolumeSlider.value;
         SoundManager.SetMasterVolume(masterVolumeSlider.value);
         SoundManager.AdjustSoundImmediate();
-
     }
 
     public void OnMusicVolumeChange()

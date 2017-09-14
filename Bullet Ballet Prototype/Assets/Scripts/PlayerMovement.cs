@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour {
     void Start() {
         m_NavMesh = GetComponent<NavMeshAgent>();
 
-        SoundManager.PlayBGM(clip, true, 2.0f);
+        SoundManager.PlayBGM(clip, false, 2.0f);
     }
 
     // Update is called once per frame

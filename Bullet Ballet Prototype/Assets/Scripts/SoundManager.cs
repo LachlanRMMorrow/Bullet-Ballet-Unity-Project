@@ -83,14 +83,14 @@ public class SoundManager : MonoBehaviour
 
         SoundManager soundMan = GetInstance();
         float elapsed = 0f;
-        while (duration > 0)
+        while (elapsed < duration)
         {
             float t = (elapsed / duration);
             float volume = Mathf.Lerp(0f, fadeToVolume * currentVolumeNormalized_BGM, t);
             soundMan.bgmSource.volume = volume;
 
             elapsed += Time.deltaTime;
-            yield return 0;
+            yield return new WaitForEndOfFrame();
         }
     }
 
