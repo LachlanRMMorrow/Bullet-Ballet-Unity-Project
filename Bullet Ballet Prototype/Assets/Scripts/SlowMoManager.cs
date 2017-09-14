@@ -143,7 +143,7 @@ public class SlowMoManager : MonoBehaviour {
             {
 
                 //open screen if game is paused, close it if it's not paused
-                if (pauseMenu == null)
+                if (pauseMenu != null)
                 {
 
                     pauseMenu.SetActive(!m_isPaused);
