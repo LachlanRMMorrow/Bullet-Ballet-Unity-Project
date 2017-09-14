@@ -8,7 +8,7 @@ public class PauseMenu : MonoBehaviour {
 
 
 
-    GameObject pauseMenu;
+    public GameObject pauseMenu;
     public GameObject optionsMenu;
 
      public Button resume;
@@ -33,7 +33,7 @@ public class PauseMenu : MonoBehaviour {
         manager.ScreenBlur(true);
         if (pauseMenu ==  null)
         {
-            pauseMenu = GameObject.Find("Pause Menu");
+            pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
         }
 
         if (optionsMenu == null)
@@ -43,25 +43,25 @@ public class PauseMenu : MonoBehaviour {
 
         if (resume == null)
         {
-            resume = GameObject.Find("Resume").GetComponent<Button>();
+            resume = pauseMenu.transform.Find("Resume").GetComponent<Button>();
             resume.onClick.AddListener(Resume);
         }
 
         if (options == null)
         {
-            options = GameObject.Find("Options").GetComponent<Button>();
+            options = pauseMenu.transform.Find("Options").GetComponent<Button>();
             options.onClick.AddListener(Options);
         }
 
         if (exitToMenu == null)
         {
-            exitToMenu = GameObject.Find("Exit To Menu").GetComponent<Button>();
+            exitToMenu = pauseMenu.transform.Find("Exit To Menu").GetComponent<Button>();
             exitToMenu.onClick.AddListener(ExitToMenu);
         }
 
         if (exitToDesktop == null)
         {
-            exitToDesktop = GameObject.Find("Exit To Desktop").GetComponent<Button>();
+            exitToDesktop = pauseMenu.transform.Find("Exit To Desktop").GetComponent<Button>();
             exitToDesktop.onClick.AddListener(ExitToDesktop);
         }
         exitToMenu.Select();

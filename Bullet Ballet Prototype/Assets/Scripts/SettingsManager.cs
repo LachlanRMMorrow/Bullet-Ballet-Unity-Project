@@ -32,9 +32,6 @@ public class SettingsManager : MonoBehaviour
     public Button applyButtonIG;
     public Button backButtonIG;
 
-
-    public bool test;
-
     //********************************************************* Post Processing variables *********************************************
 
     public PostProcessingProfile postProcessing;
@@ -215,23 +212,23 @@ public class SettingsManager : MonoBehaviour
 
     public void OnMasterVolumeChange()
     {
-        gameSettings.bgmMusicVolume = bgmMusicVolumeSlider.value;
-        gameSettings.sfxVolume = sfxVolumeSlider.value;
-        SoundManager.SetMusicVolume(masterVolumeSlider.value);
-        SoundManager.SetSFXVolume(masterVolumeSlider.value);
-
+        gameSettings.masterVolume = masterVolumeSlider.value;
+        SoundManager.SetMasterVolume(masterVolumeSlider.value);
+        SoundManager.AdjustSoundImmediate();
     }
 
     public void OnMusicVolumeChange()
     {
         gameSettings.bgmMusicVolume = bgmMusicVolumeSlider.value;
         SoundManager.SetMusicVolume(bgmMusicVolumeSlider.value);
+        SoundManager.AdjustSoundImmediate();
     }
 
     public void OnSFXVolumeChange()
     {
         gameSettings.sfxVolume = sfxVolumeSlider.value;
         SoundManager.SetSFXVolume(sfxVolumeSlider.value);
+        SoundManager.AdjustSoundImmediate();
     }
 
     public void OnMasterVolumeMute()
@@ -239,12 +236,14 @@ public class SettingsManager : MonoBehaviour
         gameSettings.masterVolumeMute = masterVolumeMuteToggle.isOn;
         if (masterVolumeMuteToggle.isOn == true)
         {
-            SoundManager.SetGlobalVolume(0);
+            SoundManager.SetMasterVolume(0);
+            SoundManager.AdjustSoundImmediate();
         }
         else
         {
             SoundManager.SetMusicVolume(bgmMusicVolumeSlider.value);
             SoundManager.SetSFXVolume(sfxVolumeSlider.value);
+            SoundManager.AdjustSoundImmediate();
         }
     }
 
@@ -254,10 +253,12 @@ public class SettingsManager : MonoBehaviour
         if (bgmMusicMuteToggle.isOn == true)
         {
             SoundManager.SetMusicVolume(0);
+            SoundManager.AdjustSoundImmediate();
         }
         else
         {
             SoundManager.SetMusicVolume(bgmMusicVolumeSlider.value);
+            SoundManager.AdjustSoundImmediate();
         }
     }
 
@@ -267,10 +268,12 @@ public class SettingsManager : MonoBehaviour
         if (sfxMuteToggle.isOn == true)
         {
             SoundManager.SetSFXVolume(0);
+            SoundManager.AdjustSoundImmediate();
         }
         else
         {
             SoundManager.SetSFXVolume(sfxVolumeSlider.value);
+            SoundManager.AdjustSoundImmediate();
         }
     }
 

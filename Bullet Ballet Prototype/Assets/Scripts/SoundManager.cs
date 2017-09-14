@@ -10,8 +10,10 @@ public class SoundManager : MonoBehaviour
 
     const float maxVolume_BGM = 1f;
     const float maxVolume_SFX = 1f;
+    const float maxVolume_Master = 1f;
     static float currentVolumeNormalized_BGM = 1f;
     static float currentVolumeNormalized_SFX = 1f;
+    static float currentVolumeNomralized_Master = 1f;
     static bool isMuted = false;
 
     public List<AudioSource> sfxSources;
@@ -42,12 +44,12 @@ public class SoundManager : MonoBehaviour
 
     static float GetBGMVolume() //Get Background Music Volume
     {
-        return isMuted ? 0f : maxVolume_BGM * currentVolumeNormalized_BGM;
+        return isMuted ? 0f : (maxVolume_BGM * currentVolumeNormalized_BGM) * currentVolumeNomralized_Master;
     }
 
     static float GetSFXVolume() //Get Sound Effects Volume
     {
-        return isMuted ? 0f : maxVolume_SFX * currentVolumeNormalized_SFX;
+        return isMuted ? 0f : (maxVolume_SFX * currentVolumeNormalized_SFX) * currentVolumeNomralized_Master;
     }
 
     void FadeBGMOut (float fadeDuration)
@@ -81,14 +83,14 @@ public class SoundManager : MonoBehaviour
 
         SoundManager soundMan = GetInstance();
         float elapsed = 0f;
-        while (duration > 0)
+        while (elapsed < duration)
         {
             float t = (elapsed / duration);
             float volume = Mathf.Lerp(0f, fadeToVolume * currentVolumeNormalized_BGM, t);
             soundMan.bgmSource.volume = volume;
 
             elapsed += Time.deltaTime;
-            yield return 0;
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -293,10 +295,9 @@ public class SoundManager : MonoBehaviour
         isMuted = false;
     }
 
-    public static void SetGlobalVolume(float newVolume)
+    public static void SetMasterVolume(float newVolume)
     {
-        currentVolumeNormalized_BGM = newVolume;
-        currentVolumeNormalized_SFX = newVolume;
+        currentVolumeNomralized_Master = newVolume;
     }
 
     public static void SetSFXVolume (float newVolume)
