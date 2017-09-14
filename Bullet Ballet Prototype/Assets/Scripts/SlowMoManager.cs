@@ -8,8 +8,7 @@ public class SlowMoManager : MonoBehaviour {
 
     public GameObject pauseMenu;
     public GameObject optionsMenu;
-    public GameObject resume;
-    public GameObject player;
+    public UnityEngine.UI.Button resume;
 
     public static bool m_isPaused;
 
@@ -80,7 +79,10 @@ public class SlowMoManager : MonoBehaviour {
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
         m_EnergyLeft = m_MaxEnergy;
         m_isPaused = false;
-        Debug.Log(Time.deltaTime);
+        pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
+        optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
+        resume = pauseMenu.transform.Find("Resume").GetComponent<UnityEngine.UI.Button>();
+    Debug.Log(Time.deltaTime);
         updateUi();
     }
 
@@ -141,7 +143,7 @@ public class SlowMoManager : MonoBehaviour {
             {
 
                 //open screen if game is paused, close it if it's not paused
-                if (pauseMenu != null)
+                if (pauseMenu == null)
                 {
 
                     pauseMenu.SetActive(!m_isPaused);
