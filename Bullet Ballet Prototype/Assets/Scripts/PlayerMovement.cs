@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private NavMeshAgent m_NavMesh;
 
-    private Vector3[] m_Positions;
+    private List<Vector3> m_Positions;
 
     private int m_CurrentIndex = 1;
 
@@ -21,6 +21,12 @@ public class PlayerMovement : MonoBehaviour {
     public float m_NextNodeDistance = 1.0f;
 
     public int m_NumOfNodesModifyedEAfterDash = 15;
+
+    private LineRenderer m_LineRenderer;
+
+    public void setLineRenderer(LineRenderer a_LineRenderer) {
+        m_LineRenderer = a_LineRenderer;
+    }
 
     // Use this for initialization
     void Start() {
@@ -34,7 +40,7 @@ public class PlayerMovement : MonoBehaviour {
         if (SlowMoManager.m_isPaused) {
             return;
         }
-        if (m_PathOver || m_Positions.Length == 0) {
+        if (m_PathOver || m_Positions.Count == 0) {
             return;
         }
         if (!m_NavMesh.enabled) {
@@ -48,7 +54,7 @@ public class PlayerMovement : MonoBehaviour {
         //this will fix that, because if it's not moving then the distance will be equal to last distance
         if (distance == m_LastDistance) {
             m_LastDistance = 0;
-            if (m_CurrentIndex >= m_Positions.Length - 1) {
+            if (m_CurrentIndex >= m_Positions.Count - 1) {
                 m_PathOver = true;
             } else {
                 m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
@@ -58,13 +64,14 @@ public class PlayerMovement : MonoBehaviour {
         m_LastDistance = distance;
 
         if (distance < m_NextNodeDistance) {
-            //print("NEXT");
             m_CurrentIndex++;
-            if (m_CurrentIndex >= m_Positions.Length - 1) {
+            //print("NEXT");
+            if (m_CurrentIndex >= m_Positions.Count - 1) {
                 m_PathOver = true;
             } else {
                 m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
             }
+            
         }
     }
 
@@ -75,19 +82,21 @@ public class PlayerMovement : MonoBehaviour {
         }
         m_CurrentIndex = 2;
         m_PathOver = false;
-        m_Positions = a_Waypoints;
+        m_Positions = new List<Vector3>(a_Waypoints);
         m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
         //m_NavMesh.SetDestination(a_WaypointPos);
     }
 
     public void modifyPath(Vector3 a_Direction) {
-        if(m_Positions == null) {
+        if(m_Positions == null || m_Positions.Count <= m_CurrentIndex || m_Positions.Count <= 2) {
             return;
         }
+        removeUsedPoints();
+
         Vector3 modifyedRatio = a_Direction;
 
         //how many positions do we want to change
-        int numOfPositions = Mathf.Min(m_NumOfNodesModifyedEAfterDash, m_Positions.Length);
+        int numOfPositions = Mathf.Min(m_NumOfNodesModifyedEAfterDash, m_Positions.Count-1);
         for (int i = 0; i < numOfPositions; i++) {
             //apply offset of position
             m_Positions[i] += modifyedRatio;
@@ -98,6 +107,24 @@ public class PlayerMovement : MonoBehaviour {
             modifyedRatio = a_Direction * scale;
         }
 
+        setLineRendererPoints();
+
+    }
+
+    private void updateLine() {
+        removeUsedPoints();
+        setLineRendererPoints();
+    }
+
+    private void removeUsedPoints() {
+
+        m_Positions.RemoveRange(0, m_CurrentIndex - 1);
+        m_CurrentIndex = 0;
+    }
+
+    private void setLineRendererPoints() {
+        m_LineRenderer.SetPositions(m_Positions.ToArray());
+        m_LineRenderer.positionCount = m_Positions.Count - 1;
     }
 
 }
