@@ -53,6 +53,7 @@ exitToDesktop = GameObject.Find("Exit To Desktop ES").GetComponent<Button>();
         manager.ScreenBlur(false);
         scene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(scene + 1);
+        
     }
 
     void ExitToMenu()

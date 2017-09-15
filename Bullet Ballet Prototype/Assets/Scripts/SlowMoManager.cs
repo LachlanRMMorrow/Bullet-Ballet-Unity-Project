@@ -83,6 +83,13 @@ public class SlowMoManager : MonoBehaviour {
         optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
         resume = pauseMenu.transform.Find("Resume").GetComponent<UnityEngine.UI.Button>();
     Debug.Log(Time.deltaTime);
+
+
+        //forcing(well giving a stern error) this object to have a slider
+        if (m_SlowmoSlider == null) {
+                Debug.LogError("Slow mo manager is missing it's reference to the Slow mo slider");
+        }
+
         updateUi();
     }
 
@@ -109,6 +116,7 @@ public class SlowMoManager : MonoBehaviour {
             m_EnergyLeft -= m_EnergyDecrement * Time.unscaledDeltaTime;
             if (m_EnergyLeft <= 0) {
                 m_IsSlowmoOn = false;
+                playAudio(m_SlowMoEnd);
                 updateTimeScale(true);
             }
         } else {

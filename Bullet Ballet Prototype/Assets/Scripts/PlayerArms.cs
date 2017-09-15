@@ -26,6 +26,8 @@ public class PlayerArms : MonoBehaviour {
 
     public float m_RotateSpeed = 200.0f;
 
+    public bool m_CanMoveArms = true;
+
 
     [Header("Player/Arm Rotation")]
     public bool m_RotateToFaceArms = true;
@@ -56,6 +58,7 @@ public class PlayerArms : MonoBehaviour {
         if (SlowMoManager.m_isPaused) {
             return;
         }
+
         JInput.Controller controller = JInput.CurrentController.currentController;
         if (controller == null) {
             return;
@@ -88,6 +91,11 @@ public class PlayerArms : MonoBehaviour {
         } else {
             m_RightArm.m_HasDir = false;
         }
+
+        if (!m_CanMoveArms) {
+            m_LeftArm.m_HasDir = m_RightArm.m_HasDir = false;
+        }
+
         //set the moveTo arms to be active or not depending if the sicks have high enough values
         m_LeftArm.m_MovingTo.gameObject.SetActive(m_LeftArm.m_HasDir);
         //m_LeftArm.m_ShootingArm.gameObject.SetActive(m_LeftArm.m_HasDir);

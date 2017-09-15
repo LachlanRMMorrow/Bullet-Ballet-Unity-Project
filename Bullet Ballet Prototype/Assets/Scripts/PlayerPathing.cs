@@ -80,29 +80,7 @@ public class PlayerPathing : MonoBehaviour {
         m_Positions[m_Positions.Count - 1] = transform.position;
 
 
-        //NOTE TIHS WILL MOST LIKELY BE MOVED INTO ANOTHER SCRIPT 
-        //SIMPLE TEST TO CHECK THE DIVE PATH RECAULATION
-        if (m_Controller.WasButtonPressed(JInput.ControllerButtons.Square)) {
-            //get a position that is 4 units to the right
-            Vector3 right = m_Player.transform.right * 4;
-            Vector3 modifyedRight = right;
-            //(test) move the player there
-            m_Player.transform.position += right;
-            //how many positions do we want to change
-            int numOfPositions = 10;
-            if (numOfPositions >= m_Positions.Count) {
-                return;
-            }
-            for (int i = 0; i < numOfPositions; i++) {
-                //apply offset of position
-                m_Positions[i] += modifyedRight;
-                //calc how far we are through the positions
-                //it's from 0 to 1, we want 1 to 0
-                float scale = 1 - ((i + 1) / (float)numOfPositions);
-                //update the modified right
-                modifyedRight = right * scale;
-            }
-        }
+
 
         //update line
         m_Line.positionCount = m_Positions.Count;
@@ -143,5 +121,7 @@ public class PlayerPathing : MonoBehaviour {
         }
 
     }
+
+
 
 }

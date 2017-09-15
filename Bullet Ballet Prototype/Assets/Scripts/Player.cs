@@ -4,6 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerArms))]
+[RequireComponent(typeof(PlayerDive))]
 [RequireComponent(typeof(Health))]
 public class Player : MonoBehaviour {
 
