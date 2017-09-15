@@ -20,6 +20,8 @@ public class Keys : MonoBehaviour {
     public JInput.ControllerButtons m_LeftWeaponReload = JInput.ControllerButtons.LB;
     public JInput.ControllerButtons m_RightWeaponReload = JInput.ControllerButtons.RB;
 
+    public JInput.ControllerButtons m_DiveDashButton = JInput.ControllerButtons.A;
+
     public JInput.ControllerButtons m_Pause = JInput.ControllerButtons.Start;
 
     private static Keys m_Singleton;
