@@ -16,6 +16,10 @@ public class PlayerMovement : MonoBehaviour {
 
     private bool m_PathOver = true;
 
+    private float m_LastDistance;
+
+    public float m_NextNodeDistance = 1.0f;
+
     // Use this for initialization
     void Start() {
         m_NavMesh = GetComponent<NavMeshAgent>();
@@ -31,9 +35,28 @@ public class PlayerMovement : MonoBehaviour {
         if (m_PathOver || m_Positions.Length == 0) {
             return;
         }
+        if (!m_NavMesh.enabled) {
+            return;
+        }
         //print(m_CurrentIndex + " / " + m_Positions.Length);
         //print(Vector3.Distance(m_Positions[m_CurrentIndex], transform.position));
-        if (Vector3.Distance(m_Positions[m_CurrentIndex], transform.position) < 1.0f) {
+
+        float distance = Vector3.Distance(m_Positions[m_CurrentIndex], transform.position);
+        //there seems to be a bug that caused the player to be outside the m_NextNodeDistance and also not moving
+        //this will fix that, because if it's not moving then the distance will be equal to last distance
+        if (distance == m_LastDistance) {
+            m_LastDistance = 0;
+            if (m_CurrentIndex >= m_Positions.Length - 1) {
+                m_PathOver = true;
+            } else {
+                m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
+            }
+            return;
+        }
+        m_LastDistance = distance;
+
+        if (distance < m_NextNodeDistance) {
+            //print("NEXT");
             m_CurrentIndex++;
             if (m_CurrentIndex >= m_Positions.Length - 1) {
                 m_PathOver = true;

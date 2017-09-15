@@ -7,6 +7,8 @@ using UnityEngine;
 /// Will be a Dive if slow mo is active
 /// </summary>
 public class PlayerDive : MonoBehaviour {
+    //todo
+    //change path player after dash is done
 
     /// <summary>
     /// distance to move
@@ -54,6 +56,8 @@ public class PlayerDive : MonoBehaviour {
         m_Rigidbody = GetComponent<Rigidbody>();
         
         m_StartTime = -1000;
+
+        GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
     }
 
     void Update() {
@@ -65,7 +69,10 @@ public class PlayerDive : MonoBehaviour {
     }
 
     private void runDive() {
-        if (m_StartTime + m_TimeTakenToDash < Time.time) {
+        bool isDiveOver = m_StartTime + m_TimeTakenToDash < Time.time;
+        m_PlayerArms.m_CanMoveArms = isDiveOver;
+        //if the time is up then stop the dive
+        if (isDiveOver) {
             m_IsDiving = false;
             m_Rigidbody.velocity = Vector3.zero;
         }
@@ -123,6 +130,29 @@ public class PlayerDive : MonoBehaviour {
             m_HasUsedOnButtonPress = false;
         }
 
+    }
+
+    private void stateChanged(GameStates a_NewState) {
+        switch (a_NewState) {
+            case GameStates.Planning:
+                if (m_IsDiving) {
+                    quickendDash();
+                }
+                break;
+            case GameStates.Action:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void quickendDash() {
+        m_IsDiving = false;
+        m_StartTime -= 1000;
+        runDive();
+        m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
+
+        transform.position = transform.position + new Vector3(0,-1,0);
     }
 
 }
