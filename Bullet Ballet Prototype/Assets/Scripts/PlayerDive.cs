@@ -80,6 +80,7 @@ public class PlayerDive : MonoBehaviour {
 
             m_Movement.modifyPath(m_Direction * m_Distance);
 
+            m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
         }
     }
 
@@ -101,13 +102,11 @@ public class PlayerDive : MonoBehaviour {
             isAboutToDive = false;
         }
 
-        if (m_HasUsedOnButtonPress) {
-            m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = isAboutToDive;
-        } else {
-            m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = !isAboutToDive;
-        }
+
 
         if (isAboutToDive) {
+
+
 
             Vector2 leftStick = controller.getAxisValue(JInput.ControllerVec2Axes.LStick);
 
@@ -116,6 +115,8 @@ public class PlayerDive : MonoBehaviour {
                 //if we havent dashed on this press before
                 if (!m_HasUsedOnButtonPress) {
                     m_HasUsedOnButtonPress = true;
+                    
+                        m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = false;
 
                     //set up variables
                     m_IsDiving = true;
@@ -155,7 +156,6 @@ public class PlayerDive : MonoBehaviour {
         m_IsDiving = false;
         m_StartTime -= 1000;
         runDive();
-        m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
 
         transform.position = transform.position + new Vector3(0,-1,0);
     }
