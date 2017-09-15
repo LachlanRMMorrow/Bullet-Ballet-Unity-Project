@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour {
 
     public float m_NextNodeDistance = 1.0f;
 
+    public int m_NumOfNodesModifyedEAfterDash = 15;
+
     // Use this for initialization
     void Start() {
         m_NavMesh = GetComponent<NavMeshAgent>();
@@ -67,7 +69,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public void pathUpdated(Vector3[] a_Waypoints) {
-        if(a_Waypoints.Length == 0) {
+        if (a_Waypoints.Length == 0) {
             m_NavMesh.SetDestination(transform.position);
             return;
         }
@@ -76,6 +78,26 @@ public class PlayerMovement : MonoBehaviour {
         m_Positions = a_Waypoints;
         m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
         //m_NavMesh.SetDestination(a_WaypointPos);
+    }
+
+    public void modifyPath(Vector3 a_Direction) {
+        if(m_Positions == null) {
+            return;
+        }
+        Vector3 modifyedRatio = a_Direction;
+
+        //how many positions do we want to change
+        int numOfPositions = Mathf.Min(m_NumOfNodesModifyedEAfterDash, m_Positions.Length);
+        for (int i = 0; i < numOfPositions; i++) {
+            //apply offset of position
+            m_Positions[i] += modifyedRatio;
+            //calc how far we are through the positions
+            //it's from 0 to 1, we want 1 to 0
+            float scale = 1 - ((i + 1) / (float)numOfPositions);
+            //update the modified right
+            modifyedRatio = a_Direction * scale;
+        }
+
     }
 
 }
