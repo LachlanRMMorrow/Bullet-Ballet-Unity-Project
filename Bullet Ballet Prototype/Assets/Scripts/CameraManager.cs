@@ -146,7 +146,7 @@ public class CameraManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (SlowMoManager.m_isPaused) {
+        if (SlowMoManager.m_isPaused || !Player.m_PlayerAlive) {
             return;
         }
         runScreenShake();

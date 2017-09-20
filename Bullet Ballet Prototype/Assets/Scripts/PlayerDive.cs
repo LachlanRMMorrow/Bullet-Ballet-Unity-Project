@@ -60,6 +60,8 @@ public class PlayerDive : MonoBehaviour {
         m_StartTime = -1000;
 
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
+
+        m_Rigidbody.isKinematic = true;
     }
 
     void Update() {

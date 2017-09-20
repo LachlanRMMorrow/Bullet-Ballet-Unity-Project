@@ -8,10 +8,14 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class Player : MonoBehaviour {
 
+    public static bool m_PlayerAlive = true;
+
     void Awake() {
         //add listener
         Health health = GetComponent<Health>();
         health.m_ObjectDiedEvent.AddListener(playerKilled);
+
+        m_PlayerAlive = true;
     }
 
     /// <summary>
@@ -21,6 +25,8 @@ public class Player : MonoBehaviour {
         DeathScreen.runDeathScreen();
         //todo: swap this out with another object?
         Destroy(gameObject);
+
+        m_PlayerAlive = false;
     }
 
 }
