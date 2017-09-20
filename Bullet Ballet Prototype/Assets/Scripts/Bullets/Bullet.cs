@@ -13,6 +13,12 @@ public class Bullet : MonoBehaviour {
 
     public float m_BulletDamage = 1.0f;
 
+    /// <summary>
+    /// flag to check if this object has been run through a collision check
+    /// if true, then it wont run any other collision or trigger enter events
+    /// </summary>
+    private bool m_HasHit = false;
+
     // Use this for initialization
     protected virtual void Awake() {
         //set force of bullet, in the forward direction
@@ -24,8 +30,12 @@ public class Bullet : MonoBehaviour {
     /// </summary>
     /// <param name="collision"></param>
     void OnCollisionEnter(Collision collision) {
+        if (m_HasHit) {
+            return;
+        }
         checkBulletHitHandler(collision.gameObject);
         bulletHit(collision.gameObject);
+        m_HasHit = true;
     }
 
     /// <summary>
@@ -33,8 +43,12 @@ public class Bullet : MonoBehaviour {
     /// </summary>
     /// <param name="collision"></param>
     void OnTriggerEnter(Collider collision) {
+        if (m_HasHit) {
+            return;
+        }
         checkBulletHitHandler(collision.gameObject);
         bulletHit(collision.gameObject);
+        m_HasHit = true;
     }
 
 
@@ -76,6 +90,8 @@ public class Bullet : MonoBehaviour {
     }
 
     protected void dealDamage(GameObject a_Object) {
+        print("HIT!");
+
         //get health script
         Health health = a_Object.GetComponent<Health>();
         if (health == null) {
