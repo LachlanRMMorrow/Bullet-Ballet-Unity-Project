@@ -24,6 +24,9 @@ public class PlayerPathing : MonoBehaviour {
     // Use this for initialization
     void Awake() {
         m_Player = FindObjectOfType<PlayerMovement>();
+
+        m_Player.setLineRenderer(m_Line);
+
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
 
         m_PathMarker.transform.position = m_Player.transform.position;
@@ -113,7 +116,7 @@ public class PlayerPathing : MonoBehaviour {
                 gameObject.SetActive(true);
                 m_Positions.Clear();
                 m_Line.positionCount = 0;
-                transform.position = Vector3.Scale(new Vector3(1, 0, 1), m_Player.transform.position);
+                transform.position = Vector3.Scale(new Vector3(1, 0, 1), m_Player.transform.position) + new Vector3(0,0.5f,0);
                 m_LastPos = transform.position;
                 m_Positions.Add(transform.position);
                 m_Positions.Add(transform.position);
