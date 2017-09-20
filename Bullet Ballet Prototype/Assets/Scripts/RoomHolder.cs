@@ -5,13 +5,27 @@ using UnityEngine;
 
 public class RoomHolder : MonoBehaviour {
 
+    /// <summary>
+    /// is the player in this room at the moment
+    /// </summary>
     private bool m_InRoom = false;
+
+    #region Materials
 
     //reference to the room fog
     public Material m_RoomFogMaterial;
 
     //this is what we modify as it will effect only this room
     private Material m_ThisRoomsFogMaterial;
+
+    #endregion
+
+    #region RoomID's
+
+    /// <summary>
+    /// id of the current room
+    /// </summary>
+    public static int m_PlayersCurrentRoom = -1;
 
     /// <summary>
     /// total number of rooms
@@ -23,10 +37,14 @@ public class RoomHolder : MonoBehaviour {
     /// </summary>
     public int m_RoomID;
 
+    #endregion
+
     /// <summary>
     /// number of colliders the player is currently in, for this room
+    /// this could be higher then 1 when the player is in a room
+    /// will be 0 when the player is not in the room
     /// </summary>
-    private int m_InColliders;
+    private int m_InColliders = 0;
 
     /// <summary>
     /// Has this room been interacted with.
@@ -36,7 +54,7 @@ public class RoomHolder : MonoBehaviour {
     /// <summary>
     /// Last time this room was interacted with, was it entered or exited
     /// </summary>
-    private bool m_Entered;
+    public bool m_Entered;
     /// <summary>
     /// time of the interaction
     /// </summary>
@@ -49,9 +67,13 @@ public class RoomHolder : MonoBehaviour {
     /// Curve for the Fading,
     /// defaults to a straight line
     /// </summary>
-    public AnimationCurve m_FadeCurve = AnimationCurve.Linear(0,0,1,1);
+    public AnimationCurve m_FadeCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-	public static int m_PlayersCurrentRoom = -1;
+    //neighbors 
+    public List<RoomHolder> m_Neighbors = new List<RoomHolder>();
+
+    public static List<RoomHolder> m_ListOfRooms = new List<RoomHolder>();
+
 
     // Use this for initialization
     void Start() {
@@ -62,68 +84,81 @@ public class RoomHolder : MonoBehaviour {
         m_ThisRoomsFogMaterial = new Material(m_RoomFogMaterial);
 
         setupRoom(transform);
+
+        m_ListOfRooms.Add(this);
     }
 
     // Update is called once per frame
     void Update() {
         //set unscaled time within the shader
         m_ThisRoomsFogMaterial.SetFloat("_UnscaledTime", Time.unscaledTime);
-
-        fogAnimation();
+        if (m_RoomInteractedWith) {
+            fogAnimation();
+        }
     }
 
     /// <summary>
     /// runs the fog animation using time and the m_FadeCurve
     /// </summary>
     private void fogAnimation() {
-        if (m_RoomInteractedWith) {
-            //get a value between 0 and 1 showing how far we are through the fade
-            float time = (Time.time - m_TimeInteractedWith) / m_FadeTime;
 
-            //if exiting the room, do it backwards
-            if (!m_Entered) {
-                time = 1 - time;
-            }
+        //get a value between 0 and 1 showing how far we are through the fade
+        float time = (Time.time - m_TimeInteractedWith) / m_FadeTime;
 
-            //getting the fade curve
-            float evaluation = m_FadeCurve.Evaluate(time);
-
-            //apply curve
-            m_ThisRoomsFogMaterial.SetFloat("_InRoom", evaluation);
-
-            //if the time is over the curve, then we finish it
-            if(time <= 0 || time >= 1) {
-                m_RoomInteractedWith = false;
-            }
-
+        //if exiting the room, do it backwards
+        if (!m_Entered) {
+            time = 1 - time;
         }
+
+        //getting the fade curve
+        float evaluation = m_FadeCurve.Evaluate(time);
+
+        //apply curve
+        m_ThisRoomsFogMaterial.SetFloat("_InRoom", evaluation);
+
+        //if the time is over the curve, then we finish it
+        if (time <= 0 || time >= 1) {
+            m_RoomInteractedWith = false;
+        }
+
+
     }
 
-    private void startFade(bool a_Entered) {
+    public void startFade(bool a_Entered) {
         m_RoomInteractedWith = true;
         m_Entered = a_Entered;
         m_TimeInteractedWith = Time.time;
     }
 
-    public void roomInteracted(bool a_Entered,RoomScript a_Script) {
-            m_InRoom = a_Entered;
+    public void roomInteracted(bool a_Entered, RoomScript a_Script) {
+        bool runFade = false;
+        bool enteredRoom = false;
+        m_InRoom = a_Entered;
         if (m_InRoom) {
             m_InColliders++;
-
-            //if entered room then set _InRoom to 1, else set _InRoom to 0
-            //m_ThisRoomsFogMaterial.SetFloat("_InRoom", 1);
-            if(m_InColliders == 1) {
-				m_PlayersCurrentRoom = m_RoomID;
-                startFade(true);
+            
+            if (m_InColliders == 1) {
+                m_PlayersCurrentRoom = m_RoomID;
+                runFade = true;
+                enteredRoom = true;
             }
         } else {
             m_InColliders--;
             if (m_InColliders == 0) {
-                startFade(false);
-                // m_ThisRoomsFogMaterial.SetFloat("_InRoom", 0);
+                runFade = true;
+                enteredRoom = false;
             }
         }
 
+        if (runFade) {
+            startFade(enteredRoom);
+            for (int i = 0; i < m_Neighbors.Count; i++) {
+                if (m_Neighbors[i].m_InRoom) {
+                    continue;
+                }
+                m_Neighbors[i].startFade(enteredRoom);
+            }
+        }
 
     }
 
@@ -141,23 +176,12 @@ public class RoomHolder : MonoBehaviour {
         }
     }
 
-
-   ///* GIZMOS DRAW */
-   //void OnDrawGizmos() {
-   //    Color col = Color.red;
-   //    col.a = 0.2f;
-   //    Gizmos.color = col;
-   //
-   //    drawChildren(transform);
-   //}
-   //
-   //void drawChildren(Transform a_Base) {
-   //    for (int i = 0; i < a_Base.childCount; i++) {
-   //        Transform child = a_Base.GetChild(i);
-   //        drawChildren(child);
-   //        //draw children
-   //        //this means that it wont draw the base transform
-   //        Gizmos.DrawCube(child.position, child.localScale);
-   //    }
-   //}
+    void OnValidate() {
+        //adds this room to all neighbors 
+        for (int i = 0; i < m_Neighbors.Count; i++) {
+            if (!m_Neighbors[i].m_Neighbors.Contains(this)) {
+                m_Neighbors[i].m_Neighbors.Add(this);
+            }
+        }
+    }
 }

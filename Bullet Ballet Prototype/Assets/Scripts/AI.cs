@@ -83,7 +83,8 @@ public class AI : MonoBehaviour {
     protected NavMeshAgent m_NavMesh;
 
     private static int m_RoomLayer = -1;
-    public int m_CurrentRoom = -1;
+    public int m_CurrentRoomIndex = -1;
+    private RoomHolder m_CurrentRoomHolder;
     /// <summary>
     /// has this AI been in the same room as the player?
     /// </summary>
@@ -282,8 +283,9 @@ public class AI : MonoBehaviour {
 
     protected void updateLastKnownPosition() {
         //IT WOULD BE BETTER TO NOT RUN THIS EVERY FRAME, BUT GOOD AS A EXAMPLE/TEST
-        if (m_CurrentRoom == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoom == -1) {
-            m_HasBeenInTheSameRoom = true;
+        //if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1) {
+        if (m_CurrentRoomHolder.m_Entered || m_CurrentRoomIndex == -1) {
+        m_HasBeenInTheSameRoom = true;
             m_VisibleObject.SetActive(true);
             m_LastKnownPositionObject.SetActive(false);
             //update position and rotation
@@ -302,7 +304,8 @@ public class AI : MonoBehaviour {
     public void OnTriggerEnter(Collider other) {
         //update room layer to new room
         if (m_RoomLayer == other.gameObject.layer) {
-            m_CurrentRoom = other.GetComponent<RoomScript>().m_RoomID;
+            m_CurrentRoomHolder = other.GetComponent<RoomScript>().m_ThisRoomsManager;
+            m_CurrentRoomIndex = m_CurrentRoomHolder.m_RoomID;
         }
     }
 

@@ -90,8 +90,6 @@ public class Bullet : MonoBehaviour {
     }
 
     protected void dealDamage(GameObject a_Object) {
-        print("HIT!");
-
         //get health script
         Health health = a_Object.GetComponent<Health>();
         if (health == null) {
