@@ -20,7 +20,7 @@ public class SettingsManager : MonoBehaviour
     public Dropdown resolutionDropdown;
     public Dropdown textureQualityDropdown;
     public Dropdown antialiasingDropdwon;
-    public Slider gammaSlider;
+    public Dropdown shadowsDropdown;
     public Slider masterVolumeSlider;
     public Slider bgmMusicVolumeSlider;
     public Slider sfxVolumeSlider;
@@ -55,6 +55,7 @@ public class SettingsManager : MonoBehaviour
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 2)
         {
             applyButton = GameObject.Find("Apply").GetComponent<Button>();
+            antialiasingDropdwon = GameObject.Find("Canvas Options").transform.Find("Antialiasing").GetComponent<Dropdown>();
             GetUiElements();
         }
         else
@@ -64,6 +65,7 @@ public class SettingsManager : MonoBehaviour
             inGameOptionsMenu.SetActive(true);
             applyButtonIG = GameObject.Find("ApplyIG").GetComponent<Button>();
             backButtonIG = GameObject.Find("BackButtonIG").GetComponent<Button>();
+            antialiasingDropdwon = GameObject.Find("Antialiasing").GetComponent<Dropdown>();
             GetUiElements();
             inGameOptionsMenu.SetActive(false);
         }
@@ -89,8 +91,8 @@ public class SettingsManager : MonoBehaviour
         postProcessingToggle = GameObject.Find("Post Processing").GetComponent<Toggle>();
         resolutionDropdown = GameObject.Find("Resolution").GetComponent<Dropdown>();
         textureQualityDropdown = GameObject.Find("Texture Quality").GetComponent<Dropdown>();
-        antialiasingDropdwon = GameObject.Find("Antialiasing").GetComponent<Dropdown>();
-        gammaSlider = GameObject.Find("Gamma Slider").GetComponent<Slider>();
+        
+        shadowsDropdown = GameObject.Find("Shadows").GetComponent<Dropdown>();
         masterVolumeSlider = GameObject.Find("Master Volume Slider").GetComponent<Slider>();
         bgmMusicVolumeSlider = GameObject.Find("Music Volume Slider").GetComponent<Slider>();
         sfxVolumeSlider = GameObject.Find("SFX Volume Slider").GetComponent<Slider>();
@@ -121,7 +123,7 @@ public class SettingsManager : MonoBehaviour
         resolutionDropdown.onValueChanged.AddListener(delegate { OnResolutionChange(); });
         textureQualityDropdown.onValueChanged.AddListener(delegate { OnTextureChange(); });
         antialiasingDropdwon.onValueChanged.AddListener(delegate { OnAntialiasingChange(); });
-        gammaSlider.onValueChanged.AddListener(delegate { OnGammaChange(); });
+        shadowsDropdown.onValueChanged.AddListener(delegate { OnShadowChange(); });
         masterVolumeSlider.onValueChanged.AddListener(delegate { OnMasterVolumeChange(); });
         bgmMusicVolumeSlider.onValueChanged.AddListener(delegate { OnMusicVolumeChange(); });
         sfxVolumeSlider.onValueChanged.AddListener(delegate { OnSFXVolumeChange(); });
@@ -205,7 +207,7 @@ public class SettingsManager : MonoBehaviour
         gameSettings.antialiasing = antialiasingDropdwon.value;
     }
 
-    public void OnGammaChange()
+    public void OnShadowChange()
     {
 
     }
@@ -324,7 +326,7 @@ public class SettingsManager : MonoBehaviour
         resolutionDropdown.value = gameSettings.resolutionIndex;
         textureQualityDropdown.value = gameSettings.textureQuality;
         antialiasingDropdwon.value = gameSettings.antialiasing;
-        gammaSlider.value = gameSettings.gamma;
+        shadowsDropdown.value = gameSettings.shadows;
         masterVolumeSlider.value = gameSettings.masterVolume;
         bgmMusicVolumeSlider.value = gameSettings.bgmMusicVolume;
         sfxVolumeSlider.value = gameSettings.sfxVolume;
