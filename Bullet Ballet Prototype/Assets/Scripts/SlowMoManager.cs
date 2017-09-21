@@ -78,7 +78,7 @@ public class SlowMoManager : MonoBehaviour {
     void Awake() {
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
         m_EnergyLeft = m_MaxEnergy;
-        m_isPaused = false;
+        m_isPaused = true;
         pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
         optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
         resume = pauseMenu.transform.Find("Resume").GetComponent<UnityEngine.UI.Button>();
