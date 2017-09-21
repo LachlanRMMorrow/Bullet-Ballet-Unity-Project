@@ -16,7 +16,7 @@ public class WeaponSelectMenu : MonoBehaviour {
     public Button weapon1Button;
     public Button weapon2Button;
     public Button weapon3Button;
-    public Button continueButton;
+    //public Button continueButton;
 
     void Awake()
     {
@@ -31,9 +31,9 @@ public class WeaponSelectMenu : MonoBehaviour {
         weapon2 = WeaponTypes.ColtPhthon357;
         weapon3 = WeaponTypes.M1911;
         currentEquippedWeaponRight = GameObject.Find("Player (Rigged)").transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<WeaponShooter>();
-        //transform.Find("Right Arm Shooting Arm").GetComponent<WeaponShooter>().m_WeaponType;
+
         currentEquippedWeaponLeft = GameObject.Find("Player (Rigged)").transform.GetChild(0).GetChild(1).GetChild(1).GetComponent<WeaponShooter>();
-            //Find("Left Arm Shooting Arm").GetComponent<WeaponShooter>().m_WeaponType;
+
 
 
         if (weaponMenu == null)
@@ -44,26 +44,26 @@ public class WeaponSelectMenu : MonoBehaviour {
         if (weapon1Button == null)
         {
             weapon1Button = weaponMenu.transform.Find("Weapon 1 Button").GetComponent<Button>();
-            weapon1Button.onClick.AddListener(EquipWeapon1);
+            weapon1Button.onClick.AddListener(startGame);
         }
 
         if (weapon2Button == null)
         {
             weapon2Button = weaponMenu.transform.Find("Weapon 2 Button").GetComponent<Button>();
-            weapon2Button.onClick.AddListener(EquipWeapon2);
+            weapon2Button.onClick.AddListener(startGame);
         }
 
         if (weapon3Button == null)
         {
             weapon3Button = weaponMenu.transform.Find("Weapon 3 Button").GetComponent<Button>();
-            weapon3Button.onClick.AddListener(EquipWeapon3);
+            weapon3Button.onClick.AddListener(startGame);
         }
 
-        if (continueButton == null)
-        {
-            continueButton = weaponMenu.transform.Find("Continue Weapon Menu").GetComponent<Button>();
-            continueButton.onClick.AddListener(startGame);
-        }
+        //if (continueButton == null)
+        //{
+        //    continueButton = weaponMenu.transform.Find("Continue Weapon Menu").GetComponent<Button>();
+        //    continueButton.onClick.AddListener(startGame);
+        //}
 
 
         weapon2Button.Select();
