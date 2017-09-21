@@ -21,8 +21,6 @@ public class LevelSwap : MonoBehaviour
     {
         enemies.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
 
-        Debug.Log("Hit");
-
         if (other == playerCollider && enemies.Count <= 0)
         {
             

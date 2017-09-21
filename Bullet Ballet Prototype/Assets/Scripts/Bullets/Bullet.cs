@@ -44,7 +44,6 @@ public class Bullet : MonoBehaviour {
             checkBulletHitHandler(collision.gameObject);
             bulletHit(collision.gameObject);
             m_HasHit = true;
-            Debug.Log(collision.gameObject.name);
         }
             
         
