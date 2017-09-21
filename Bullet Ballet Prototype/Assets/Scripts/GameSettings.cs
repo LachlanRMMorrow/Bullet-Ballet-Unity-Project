@@ -7,7 +7,7 @@
     public int resolutionIndex;
     public int textureQuality;
     public int antialiasing;
-    public float gamma;
+    public int shadows;
     public float masterVolume;
     public float bgmMusicVolume;
     public float sfxVolume;

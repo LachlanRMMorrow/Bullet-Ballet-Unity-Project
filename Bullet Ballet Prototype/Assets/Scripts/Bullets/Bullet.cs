@@ -29,13 +29,25 @@ public class Bullet : MonoBehaviour {
     /// collision with enemy
     /// </summary>
     /// <param name="collision"></param>
-    void OnCollisionEnter(Collision collision) {
-        if (m_HasHit) {
-            return;
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && gameObject.CompareTag("Player Bullet"))
+        {
+
         }
-        checkBulletHitHandler(collision.gameObject);
-        bulletHit(collision.gameObject);
-        m_HasHit = true;
+        else
+        {
+            if (m_HasHit)
+            {
+                return;
+            }
+            checkBulletHitHandler(collision.gameObject);
+            bulletHit(collision.gameObject);
+            m_HasHit = true;
+            Debug.Log(collision.gameObject.name);
+        }
+            
+        
     }
 
     /// <summary>
@@ -43,12 +55,22 @@ public class Bullet : MonoBehaviour {
     /// </summary>
     /// <param name="collision"></param>
     void OnTriggerEnter(Collider collision) {
-        if (m_HasHit) {
-            return;
+        if (collision.CompareTag("PlayerCollider") && gameObject.CompareTag("Player Bullet"))
+        {
+            Debug.Log("Player hit Player");
         }
-        checkBulletHitHandler(collision.gameObject);
-        bulletHit(collision.gameObject);
-        m_HasHit = true;
+        else
+        {
+            if (m_HasHit)
+            {
+                return;
+            }
+            checkBulletHitHandler(collision.gameObject);
+            bulletHit(collision.gameObject);
+            m_HasHit = true;
+
+        }
+        
     }
 
 
@@ -91,19 +113,30 @@ public class Bullet : MonoBehaviour {
 
     protected void dealDamage(GameObject a_Object) {
         //get health script
-        Health health = a_Object.GetComponent<Health>();
-        if (health == null) {
-            health = a_Object.GetComponentInParent<Health>();
+        if (a_Object.CompareTag("PlayerCollider") && gameObject.CompareTag("Player Bullet"))
+        {
         }
+        else
+        {
+            Health health = a_Object.GetComponent<Health>();
+            if (health == null)
+            {
+                health = a_Object.GetComponentInParent<Health>();
+            }
 
 
 
-        if (health != null) {//if there is a health script attacked
-            health.dealDamage(m_BulletDamage);
-        } else {
-            //todo update when the enemys are nolonger probuilder objects
-            a_Object.SetActive(false);//not Destroy because with probuilder it destroys the map aswell
+            if (health != null)
+            {//if there is a health script attacked
+                health.dealDamage(m_BulletDamage);
+            }
+            else
+            {
+                //todo update when the enemys are nolonger probuilder objects
+                a_Object.SetActive(false);//not Destroy because with probuilder it destroys the map aswell
+            }
         }
+        
     }
 
 
