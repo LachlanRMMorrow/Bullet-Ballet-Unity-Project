@@ -74,15 +74,20 @@ public class SlowMoManager : MonoBehaviour {
     [Header("UI Elements")]
     public UnityEngine.UI.Slider m_SlowmoSlider;
 
+    private bool m_HasGameStarted = false;
+
     // Use this for initialization
     void Awake() {
-        GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
+        //update energy left
         m_EnergyLeft = m_MaxEnergy;
-        m_isPaused = true;
+        
+        //add state changed listerner
+        GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
+
+        //get options and pause menus
         pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
         optionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
         resume = pauseMenu.transform.Find("Resume").GetComponent<UnityEngine.UI.Button>();
-    Debug.Log(Time.deltaTime);
 
 
         //forcing(well giving a stern error) this object to have a slider
@@ -90,6 +95,13 @@ public class SlowMoManager : MonoBehaviour {
                 Debug.LogError("Slow mo manager is missing it's reference to the Slow mo slider");
         }
 
+        //start off paused with a timescale of 0
+        //update the fixedTimescale aswell
+        m_isPaused = true;
+        Time.timeScale = 0;
+        updateTimeScale(false);
+
+        //update the ui
         updateUi();
     }
 
@@ -260,6 +272,12 @@ public class SlowMoManager : MonoBehaviour {
     }
 
     private void stateChanged(GameStates a_NewState) {
+        //prevent the timescale from being updated on the game start
+        //because we want the timescale to be 0 on start
+        if (!m_HasGameStarted) {
+            m_HasGameStarted = true;
+            return;
+        }
         switch (a_NewState) {
             case GameStates.Action:
                 enabled = true;
