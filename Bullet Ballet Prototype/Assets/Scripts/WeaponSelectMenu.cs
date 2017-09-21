@@ -13,20 +13,27 @@ public class WeaponSelectMenu : MonoBehaviour {
     WeaponShooter currentEquippedWeaponRight;
     WeaponShooter currentEquippedWeaponLeft;
 
-    Button weapon1Button;
-    Button weapon2Button;
-    Button weapon3Button;
-    Button backButton;
+    public Button weapon1Button;
+    public Button weapon2Button;
+    public Button weapon3Button;
+    //public Button continueButton;
+
+    void Awake()
+    {
+        weaponMenu = GameObject.Find("Canvas").transform.Find("Weapon Select Menu").gameObject;
+        weaponMenu.SetActive(true);
+        WeaponMenuActive();
+    }
 
 	public void WeaponMenuActive()
     {
         weapon1 = WeaponTypes.BerettaM9;
         weapon2 = WeaponTypes.ColtPhthon357;
         weapon3 = WeaponTypes.M1911;
-        currentEquippedWeaponRight = GameObject.Find("Player").transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<WeaponShooter>();
-        //transform.Find("Right Arm Shooting Arm").GetComponent<WeaponShooter>().m_WeaponType;
-        currentEquippedWeaponLeft = GameObject.Find("Player").transform.GetChild(0).GetChild(1).GetChild(1).GetComponent<WeaponShooter>();
-            //Find("Left Arm Shooting Arm").GetComponent<WeaponShooter>().m_WeaponType;
+        currentEquippedWeaponRight = GameObject.Find("Player (Rigged)").transform.GetChild(0).GetChild(0).GetChild(1).GetComponent<WeaponShooter>();
+
+        currentEquippedWeaponLeft = GameObject.Find("Player (Rigged)").transform.GetChild(0).GetChild(1).GetChild(1).GetComponent<WeaponShooter>();
+
 
 
         if (weaponMenu == null)
@@ -37,22 +44,27 @@ public class WeaponSelectMenu : MonoBehaviour {
         if (weapon1Button == null)
         {
             weapon1Button = weaponMenu.transform.Find("Weapon 1 Button").GetComponent<Button>();
-            weapon1Button.onClick.AddListener(EquipWeapon1);
+            weapon1Button.onClick.AddListener(startGame);
         }
 
         if (weapon2Button == null)
         {
             weapon2Button = weaponMenu.transform.Find("Weapon 2 Button").GetComponent<Button>();
-            weapon2Button.onClick.AddListener(EquipWeapon2);
+            weapon2Button.onClick.AddListener(startGame);
         }
 
         if (weapon3Button == null)
         {
             weapon3Button = weaponMenu.transform.Find("Weapon 3 Button").GetComponent<Button>();
-            weapon3Button.onClick.AddListener(EquipWeapon3);
+            weapon3Button.onClick.AddListener(startGame);
         }
 
-        
+        //if (continueButton == null)
+        //{
+        //    continueButton = weaponMenu.transform.Find("Continue Weapon Menu").GetComponent<Button>();
+        //    continueButton.onClick.AddListener(startGame);
+        //}
+
 
         weapon2Button.Select();
         weapon1Button.Select();
@@ -62,17 +74,30 @@ public class WeaponSelectMenu : MonoBehaviour {
     {
         currentEquippedWeaponRight.m_WeaponType = weapon1;
         currentEquippedWeaponLeft.m_WeaponType = weapon1;
+        currentEquippedWeaponRight.reload();
+        currentEquippedWeaponLeft.reload();
+        
     }
 
     public void EquipWeapon2()
     {
         currentEquippedWeaponRight.m_WeaponType = weapon2;
         currentEquippedWeaponLeft.m_WeaponType = weapon2;
+        currentEquippedWeaponRight.reload();
+        currentEquippedWeaponLeft.reload();
     }
 
     public void EquipWeapon3()
     {
         currentEquippedWeaponRight.m_WeaponType = weapon3;
         currentEquippedWeaponLeft.m_WeaponType = weapon3;
+        currentEquippedWeaponRight.reload();
+        currentEquippedWeaponLeft.reload();
+    }
+
+    public void startGame()
+    {
+        weaponMenu.SetActive(false);
+        SlowMoManager.m_isPaused = false;
     }
 }
