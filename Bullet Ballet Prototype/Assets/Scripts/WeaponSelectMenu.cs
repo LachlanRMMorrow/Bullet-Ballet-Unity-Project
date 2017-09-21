@@ -74,18 +74,25 @@ public class WeaponSelectMenu : MonoBehaviour {
     {
         currentEquippedWeaponRight.m_WeaponType = weapon1;
         currentEquippedWeaponLeft.m_WeaponType = weapon1;
+        currentEquippedWeaponRight.reload();
+        currentEquippedWeaponLeft.reload();
+        
     }
 
     public void EquipWeapon2()
     {
         currentEquippedWeaponRight.m_WeaponType = weapon2;
         currentEquippedWeaponLeft.m_WeaponType = weapon2;
+        currentEquippedWeaponRight.reload();
+        currentEquippedWeaponLeft.reload();
     }
 
     public void EquipWeapon3()
     {
         currentEquippedWeaponRight.m_WeaponType = weapon3;
         currentEquippedWeaponLeft.m_WeaponType = weapon3;
+        currentEquippedWeaponRight.reload();
+        currentEquippedWeaponLeft.reload();
     }
 
     public void startGame()
