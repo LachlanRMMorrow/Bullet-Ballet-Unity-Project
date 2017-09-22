@@ -88,10 +88,13 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     public void modifyPath(Vector3 a_Direction) {
-        if(m_Positions == null || m_Positions.Count <= m_CurrentIndex || m_Positions.Count <= 2) {
+        if(m_Positions == null || m_Positions.Count <= m_CurrentIndex-1 || m_Positions.Count <= 2) {
             return;
         }
-        removeUsedPoints();
+        if (m_CurrentIndex != 0) {
+            m_Positions.RemoveRange(0, m_CurrentIndex - 1);
+            m_CurrentIndex = 0;
+        }
 
         Vector3 modifyedRatio = a_Direction;
 
@@ -106,25 +109,10 @@ public class PlayerMovement : MonoBehaviour {
             //update the modified right
             modifyedRatio = a_Direction * scale;
         }
-
-        setLineRendererPoints();
-
-    }
-
-    private void updateLine() {
-        removeUsedPoints();
-        setLineRendererPoints();
-    }
-
-    private void removeUsedPoints() {
-
-        m_Positions.RemoveRange(0, m_CurrentIndex - 1);
-        m_CurrentIndex = 0;
-    }
-
-    private void setLineRendererPoints() {
+        
         m_LineRenderer.SetPositions(m_Positions.ToArray());
         m_LineRenderer.positionCount = m_Positions.Count - 1;
+
     }
 
 }
