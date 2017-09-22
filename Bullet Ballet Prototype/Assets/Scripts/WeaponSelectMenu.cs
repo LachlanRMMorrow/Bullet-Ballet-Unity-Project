@@ -44,19 +44,19 @@ public class WeaponSelectMenu : MonoBehaviour {
         if (weapon1Button == null)
         {
             weapon1Button = weaponMenu.transform.Find("Weapon 1 Button").GetComponent<Button>();
-            weapon1Button.onClick.AddListener(startGame);
+            weapon1Button.onClick.AddListener(StartGame);
         }
 
         if (weapon2Button == null)
         {
             weapon2Button = weaponMenu.transform.Find("Weapon 2 Button").GetComponent<Button>();
-            weapon2Button.onClick.AddListener(startGame);
+            weapon2Button.onClick.AddListener(StartGame);
         }
 
         if (weapon3Button == null)
         {
             weapon3Button = weaponMenu.transform.Find("Weapon 3 Button").GetComponent<Button>();
-            weapon3Button.onClick.AddListener(startGame);
+            weapon3Button.onClick.AddListener(StartGame);
         }
 
         //if (continueButton == null)
@@ -95,9 +95,12 @@ public class WeaponSelectMenu : MonoBehaviour {
         currentEquippedWeaponLeft.reload();
     }
 
-    public void startGame()
+    public void StartGame()
     {
         weaponMenu.SetActive(false);
         SlowMoManager.m_isPaused = false;
+        GameObject manager = GameObject.Find("MANAGER");
+        manager.GetComponent<SlowMoManager>().updateTimeScale(true);
+        Debug.Log(Time.timeScale);
     }
 }
