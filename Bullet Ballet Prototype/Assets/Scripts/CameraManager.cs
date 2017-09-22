@@ -123,8 +123,20 @@ public class CameraManager : MonoBehaviour {
     /// </summary>
     private Camera m_Camera;
 
+    [Header("Intro")]
+    public float m_IntroLength = 5.0f;
+    /// <summary>
+    /// is the intro running
+    /// the intro rotates the camera down
+    /// </summary>
+    private bool m_RunningIntroCamera = true;
+
+
     // Use this for initialization
     void Start() {
+
+
+
         m_CameraTransform.position = m_StartingCamPos = m_PlanningModeCamPos.position;
         m_Camera = Camera.main;
         m_StartingOrthoSize = m_Camera.orthographicSize;
@@ -142,10 +154,30 @@ public class CameraManager : MonoBehaviour {
             Debug.LogError("Camera Manager: Cant find WaypointMover object");
             m_WaypointMoverTransform = m_WaypointMarkerTransform;
         }
+
+        m_CameraTransform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
     }
 
     // Update is called once per frame
     void Update() {
+
+        if (m_RunningIntroCamera) {
+            //calc percentage through the intro
+            float amount = Time.unscaledTime / m_IntroLength;
+
+            //limit to a max of 1, and finish the intro
+            if(amount >= 1) {
+                amount = 1;
+                m_RunningIntroCamera = false;
+            }
+
+            //calc rotation and apply
+            Quaternion newRot = Quaternion.Euler(new Vector3(amount * 90, 0, 0));
+            m_CameraTransform.localRotation = newRot;
+
+            return;
+        }
+
         if (SlowMoManager.m_isPaused || !Player.m_PlayerAlive) {
             return;
         }
