@@ -236,7 +236,7 @@ public class SlowMoManager : MonoBehaviour {
     }
 
 
-    private void updateTimeScale(bool a_UpdateTimeScale) {
+    public void updateTimeScale(bool a_UpdateTimeScale) {
 
         if (a_UpdateTimeScale) {
             if (m_IsSlowmoOn) {
