@@ -31,7 +31,7 @@ public class PlayerArms : MonoBehaviour {
 
     [Header("Player/Arm Rotation")]
     public bool m_RotateToFaceArms = true;
-    [Range(1,25)]
+    [Range(1, 25)]
     public float m_PlayerBodyRotateSpeed = 10.0f;
 
     [Range(80, 180)]
@@ -59,6 +59,7 @@ public class PlayerArms : MonoBehaviour {
             return;
         }
 
+        //get controller
         JInput.Controller controller = JInput.CurrentController.currentController;
         if (controller == null) {
             return;
@@ -72,41 +73,49 @@ public class PlayerArms : MonoBehaviour {
         rightStick.x = controller.getAxisValue(Keys.singleton.m_RightArmMovementX);
         rightStick.y = controller.getAxisValue(Keys.singleton.m_RightArmMovementY);
 
-        if (leftStick.magnitude >= 0.1f) {//if there is then 0.1 moved on the stick 
-            m_LeftArm.m_HasDir = true;
 
+        //if there is then 0.1 moved on the sticks
+        bool isLeftStickBeingUsed = leftStick.magnitude >= 0.1f;
+        bool isRightStickBeingUsed = rightStick.magnitude >= 0.1f;
+
+        //apply hasDir to arms based on stick movement
+        m_LeftArm.m_HasDir = isLeftStickBeingUsed;
+        m_RightArm.m_HasDir = isRightStickBeingUsed;
+
+
+
+        //set the rotation of the sticks if it is being used
+        if (isLeftStickBeingUsed) {
             //set rotation of the left arm to where the left stick is facing
             setRotation(m_LeftArm.m_MovingTo, leftStick);
-
-        } else {
-            m_LeftArm.m_HasDir = false;
         }
 
-        if (rightStick.magnitude >= 0.1f) {//if there is then 0.1 moved on the stick                    
-            m_RightArm.m_HasDir = true;
-
+        if (isRightStickBeingUsed) {
             //set rotation of the left arm to where the left stick is facing
             setRotation(m_RightArm.m_MovingTo, rightStick);
-
-        } else {
-            m_RightArm.m_HasDir = false;
         }
 
+
+        //stop the arms from moving if m_CanMoveArms is false
         if (!m_CanMoveArms) {
             m_LeftArm.m_HasDir = m_RightArm.m_HasDir = false;
         }
 
+
         //set the moveTo arms to be active or not depending if the sicks have high enough values
         m_LeftArm.m_MovingTo.gameObject.SetActive(m_LeftArm.m_HasDir);
-        //m_LeftArm.m_ShootingArm.gameObject.SetActive(m_LeftArm.m_HasDir);
         m_LeftArm.m_ArmShootScript.m_CanShoot = m_LeftArm.m_HasDir;
+
         m_RightArm.m_MovingTo.gameObject.SetActive(m_RightArm.m_HasDir);
-        //m_RightArm.m_ShootingArm.gameObject.SetActive(m_RightArm.m_HasDir);
         m_RightArm.m_ArmShootScript.m_CanShoot = m_RightArm.m_HasDir;
 
+
+        //move both arms
         moveArms(m_LeftArm);
         moveArms(m_RightArm);
 
+
+        //rotate players body based on arm movement
         if (m_RotateToFaceArms) {
             calcPlayerRotation();
         }
@@ -152,13 +161,41 @@ public class PlayerArms : MonoBehaviour {
 
     private void moveArms(Arms a_Arm) {
         if (a_Arm.m_HasDir) {
+            //add a small amount of aim assistance to the arms rotation
+
+            //things to add to aim assist
+            // - stop helping when aiming through walls (just needs a layer mask change)
+            // - start effecting the aim when the object is close enough (don't assist when the enemy is far away)
+            // - better way to allow for easy modification of variables 
+            // - only apply offset to the shooting arm and not change the models rotation (so it doesn't effect the gun's laser)
+
+            RaycastHit hit;
+            //only hit objects which are in the AimAssistance layer
+            int layerMask = (1 << LayerMask.NameToLayer("AimAssistance"));
+            //do the ray cast, with the direction, remove the y axis so it doesn't point up or down and miss the collider
+            if (Physics.Raycast(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_MovingTo.forward), out hit, 100, layerMask)) {
+                //store the current rotation
+                Quaternion normalRotation = a_Arm.m_MovingTo.rotation;
+                //have it look at the hit transform
+                a_Arm.m_MovingTo.LookAt(hit.transform);
+                //get the angle between the old rotation and the rotation of the aim assistance object
+                float angle = Quaternion.Angle(normalRotation, a_Arm.m_MovingTo.rotation);
+                print(angle);
+                //set the rotation to be between the current rotation and the hit transform
+                a_Arm.m_MovingTo.rotation = Quaternion.Lerp(a_Arm.m_MovingTo.rotation, normalRotation, (angle/20.0f) * 2);
+            }
+            //debug draw
+            Debug.DrawRay(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_MovingTo.forward) * 100, Color.red);
+
             //limit the m_MovingTo transform
             limitArmMovements(a_Arm);
 
             Vector3 rot2 = a_Arm.m_MovingTo.rotation.eulerAngles;
             //arm rotation is off by 90 degrees
-                rot2.y += 90;
+            rot2.y += 90;
             Quaternion quat = Quaternion.Euler(rot2);
+
+
 
             //move model to moveTo
             rotateArm(a_Arm.m_Model, quat);

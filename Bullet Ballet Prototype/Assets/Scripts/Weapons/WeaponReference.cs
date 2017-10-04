@@ -19,6 +19,7 @@ public class WeaponReference {
     public float m_TimeToReload = 1.5f;
 
     public GameObject m_BulletPrefab;
+    public GameObject m_WeaponPrefab;
 
     public Sprite m_WeaponSprite;
     public Sprite m_BulletUIImage;

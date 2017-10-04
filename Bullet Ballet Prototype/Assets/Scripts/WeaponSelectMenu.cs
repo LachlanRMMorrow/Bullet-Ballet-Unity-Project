@@ -13,6 +13,20 @@ public class WeaponSelectMenu : MonoBehaviour {
     WeaponShooter currentEquippedWeaponRight;
     WeaponShooter currentEquippedWeaponLeft;
 
+    WeaponReference wepRef;
+
+    public GameObject rightHandRef;
+    public GameObject leftHandRef;
+
+    Vector3 rightHandWeaponPosition;
+    Quaternion rightHandWeaponRotation;
+
+    Vector3 leftHandWeaponPosition;
+    Quaternion leftHandWeaponRotation;
+
+    Transform test;
+    Transform test2;
+
     public Button weapon1Button;
     public Button weapon2Button;
     public Button weapon3Button;
@@ -23,6 +37,8 @@ public class WeaponSelectMenu : MonoBehaviour {
         weaponMenu = GameObject.Find("Canvas").transform.Find("Weapon Select Menu").gameObject;
         weaponMenu.SetActive(true);
         WeaponMenuActive();
+
+        
     }
 
 	public void WeaponMenuActive()
@@ -34,7 +50,14 @@ public class WeaponSelectMenu : MonoBehaviour {
 
         currentEquippedWeaponLeft = GameObject.Find("Player (Rigged)").transform.GetChild(0).GetChild(1).GetChild(1).GetComponent<WeaponShooter>();
 
+        rightHandRef = GameObject.Find("Player (Rigged)").transform.GetChild(2).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetChild(0).gameObject;
+        leftHandRef = GameObject.Find("Player (Rigged)").transform.GetChild(2).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetChild(0).gameObject;
 
+        rightHandWeaponPosition = rightHandRef.transform.GetChild(0).transform.position;
+        rightHandWeaponRotation = rightHandRef.transform.GetChild(0).transform.rotation;
+
+        leftHandWeaponPosition = leftHandRef.transform.GetChild(0).transform.position;
+        leftHandWeaponRotation = leftHandRef.transform.GetChild(0).transform.rotation;
 
         if (weaponMenu == null)
         {
@@ -59,13 +82,6 @@ public class WeaponSelectMenu : MonoBehaviour {
             weapon3Button.onClick.AddListener(StartGame);
         }
 
-        //if (continueButton == null)
-        //{
-        //    continueButton = weaponMenu.transform.Find("Continue Weapon Menu").GetComponent<Button>();
-        //    continueButton.onClick.AddListener(startGame);
-        //}
-
-
         weapon2Button.Select();
         weapon1Button.Select();
     }
@@ -74,25 +90,26 @@ public class WeaponSelectMenu : MonoBehaviour {
     {
         currentEquippedWeaponRight.m_WeaponType = weapon1;
         currentEquippedWeaponLeft.m_WeaponType = weapon1;
-        currentEquippedWeaponRight.reload();
-        currentEquippedWeaponLeft.reload();
-        
+
+        WeaponSwitch(0);
+
+
     }
 
     public void EquipWeapon2()
     {
         currentEquippedWeaponRight.m_WeaponType = weapon2;
         currentEquippedWeaponLeft.m_WeaponType = weapon2;
-        currentEquippedWeaponRight.reload();
-        currentEquippedWeaponLeft.reload();
+
+        WeaponSwitch(180);
     }
 
     public void EquipWeapon3()
     {
         currentEquippedWeaponRight.m_WeaponType = weapon3;
         currentEquippedWeaponLeft.m_WeaponType = weapon3;
-        currentEquippedWeaponRight.reload();
-        currentEquippedWeaponLeft.reload();
+
+        WeaponSwitch(0);
     }
 
     public void StartGame()
@@ -101,6 +118,28 @@ public class WeaponSelectMenu : MonoBehaviour {
         SlowMoManager.m_isPaused = false;
         GameObject manager = GameObject.Find("MANAGER");
         manager.GetComponent<SlowMoManager>().updateTimeScale(true);
-        Debug.Log(Time.timeScale);
+    }
+
+    private void WeaponSwitch(float rotationOffset)
+    {
+
+        wepRef = WeaponHolder.getWeapon(currentEquippedWeaponRight.m_WeaponType);
+
+        foreach(Transform child in leftHandRef.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in rightHandRef.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        Instantiate(wepRef.m_WeaponPrefab, (rightHandWeaponPosition + new Vector3(0,0.05f,0)), (rightHandWeaponRotation * Quaternion.Euler(0, rotationOffset,0)), rightHandRef.transform);
+        Instantiate(wepRef.m_WeaponPrefab, leftHandWeaponPosition, (leftHandWeaponRotation * Quaternion.Euler(0, rotationOffset, 0)), leftHandRef.transform);
+        
+
+        currentEquippedWeaponRight.reload();
+        currentEquippedWeaponLeft.reload();
     }
 }
