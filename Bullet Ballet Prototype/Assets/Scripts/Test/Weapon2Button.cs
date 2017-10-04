@@ -11,7 +11,6 @@ public class Weapon2Button : MonoBehaviour, ISelectHandler
 
 	public void OnSelect(BaseEventData eventData)
     {
-        Debug.Log("help");
         eS = GameObject.Find("EventSystem");
         eS.GetComponent<WeaponSelectMenu>().EquipWeapon2();
 
