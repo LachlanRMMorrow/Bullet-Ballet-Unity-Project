@@ -125,7 +125,7 @@ public class WeaponSelectMenu : MonoBehaviour {
 
         wepRef = WeaponHolder.getWeapon(currentEquippedWeaponRight.m_WeaponType);
 
-        //foreach(Transform child in leftHandRef.transform)
+        //foreach (Transform child in leftHandRef.transform)
         //{
         //    GameObject.Destroy(child.gameObject);
         //}
@@ -135,9 +135,9 @@ public class WeaponSelectMenu : MonoBehaviour {
         //    GameObject.Destroy(child.gameObject);
         //}
 
-        //Instantiate(wepRef.m_WeaponPrefab, (rightHandWeaponPosition + new Vector3(0,0.05f,0)), (rightHandWeaponRotation * Quaternion.Euler(0, rotationOffset,0)), rightHandRef.transform);
-        //Instantiate(wepRef.m_WeaponPrefab, leftHandWeaponPosition, (leftHandWeaponRotation * Quaternion.Euler(0, rotationOffset, 0)), leftHandRef.transform);
-        
+        //Instantiate(wepRef.m_WeaponPrefab, rightHandRef.transform);
+        //Instantiate(wepRef.m_WeaponPrefab, leftHandRef.transform);
+
 
         currentEquippedWeaponRight.reload();
         currentEquippedWeaponLeft.reload();
