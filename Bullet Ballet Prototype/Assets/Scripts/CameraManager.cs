@@ -38,20 +38,20 @@ public class CameraManager : MonoBehaviour {
 
 
     /// <summary>
-    /// When used with orthographic this is the min zoom for the orthograpic size.
+    /// When used with orthographic this is the min zoom for the orthographic size.
     /// 
     /// When used with perspective this will affect the min height for the camera,
     /// </summary>
     [Header("Action Mode")]
     public float m_MinZoomDist = 20.0f;
     /// <summary>
-    /// When used with orthographic this is the max zoom for the orthograpic size.
+    /// When used with orthographic this is the max zoom for the orthographic size.
     /// 
     /// When used with perspective this will affect the max height for the camera,
     /// </summary>
     public float m_MaxZoomDist = 50.0f;
     /// <summary>
-    /// how much is multiplyed to the zoom scale when working out it's size/height
+    /// how much is multiplied to the zoom scale when working out it's size/height
     /// </summary>
     public float m_AddZoomSizeScale = 4.0f;
     /// <summary>
@@ -67,7 +67,7 @@ public class CameraManager : MonoBehaviour {
     /// </summary>
     public Transform m_PlayerTransform;
     /// <summary>
-    /// reference to the waypoint marker
+    /// reference to the way point marker
     /// </summary>
     public Transform m_WaypointMarkerTransform;
     /// <summary>
@@ -126,6 +126,10 @@ public class CameraManager : MonoBehaviour {
     [Header("Intro")]
     public float m_IntroLength = 5.0f;
     /// <summary>
+    /// Curve for the camera intro so calculate how much rotation the camera should have during the animation
+    /// </summary>
+    public AnimationCurve m_CameraIntroCurve = AnimationCurve.Linear(0,0,1,1);
+    /// <summary>
     /// is the intro running
     /// the intro rotates the camera down
     /// </summary>
@@ -162,17 +166,24 @@ public class CameraManager : MonoBehaviour {
     void Update() {
 
         if (m_RunningIntroCamera) {
-            //calc percentage through the intro
-            float amount = Time.unscaledTime / m_IntroLength;
+            //pause the game until the camera animation is done
+            SlowMoManager.m_isPaused = true;
+            //calculate percentage through the intro
+            float amount = Time.time / m_IntroLength;
 
             //limit to a max of 1, and finish the intro
             if(amount >= 1) {
                 amount = 1;
                 m_RunningIntroCamera = false;
+                //camera animation done, unpause the game to let the player play
+                SlowMoManager.m_isPaused = false; 
             }
 
-            //calc rotation and apply
-            Quaternion newRot = Quaternion.Euler(new Vector3(amount * 90, 0, 0));
+
+            float curveAmount = m_CameraIntroCurve.Evaluate(amount);
+
+            //calculate rotation and apply
+            Quaternion newRot = Quaternion.Euler(new Vector3(curveAmount * 90, 0, 0));
             m_CameraTransform.localRotation = newRot;
 
             return;
@@ -260,7 +271,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     /// <summary>
-    /// Works out the average point and the furtest point that are considerd interesting
+    /// Works out the average point and the furthest point that are considered interesting
     /// a_MinMax will contain the max distance and the point of that object of those 'interesting objects'
     /// </summary>
     /// <param name="a_MinMax">Reference to a MinMax Class</param>
@@ -282,12 +293,12 @@ public class CameraManager : MonoBehaviour {
         int valuesAdded = 0;
 
         RaycastHit hit;
-        //check against everything that is not a Bullets/Eneimes or Player
+        //check against everything that is not a Bullets/Enemies or Player
         //int layerMask = ~(1 << LayerMask.NameToLayer("Bullets") | 1 << LayerMask.NameToLayer("Enemies") | 1 << LayerMask.NameToLayer("Player"));
         int layerMask = (1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Default"));
         //add left arm
         if (m_PlayerArmLeft.gameObject.activeInHierarchy) {
-            //check AI for LayerMask explination
+            //check AI for LayerMask explanation
             //raycast from AI in the player direction for 1000 units, excluding anything on the Bullets Layer
             if (Physics.Raycast(m_PlayerArmLeft.position, m_PlayerArmLeft.forward, out hit, 1000, layerMask)) {
                 armRaycastAverage += a_MinMax.AddValue(hit.point);
@@ -296,7 +307,7 @@ public class CameraManager : MonoBehaviour {
         }
         //add right arm
         if (m_PlayerArmRight.gameObject.activeInHierarchy) {
-            //check AI for LayerMask explination
+            //check AI for LayerMask explanation
             //raycast from AI in the player direction for 1000 units, excluding anything on the Bullets Layer
             if (Physics.Raycast(m_PlayerArmRight.position, m_PlayerArmRight.forward, out hit, 1000, layerMask)) {
                 armRaycastAverage += a_MinMax.AddValue(hit.point);
