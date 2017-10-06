@@ -41,7 +41,7 @@ public class Door : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() { }
+    void Update() { 
         if (m_ForceDoorInteraction) {
             m_ForceDoorInteraction = false;
             startDoorMovement(!m_Open);
