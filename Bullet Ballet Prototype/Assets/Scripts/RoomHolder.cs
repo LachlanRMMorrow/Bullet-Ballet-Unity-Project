@@ -117,7 +117,7 @@ public class RoomHolder : MonoBehaviour {
         m_ThisRoomsFogMaterial.SetFloat("_InRoom", evaluation);
 
         //if the time is over the curve, then we finish it
-        if (time <= 0 || time >= 1) {
+        if (time < 0 || time >= 1) {
             m_RoomInteractedWith = false;
         }
 
