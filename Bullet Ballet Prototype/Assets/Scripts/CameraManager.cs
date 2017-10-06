@@ -136,6 +136,8 @@ public class CameraManager : MonoBehaviour {
     /// </summary>
     private bool m_RunningIntroCamera = true;
 
+    private float m_StartingTime;
+    private bool m_HasStartedIntro = false;
 
     // Use this for initialization
     void Start() {
@@ -161,16 +163,21 @@ public class CameraManager : MonoBehaviour {
         }
 
         m_CameraTransform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
     }
 
     // Update is called once per frame
     void Update() {
 
         if (m_RunningIntroCamera) {
+            if (!m_HasStartedIntro) {
+                m_HasStartedIntro = true;
+                m_StartingTime = Time.time;
+            }
             //pause the game until the camera animation is done
             SlowMoManager.m_isPaused = true;
             //calculate percentage through the intro
-            float amount = Time.time / m_IntroLength;
+            float amount = (Time.time - m_StartingTime) / m_IntroLength;
 
             //limit to a max of 1, and finish the intro
             if(amount >= 1) {
