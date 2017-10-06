@@ -29,7 +29,7 @@ public class Door : MonoBehaviour {
     /// </summary>
     private bool m_Open = false;
 
-    public bool change = false;
+    public bool m_ForceDoorInteraction = false;
 
     void Start() {
         if (m_LeftDoor.m_DoorTransform != null) {
@@ -41,9 +41,9 @@ public class Door : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
-        if (change) {
-            change = false;
+    void Update() { }
+        if (m_ForceDoorInteraction) {
+            m_ForceDoorInteraction = false;
             startDoorMovement(!m_Open);
         }
         if (m_IsInteractedWith) {
@@ -60,10 +60,10 @@ public class Door : MonoBehaviour {
             }
 
             if (m_LeftDoor.m_DoorTransform != null) {
-                m_LeftDoor.m_DoorTransform.position = Vector3.Lerp(m_LeftDoor.m_StartingPos, m_LeftDoor.m_StartingPos + new Vector3(-m_MovementAmount, 0, 0), percentage);
+                m_LeftDoor.m_DoorTransform.position = Vector3.Lerp(m_LeftDoor.m_StartingPos, m_LeftDoor.m_StartingPos + transform.rotation * new Vector3(-m_MovementAmount, 0, 0), percentage);
             }
             if (m_RightDoor.m_DoorTransform != null) {
-                m_RightDoor.m_DoorTransform.position = Vector3.Lerp(m_RightDoor.m_StartingPos, m_RightDoor.m_StartingPos + new Vector3(m_MovementAmount, 0, 0), percentage);
+                m_RightDoor.m_DoorTransform.position = Vector3.Lerp(m_RightDoor.m_StartingPos, m_RightDoor.m_StartingPos + transform.rotation * new Vector3(m_MovementAmount, 0, 0), percentage);
             }
         }
     }
