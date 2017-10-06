@@ -15,6 +15,8 @@ public class PlayerArms : MonoBehaviour {
         public Transform m_Model;
         public Transform m_MovingTo;
         public Transform m_ShootingArm;
+        internal Transform m_ShootPoint;
+        internal Quaternion m_ShootPointStartingLocalRot;
         internal Quaternion m_StartingRot;
         internal bool m_HasDir;
         internal bool m_IsRight = true;
@@ -39,11 +41,19 @@ public class PlayerArms : MonoBehaviour {
     [Range(80, 180)]
     public float m_SideAngle = 45.0f;
 
+    [Header("Aim assist")]
+    public float m_Angle = 20.0f;
+
     // Use this for initialization
     void Awake() {
 
         m_LeftArm.m_StartingRot = m_LeftArm.m_Model.localRotation;
         m_RightArm.m_StartingRot = m_RightArm.m_Model.localRotation;
+
+        m_LeftArm.m_ShootPoint = m_LeftArm.m_ShootingArm.GetComponent<PlayerShoot>().m_ShootPoint;
+        m_RightArm.m_ShootPoint = m_RightArm.m_ShootingArm.GetComponent<PlayerShoot>().m_ShootPoint;
+        m_LeftArm.m_ShootPointStartingLocalRot = m_LeftArm.m_ShootPoint.localRotation;
+        m_RightArm.m_ShootPointStartingLocalRot = m_RightArm.m_ShootPoint.localRotation;
 
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
 
@@ -161,31 +171,8 @@ public class PlayerArms : MonoBehaviour {
 
     private void moveArms(Arms a_Arm) {
         if (a_Arm.m_HasDir) {
-            //add a small amount of aim assistance to the arms rotation
 
-            //things to add to aim assist
-            // - stop helping when aiming through walls (just needs a layer mask change)
-            // - start effecting the aim when the object is close enough (don't assist when the enemy is far away)
-            // - better way to allow for easy modification of variables 
-            // - only apply offset to the shooting arm and not change the models rotation (so it doesn't effect the gun's laser)
-
-            RaycastHit hit;
-            //only hit objects which are in the AimAssistance layer
-            int layerMask = (1 << LayerMask.NameToLayer("AimAssistance"));
-            //do the ray cast, with the direction, remove the y axis so it doesn't point up or down and miss the collider
-            if (Physics.Raycast(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_MovingTo.forward), out hit, 100, layerMask)) {
-                //store the current rotation
-                Quaternion normalRotation = a_Arm.m_MovingTo.rotation;
-                //have it look at the hit transform
-                a_Arm.m_MovingTo.LookAt(hit.transform);
-                //get the angle between the old rotation and the rotation of the aim assistance object
-                float angle = Quaternion.Angle(normalRotation, a_Arm.m_MovingTo.rotation);
-                print(angle);
-                //set the rotation to be between the current rotation and the hit transform
-                a_Arm.m_MovingTo.rotation = Quaternion.Lerp(a_Arm.m_MovingTo.rotation, normalRotation, (angle/20.0f) * 2);
-            }
-            //debug draw
-            Debug.DrawRay(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_MovingTo.forward) * 100, Color.red);
+           
 
             //limit the m_MovingTo transform
             limitArmMovements(a_Arm);
@@ -211,10 +198,43 @@ public class PlayerArms : MonoBehaviour {
             //apply rotation
             a_Arm.m_ShootingArm.rotation = flatRot;
 
+            runAutoAim(a_Arm);
+
         } else {
             //move model arm to default
             rotateArmLocal(a_Arm.m_Model, a_Arm.m_StartingRot);
         }
+    }
+
+    private void runAutoAim(Arms a_Arm) {
+        //add a small amount of aim assistance to the arms rotation
+
+        //things to add to aim assist
+        // - stop helping when aiming through walls (just needs a layer mask change)
+        // - start effecting the aim when the object is close enough (don't assist when the enemy is far away)
+        // - better way to allow for easy modification of variables 
+        // - only apply offset to the shooting arm and not change the models rotation (so it doesn't effect the gun's laser)
+
+        RaycastHit hit;
+        //only hit objects which are in the AimAssistance layer
+        int layerMask = (1 << LayerMask.NameToLayer("AimAssistance"));
+        //do the ray cast, with the direction, remove the y axis so it doesn't point up or down and miss the collider
+        if (Physics.Raycast(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_ShootingArm.forward), out hit, 100, layerMask)) {
+            //store the current rotation
+            Quaternion normalRotation = a_Arm.m_ShootingArm.rotation;
+            //have it look at the hit transform
+            a_Arm.m_ShootPoint.LookAt(hit.transform);
+            //get the angle between the old rotation and the rotation of the aim assistance object
+            float angle = Quaternion.Angle(normalRotation, a_Arm.m_ShootingArm.rotation);
+            print(angle);
+            //set the rotation to be between the current rotation and the hit transform
+            a_Arm.m_ShootPoint.rotation = Quaternion.Lerp(a_Arm.m_ShootPoint.rotation, normalRotation, (angle / m_Angle) * 2);
+        }else {
+            //if were not hitting a aim assist, then reset the shoot point
+            a_Arm.m_ShootPoint.localRotation = a_Arm.m_ShootPointStartingLocalRot;
+        }
+        //debug draw
+        Debug.DrawRay(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_ShootPoint.forward) * 100, Color.red);
     }
 
     private void calcPlayerRotation() {
@@ -276,38 +296,6 @@ public class PlayerArms : MonoBehaviour {
         }
 
         a_Arm.m_MovingTo.localRotation = Quaternion.Euler(armRot);
-
-        /*
-        //todo: make a better version of this, that will limit the arms to not go back and not go to far across
-        if (m_LimitArms) {
-            float movementLimit = 90 - m_LimitAngle;
-            //left arm
-            Vector3 leftArmRot = m_LeftArm.m_MovingTo.localRotation.eulerAngles;
-            //does top check
-            //if the arm is directly right and movementLimit up
-            if (leftArmRot.y >= movementLimit && leftArmRot.y <= 90) {
-                leftArmRot.y = movementLimit;
-            }
-            //does bottom check
-            //if the arm is directly right and movementLimit down
-            if (leftArmRot.y <= 180 - movementLimit && leftArmRot.y >= 90) {
-                leftArmRot.y = 180 - movementLimit;
-            }
-            m_LeftArm.m_MovingTo.localRotation = Quaternion.Euler(leftArmRot);
-            //right arm
-            Vector3 rightArmRot = m_RightArm.m_MovingTo.localRotation.eulerAngles;
-            //does bottom check
-            //directly left and movement limit down
-            if (rightArmRot.y < 360 - movementLimit && rightArmRot.y > 270) {
-                rightArmRot.y = 360 - movementLimit;
-            }
-            //does top check
-            if (rightArmRot.y > 180 + movementLimit && rightArmRot.y < 270) {
-                rightArmRot.y = 180 + movementLimit;
-            }
-            m_RightArm.m_MovingTo.localRotation = Quaternion.Euler(rightArmRot);
-        }
-        */
     }
 
     private void stateChanged(GameStates a_NewState) {
