@@ -15,7 +15,10 @@ public class PlayerArms : MonoBehaviour {
         public Transform m_Model;
         public Transform m_MovingTo;
         public Transform m_ShootingArm;
+        //the transform that the bullets shoot from, they use the rotation and position of this transform
+        //it's taken from a variable in PlayerShoot on the m_ShootingArm
         internal Transform m_ShootPoint;
+        //starting local rotation of m_ShootPoint
         internal Quaternion m_ShootPointStartingLocalRot;
         internal Quaternion m_StartingRot;
         internal bool m_HasDir;
@@ -42,7 +45,10 @@ public class PlayerArms : MonoBehaviour {
     public float m_SideAngle = 45.0f;
 
     [Header("Aim assist")]
-    public float m_Angle = 20.0f;
+    /// <summary>
+    /// distance at which the aim assist will be at max power
+    /// </summary>
+    public float m_DistanceForMaxAssist = 20.0f;
 
     // Use this for initialization
     void Awake() {
@@ -212,8 +218,8 @@ public class PlayerArms : MonoBehaviour {
         //things to add to aim assist
         // - stop helping when aiming through walls (just needs a layer mask change)
         // - start effecting the aim when the object is close enough (don't assist when the enemy is far away)
-        // - better way to allow for easy modification of variables 
-        // - only apply offset to the shooting arm and not change the models rotation (so it doesn't effect the gun's laser)
+        // - (DONE) better way to allow for easy modification of variables 
+        // - (DONE) only apply offset to the shooting arm and not change the models rotation (so it doesn't effect the gun's laser)
 
         RaycastHit hit;
         //only hit objects which are in the AimAssistance layer
@@ -224,11 +230,14 @@ public class PlayerArms : MonoBehaviour {
             Quaternion normalRotation = a_Arm.m_ShootingArm.rotation;
             //have it look at the hit transform
             a_Arm.m_ShootPoint.LookAt(hit.transform);
-            //get the angle between the old rotation and the rotation of the aim assistance object
-            float angle = Quaternion.Angle(normalRotation, a_Arm.m_ShootingArm.rotation);
-            print(angle);
+
+            //ratio of distance between the max distance and the current distance
+            //this is used to calculate the power of the aim assist
+            //the closer the object is, the less powerful
+            float distance = Mathf.Clamp01(hit.distance/ m_DistanceForMaxAssist);
+
             //set the rotation to be between the current rotation and the hit transform
-            a_Arm.m_ShootPoint.rotation = Quaternion.Lerp(a_Arm.m_ShootPoint.rotation, normalRotation, (angle / m_Angle) * 2);
+            a_Arm.m_ShootPoint.rotation = Quaternion.Lerp(normalRotation, a_Arm.m_ShootPoint.rotation,distance);
         }else {
             //if were not hitting a aim assist, then reset the shoot point
             a_Arm.m_ShootPoint.localRotation = a_Arm.m_ShootPointStartingLocalRot;

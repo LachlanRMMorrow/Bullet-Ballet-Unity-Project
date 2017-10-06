@@ -98,8 +98,10 @@ public class WeaponShooter : MonoBehaviour {
             //run screenshake
             m_CameraManager.startScreenShake();
 
-            //fire bullet
+            //Spawn Muzzle flash
             GameObject muzzleFlash = Object.Instantiate(m_MuzzleFlashPrefab, m_MuzzleFlashSpawnPoint.position,(m_MuzzleFlashSpawnPoint.rotation * Quaternion.Euler(0, -90, 0)));
+
+            //fire bullet
             return getWeapon().fireProjectile(m_SpawnPoint);
             
 
