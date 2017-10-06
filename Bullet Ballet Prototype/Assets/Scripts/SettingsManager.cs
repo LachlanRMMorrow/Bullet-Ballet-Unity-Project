@@ -69,7 +69,7 @@ public class SettingsManager : MonoBehaviour
                 inGameOptionsMenu.SetActive(true);
                 applyButtonIG = GameObject.Find("ApplyIG").GetComponent<Button>();
                 backButtonIG = GameObject.Find("BackButtonIG").GetComponent<Button>();
-                antialiasingDropdwon = GameObject.Find("Antialiasing").GetComponent<Dropdown>();
+                antialiasingDropdwon = GameObject.Find("Canvas").transform.GetChild(2).GetChild(9).GetComponent<Dropdown>();
                 GetUiElements();
                 gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
                 SetUiElements();
