@@ -20,11 +20,14 @@ public class GUIManager : MonoBehaviour {
     public Button options;
     public Button exit;
 
-    
+    GameSettings gameSettings;
+
+
 
     // Use this for initialization
     void Start ()
     {
+
         screenBlur = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
         //newGame.onClick.AddListener(NewGame);
         //resume.onClick.AddListener(Resume);
@@ -96,6 +99,26 @@ public class GUIManager : MonoBehaviour {
     public void Level2()
     {
         SceneManager.LoadScene(4);
+    }
+
+    public void Level3()
+    {
+        SceneManager.LoadScene(5);
+    }
+
+    public void Level4()
+    {
+        SceneManager.LoadScene(6);
+    }
+
+    public void Level5()
+    {
+        SceneManager.LoadScene(7);
+    }
+
+    public void Level6()
+    {
+        SceneManager.LoadScene(8);
     }
 
 

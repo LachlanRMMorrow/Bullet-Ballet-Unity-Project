@@ -48,15 +48,58 @@ public class SettingsManager : MonoBehaviour
     void Awake()
     {
 
-        gameSettings = new GameSettings();
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            CreateSettingsOnFirstLoad();
+        }
 
-        postProcessing = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
+        else
+        {
+            GetUiElements();
+            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+
+            SetUiElements();
+        }
+
+        
+
+        soundMan = SoundManager.GetInstance();
+
+        LoadSettings();
+
+    }
+
+    public void CreateSettingsOnFirstLoad()
+    {
+        if (!File.Exists(Application.persistentDataPath + "/gamesettings.json"))
+        {
+            gameSettings = new GameSettings();
+
+            gameSettings.fullscreen = true;
+            gameSettings.vSync = 1;
+            gameSettings.motionBlur = true;
+            gameSettings.postProcessingBool = true;
+            gameSettings.textureQuality = 0;
+            gameSettings.antialiasing = 0;
+            gameSettings.shadows = 0;
+            gameSettings.masterVolume = 1;
+            gameSettings.bgmMusicVolume = 1;
+            gameSettings.sfxVolume = 1;
+            gameSettings.masterVolumeMute = false;
+            gameSettings.bgmMusicMute = false;
+            gameSettings.sfxMute = false;
+
+            SaveSettings();
+        }
+    }
+
+    void GetUiElements()
+    {
 
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 2)
         {
             applyButton = GameObject.Find("Apply").GetComponent<Button>();
             antialiasingDropdwon = GameObject.Find("Canvas Options").transform.Find("Antialiasing").GetComponent<Dropdown>();
-            GetUiElements();
         }
         else
         {
@@ -66,25 +109,9 @@ public class SettingsManager : MonoBehaviour
             applyButtonIG = GameObject.Find("ApplyIG").GetComponent<Button>();
             backButtonIG = GameObject.Find("BackButtonIG").GetComponent<Button>();
             antialiasingDropdwon = GameObject.Find("Antialiasing").GetComponent<Dropdown>();
-            GetUiElements();
             inGameOptionsMenu.SetActive(false);
         }
 
-
-        resolutions = Screen.resolutions;
-        foreach (Resolution resolution in resolutions)
-        {
-            resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
-        }
-
-        soundMan = SoundManager.GetInstance();
-
-        LoadSettings();
-
-    }
-
-    void GetUiElements()
-    {
         fullscreenToggle = GameObject.Find("Fullscreen").GetComponent<Toggle>();
         vSyncToggle = GameObject.Find("Verticle Sync").GetComponent<Toggle>();
         motionBlueToggle = GameObject.Find("Motion Blur").GetComponent<Toggle>();
@@ -305,22 +332,30 @@ public class SettingsManager : MonoBehaviour
 
     public void SaveSettings()
     {
-        //graphicsMenu.SetActive(true);
-        //soundsMenu.SetActive(true);
         string jsonData = JsonUtility.ToJson(gameSettings, true);
         File.WriteAllText(Application.persistentDataPath + "/gamesettings.json", jsonData);
-        //soundsMenu.SetActive(false);
     }
 
     public void LoadSettings()
     {
         File.ReadAllText(Application.persistentDataPath + "/gamesettings.json");
         gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 0)
+        {
+
+        }
+        else
+        {
+            SetUiElements();
+        }
+
+    }
+
+    void SetUiElements()
+    {
         fullscreenToggle.isOn = gameSettings.fullscreen;
         Screen.fullScreen = gameSettings.fullscreen;
-        //******************** Magic **************************
         vSyncToggle.isOn = gameSettings.vSync != 0;
-        //******************** Magic **************************
         motionBlueToggle.isOn = gameSettings.motionBlur;
         postProcessingToggle.isOn = gameSettings.postProcessingBool;
         resolutionDropdown.value = gameSettings.resolutionIndex;
@@ -334,6 +369,13 @@ public class SettingsManager : MonoBehaviour
         bgmMusicMuteToggle.isOn = gameSettings.bgmMusicMute;
         sfxMuteToggle.isOn = gameSettings.sfxMute;
 
+        postProcessing = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
+
+        resolutions = Screen.resolutions;
+        foreach (Resolution resolution in resolutions)
+        {
+            resolutionDropdown.options.Add(new Dropdown.OptionData(resolution.ToString()));
+        }
     }
 
 }
