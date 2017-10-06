@@ -36,7 +36,6 @@ public class SettingsManager : MonoBehaviour
 
     public PostProcessingProfile postProcessing;
 
-
     //*******************************************************************************************************************************
 
     public Resolution[] resolutions;
@@ -55,8 +54,28 @@ public class SettingsManager : MonoBehaviour
 
         else
         {
-            GetUiElements();
-            gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                GetUiElements();
+                applyButton = GameObject.Find("Apply").GetComponent<Button>();
+                antialiasingDropdwon = GameObject.Find("Canvas Options").transform.Find("Antialiasing").GetComponent<Dropdown>();
+                gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+                SetUiElements();
+            }
+            else
+            {
+                pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
+                inGameOptionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
+                inGameOptionsMenu.SetActive(true);
+                applyButtonIG = GameObject.Find("ApplyIG").GetComponent<Button>();
+                backButtonIG = GameObject.Find("BackButtonIG").GetComponent<Button>();
+                antialiasingDropdwon = GameObject.Find("Canvas").transform.GetChild(2).GetChild(9).GetComponent<Dropdown>();
+                GetUiElements();
+                gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
+                SetUiElements();
+                inGameOptionsMenu.SetActive(false);
+            }
+            
 
             SetUiElements();
         }
@@ -96,21 +115,7 @@ public class SettingsManager : MonoBehaviour
     void GetUiElements()
     {
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 2)
-        {
-            applyButton = GameObject.Find("Apply").GetComponent<Button>();
-            antialiasingDropdwon = GameObject.Find("Canvas Options").transform.Find("Antialiasing").GetComponent<Dropdown>();
-        }
-        else
-        {
-            pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
-            inGameOptionsMenu = GameObject.Find("Canvas").transform.Find("Options Menu").gameObject;
-            inGameOptionsMenu.SetActive(true);
-            applyButtonIG = GameObject.Find("ApplyIG").GetComponent<Button>();
-            backButtonIG = GameObject.Find("BackButtonIG").GetComponent<Button>();
-            antialiasingDropdwon = GameObject.Find("Antialiasing").GetComponent<Dropdown>();
-            inGameOptionsMenu.SetActive(false);
-        }
+        
 
         fullscreenToggle = GameObject.Find("Fullscreen").GetComponent<Toggle>();
         vSyncToggle = GameObject.Find("Verticle Sync").GetComponent<Toggle>();
@@ -142,7 +147,6 @@ public class SettingsManager : MonoBehaviour
             backButtonIG.onClick.AddListener(delegate { OnBackButtonClickIG(); });
         }
 
-
         fullscreenToggle.onValueChanged.AddListener(delegate { OnFullscreenToggle(); });
         vSyncToggle.onValueChanged.AddListener(delegate { OnVSyncChange(); });
         motionBlueToggle.onValueChanged.AddListener(delegate { OnMotionBlurChange(); });
@@ -157,9 +161,6 @@ public class SettingsManager : MonoBehaviour
         masterVolumeMuteToggle.onValueChanged.AddListener(delegate { OnMasterVolumeMute(); });
         bgmMusicMuteToggle.onValueChanged.AddListener(delegate { OnMusicMute(); });
         sfxMuteToggle.onValueChanged.AddListener(delegate { OnSFXMute(); });
-        
-
-        
     }
 
     public void OnFullscreenToggle()
@@ -353,6 +354,8 @@ public class SettingsManager : MonoBehaviour
 
     void SetUiElements()
     {
+        postProcessing = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
+
         fullscreenToggle.isOn = gameSettings.fullscreen;
         Screen.fullScreen = gameSettings.fullscreen;
         vSyncToggle.isOn = gameSettings.vSync != 0;
@@ -368,8 +371,6 @@ public class SettingsManager : MonoBehaviour
         masterVolumeMuteToggle.isOn = gameSettings.masterVolumeMute;
         bgmMusicMuteToggle.isOn = gameSettings.bgmMusicMute;
         sfxMuteToggle.isOn = gameSettings.sfxMute;
-
-        postProcessing = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
 
         resolutions = Screen.resolutions;
         foreach (Resolution resolution in resolutions)

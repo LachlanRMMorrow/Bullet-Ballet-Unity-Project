@@ -323,8 +323,6 @@ public class SoundManager : MonoBehaviour
             }
         }
 
-        Debug.Log("BGM Volume: " + GetBGMVolume());
         soundMan.bgmSource.volume = GetBGMVolume();
-        Debug.Log("BGM Volume is now: " + GetBGMVolume());
     }
 }
