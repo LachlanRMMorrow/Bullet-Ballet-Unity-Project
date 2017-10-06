@@ -175,16 +175,4 @@ public class RoomHolder : MonoBehaviour {
             child.gameObject.GetComponent<Renderer>().material = m_ThisRoomsFogMaterial;
         }
     }
-
-    void OnValidate() {
-        //adds this room to all neighbors 
-        for (int i = 0; i < m_Neighbors.Count; i++) {
-            if(m_Neighbors[i] == null) {
-                continue;
-            }
-            if (!m_Neighbors[i].m_Neighbors.Contains(this)) {
-                m_Neighbors[i].m_Neighbors.Add(this);
-            }
-        }
-    }
 }
