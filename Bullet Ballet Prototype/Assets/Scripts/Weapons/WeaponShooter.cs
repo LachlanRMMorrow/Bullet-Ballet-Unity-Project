@@ -13,12 +13,16 @@ public class WeaponShooter : MonoBehaviour {
 
     public int currentAmmo { get { return m_CurrentAmmo; } }
 
+    public Transform m_MuzzleFlashSpawnPoint;
+
     /// <summary>
     /// last time of player shooting or time the reload started
     /// </summary>
     private float m_LastTime = -100;
 
     public UnityEngine.UI.Text m_DebugText;
+
+    public GameObject m_MuzzleFlashPrefab;
 
     /// <summary>
     /// Time this component was disabled
@@ -46,6 +50,7 @@ public class WeaponShooter : MonoBehaviour {
     void Start () {
         //set up callback for game state changes
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
+        
     }
 	
 	// Update is called once per frame
@@ -94,7 +99,9 @@ public class WeaponShooter : MonoBehaviour {
             m_CameraManager.startScreenShake();
 
             //fire bullet
+            GameObject muzzleFlash = Object.Instantiate(m_MuzzleFlashPrefab, m_MuzzleFlashSpawnPoint.position,(m_MuzzleFlashSpawnPoint.rotation * Quaternion.Euler(0, -90, 0)));
             return getWeapon().fireProjectile(m_SpawnPoint);
+            
 
 
         }

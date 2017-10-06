@@ -97,9 +97,9 @@ public class SlowMoManager : MonoBehaviour {
 
         //start off paused with a timescale of 0
         //update the fixedTimescale aswell
-        m_isPaused = true;
-        Time.timeScale = 0;
-        updateTimeScale(false);
+        //m_isPaused = true;
+        //Time.timeScale = 0;
+        //updateTimeScale(false);
 
         //update the ui
         updateUi();
