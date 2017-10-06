@@ -35,7 +35,7 @@ public class WeaponSelectMenu : MonoBehaviour {
     void Awake()
     {
         weaponMenu = GameObject.Find("Canvas").transform.Find("Weapon Select Menu").gameObject;
-        weaponMenu.SetActive(true);
+        //weaponMenu.SetActive(true);
         WeaponMenuActive();
 
         

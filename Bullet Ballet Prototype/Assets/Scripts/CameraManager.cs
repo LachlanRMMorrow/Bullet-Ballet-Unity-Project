@@ -35,6 +35,7 @@ public class CameraManager : MonoBehaviour {
     /// transform for the camera
     /// </summary>
     public Transform m_CameraTransform;
+    public GameObject m_EventSystem;
 
 
     /// <summary>
@@ -139,7 +140,7 @@ public class CameraManager : MonoBehaviour {
     // Use this for initialization
     void Start() {
 
-
+        m_EventSystem = GameObject.Find("EventSystem");
 
         m_CameraTransform.position = m_StartingCamPos = m_PlanningModeCamPos.position;
         m_Camera = Camera.main;
@@ -176,7 +177,12 @@ public class CameraManager : MonoBehaviour {
                 amount = 1;
                 m_RunningIntroCamera = false;
                 //camera animation done, unpause the game to let the player play
-                SlowMoManager.m_isPaused = false; 
+                //SlowMoManager.m_isPaused = false;
+                
+                GameObject.Find("Canvas").transform.Find("Weapon Select Menu").gameObject.SetActive(true);
+                m_EventSystem.GetComponent<WeaponSelectMenu>().WeaponMenuActive();
+
+                
             }
 
 
