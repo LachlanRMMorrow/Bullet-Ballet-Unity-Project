@@ -283,7 +283,7 @@ public class AI : MonoBehaviour {
 
     protected void updateLastKnownPosition() {
         //IT WOULD BE BETTER TO NOT RUN THIS EVERY FRAME, BUT GOOD AS A EXAMPLE/TEST
-        if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1) {
+        if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1 || m_CurrentRoomHolder.m_Entered) {
         //if (m_CurrentRoomHolder.m_Entered || m_CurrentRoomIndex == -1) {
         m_HasBeenInTheSameRoom = true;
             m_VisibleObject.SetActive(true);
@@ -299,6 +299,7 @@ public class AI : MonoBehaviour {
                 m_LastKnownPositionObject.SetActive(false);
             }
         }
+
     }
 
     public void OnTriggerEnter(Collider other) {
