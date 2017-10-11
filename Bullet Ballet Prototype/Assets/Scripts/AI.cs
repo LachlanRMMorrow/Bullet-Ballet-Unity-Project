@@ -123,7 +123,7 @@ public class AI : MonoBehaviour {
 
         Health health = GetComponent<Health>();
         health.m_ObjectDiedEvent.AddListener(AiKilled);
-        health.m_ObjectDiedEvent.AddListener(AiHit);
+        health.m_ObjectHitEvent.AddListener(AiHit);
 
         //get TellParentAboutCollision from collider within the model
         TellParentAboutCollision tpac = GetComponentInChildren<TellParentAboutCollision>();
