@@ -125,9 +125,19 @@ public class RoomHolder : MonoBehaviour {
     }
 
     public void startFade(bool a_Entered) {
+        //if room is already the same as what we want to do, then return
+        if(m_Entered == a_Entered) {
+            return;
+        }
+        if (m_RoomInteractedWith) {
+        //get how far through the current animation we are, and reverse it
+            float percentage = (Time.time - m_TimeInteractedWith) / m_FadeTime;
+            m_TimeInteractedWith = Time.time - (1 - percentage * m_FadeTime);
+        } else {
+            m_TimeInteractedWith = Time.time;
+        }
         m_RoomInteractedWith = true;
         m_Entered = a_Entered;
-        m_TimeInteractedWith = Time.time;
     }
 
     public void roomInteracted(bool a_Entered, RoomScript a_Script) {
@@ -136,7 +146,7 @@ public class RoomHolder : MonoBehaviour {
         m_InRoom = a_Entered;
         if (m_InRoom) {
             m_InColliders++;
-            
+
             if (m_InColliders == 1) {
                 m_PlayersCurrentRoom = m_RoomID;
                 runFade = true;
