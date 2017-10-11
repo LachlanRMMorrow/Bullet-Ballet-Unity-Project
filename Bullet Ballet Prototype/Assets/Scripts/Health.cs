@@ -19,11 +19,17 @@ public class Health : MonoBehaviour {
     /// </summary>
     public UnityEngine.UI.Slider m_SliderReference;
 
-    [HideInInspector]
     /// <summary>
     /// event to invoke when this object runs out of health
     /// </summary>
+    [HideInInspector]
     public UnityEngine.Events.UnityEvent m_ObjectDiedEvent;
+
+    /// <summary>
+    /// invokes event when this health script is hit
+    /// </summary>
+    [HideInInspector]
+    public UnityEngine.Events.UnityEvent m_ObjectHitEvent;
 
     public AudioClip m_DamageSound;
 
@@ -55,6 +61,9 @@ public class Health : MonoBehaviour {
         }
         //remove health
         m_CurrentHealth -= a_Damage;
+
+        m_ObjectHitEvent.Invoke();
+
         //check if this object is dead or not after the damage
         if (isDead()) {
             m_CurrentHealth = 0;

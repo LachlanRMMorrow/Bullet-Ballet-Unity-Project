@@ -123,6 +123,7 @@ public class AI : MonoBehaviour {
 
         Health health = GetComponent<Health>();
         health.m_ObjectDiedEvent.AddListener(AiKilled);
+        health.m_ObjectHitEvent.AddListener(AiHit);
 
         //get TellParentAboutCollision from collider within the model
         TellParentAboutCollision tpac = GetComponentInChildren<TellParentAboutCollision>();
@@ -283,7 +284,11 @@ public class AI : MonoBehaviour {
 
     protected void updateLastKnownPosition() {
         //IT WOULD BE BETTER TO NOT RUN THIS EVERY FRAME, BUT GOOD AS A EXAMPLE/TEST
-        if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1) {
+        bool isRoomHolderEntered = false;
+        if(m_CurrentRoomHolder != null) {
+            isRoomHolderEntered = m_CurrentRoomHolder.m_Entered;
+        }
+        if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1 || isRoomHolderEntered) {
         //if (m_CurrentRoomHolder.m_Entered || m_CurrentRoomIndex == -1) {
         m_HasBeenInTheSameRoom = true;
             m_VisibleObject.SetActive(true);
@@ -299,6 +304,7 @@ public class AI : MonoBehaviour {
                 m_LastKnownPositionObject.SetActive(false);
             }
         }
+
     }
 
     public void OnTriggerEnter(Collider other) {
@@ -314,6 +320,13 @@ public class AI : MonoBehaviour {
     /// </summary>
     private void AiKilled() {
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// called using unity event system when this object is hit
+    /// </summary>
+    private void AiHit() {
+        LevelEmissionFlash.m_Singleton.startFlash(false);
     }
 
 }
