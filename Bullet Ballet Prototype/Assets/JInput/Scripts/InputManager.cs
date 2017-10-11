@@ -172,7 +172,7 @@ namespace JInput {
 
         private void SetupInput() {
             if (m_Input != null) {
-                Debug.LogError("There are two InputManager scripts in the scene, disabling " + transform.name + " object to stop the script.");
+				Debug.LogError("There are two InputManager scripts in the scene, disabling " + transform.name + " object to stop the script.");
                 enabled = false;
                 gameObject.SetActive(false);
                 return;
