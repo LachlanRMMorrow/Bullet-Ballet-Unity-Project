@@ -24,6 +24,7 @@ public class PlayerArms : MonoBehaviour {
         internal bool m_HasDir;
         internal bool m_IsRight = true;
         internal PlayerShoot m_ArmShootScript;
+        internal Animator m_ArmAnimator;
     }
 
     public Arms m_LeftArm;
@@ -63,6 +64,12 @@ public class PlayerArms : MonoBehaviour {
 
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
 
+        m_LeftArm.m_ArmAnimator = m_LeftArm.m_Model.parent.GetComponent<Animator>();
+        m_RightArm.m_ArmAnimator = m_RightArm.m_Model.parent.GetComponent<Animator>();
+        if (m_LeftArm.m_ArmAnimator == null || m_RightArm.m_ArmAnimator == null) {
+            Debug.LogError("Player Arms cant find the model animator");
+        }
+
         m_LeftArm.m_IsRight = false;
 
         m_LeftArm.m_ArmShootScript = m_LeftArm.m_ShootingArm.GetComponent<PlayerShoot>();
@@ -89,6 +96,16 @@ public class PlayerArms : MonoBehaviour {
         rightStick.x = controller.getAxisValue(Keys.singleton.m_RightArmMovementX);
         rightStick.y = controller.getAxisValue(Keys.singleton.m_RightArmMovementY);
 
+
+        //apply stick positions to animator
+        if (m_LeftArm.m_ArmAnimator != null) {
+            m_LeftArm.m_ArmAnimator.SetFloat("Blend_X", leftStick.x);
+            m_LeftArm.m_ArmAnimator.SetFloat("Blend_Y", -leftStick.y);
+        }
+        if (m_RightArm.m_ArmAnimator != null) {
+            m_RightArm.m_ArmAnimator.SetFloat("Blend_X", rightStick.x);
+            m_RightArm.m_ArmAnimator.SetFloat("Blend_Y", -rightStick.y);
+        }
 
         //if there is then 0.1 moved on the sticks
         bool isLeftStickBeingUsed = leftStick.magnitude >= 0.1f;
