@@ -14,6 +14,7 @@ public class Player : MonoBehaviour {
         //add listener
         Health health = GetComponent<Health>();
         health.m_ObjectDiedEvent.AddListener(playerKilled);
+        health.m_ObjectHitEvent.AddListener(playerHit);
 
         m_PlayerAlive = true;
     }
@@ -29,4 +30,7 @@ public class Player : MonoBehaviour {
         m_PlayerAlive = false;
     }
 
+    void playerHit() {
+        LevelEmissionFlash.m_Singleton.startFlash(true);
+    }
 }
