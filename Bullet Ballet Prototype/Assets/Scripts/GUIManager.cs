@@ -14,6 +14,7 @@ public class GUIManager : MonoBehaviour {
 
     public GameObject graphicsMenu;
     public GameObject soundMenu;
+    public GameObject optionsMainMenu;
 
     public Button newGame;
     public Button resume;
@@ -81,6 +82,11 @@ public class GUIManager : MonoBehaviour {
     public void ExitToMenu()
     {
         SoundManager.StopBGM(false, 0);
+        SceneManager.LoadScene(0);
+    }
+
+    public void Apply()
+    {
         SceneManager.LoadScene(0);
     }
 
