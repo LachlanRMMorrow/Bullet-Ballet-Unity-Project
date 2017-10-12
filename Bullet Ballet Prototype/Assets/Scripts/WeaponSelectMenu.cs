@@ -18,12 +18,6 @@ public class WeaponSelectMenu : MonoBehaviour {
     public GameObject rightHandRef;
     public GameObject leftHandRef;
 
-    Vector3 rightHandWeaponPosition;
-    Quaternion rightHandWeaponRotation;
-
-    Vector3 leftHandWeaponPosition;
-    Quaternion leftHandWeaponRotation;
-
     Transform test;
     Transform test2;
 
@@ -52,12 +46,6 @@ public class WeaponSelectMenu : MonoBehaviour {
 
         rightHandRef = GameObject.Find("Player (Rigged)").transform.GetChild(2).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetChild(0).gameObject;
         leftHandRef = GameObject.Find("Player (Rigged)").transform.GetChild(2).GetChild(0).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetChild(0).gameObject;
-
-        rightHandWeaponPosition = rightHandRef.transform.GetChild(0).transform.position;
-        rightHandWeaponRotation = rightHandRef.transform.GetChild(0).transform.rotation;
-
-        leftHandWeaponPosition = leftHandRef.transform.GetChild(0).transform.position;
-        leftHandWeaponRotation = leftHandRef.transform.GetChild(0).transform.rotation;
 
         if (weaponMenu == null)
         {
