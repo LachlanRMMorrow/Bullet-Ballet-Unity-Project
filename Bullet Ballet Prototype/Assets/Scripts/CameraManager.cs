@@ -145,7 +145,7 @@ public class CameraManager : MonoBehaviour {
         m_EventSystem = GameObject.Find("EventSystem");
 
         m_PlayerTransform = GameObject.Find("Player (Rigged)").transform;
-        m_WaypointMarkerTransform = GameObject.Find("Waypoint System").transform;
+        m_WaypointMarkerTransform = GameObject.Find("Waypoint System").transform.GetChild(1);
         m_PlayerArmLeft = GameObject.Find("Player (Rigged)").transform.GetChild(0).GetChild(1);
         m_PlayerArmRight = GameObject.Find("Player (Rigged)").transform.GetChild(0).GetChild(0);
 
