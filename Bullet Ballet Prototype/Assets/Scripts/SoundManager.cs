@@ -17,7 +17,7 @@ public class SoundManager : MonoBehaviour
     static bool isMuted = false;
 
     public List<AudioSource> sfxSources;
-    AudioSource bgmSource;
+    public AudioSource bgmSource;
 
 
     public static SoundManager GetInstance()
