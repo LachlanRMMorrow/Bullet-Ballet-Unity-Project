@@ -56,8 +56,8 @@ public class SettingsManager : MonoBehaviour
         {
             if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 2)
             {
-                GetUiElements();
                 applyButton = GameObject.Find("Apply").GetComponent<Button>();
+                GetUiElements();
                 antialiasingDropdwon = GameObject.Find("Canvas Options").transform.Find("Antialiasing").GetComponent<Dropdown>();
                 gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
                 SetUiElements();
@@ -129,9 +129,9 @@ public class SettingsManager : MonoBehaviour
         bgmMusicVolumeSlider = GameObject.Find("Music Volume Slider").GetComponent<Slider>();
         sfxVolumeSlider = GameObject.Find("SFX Volume Slider").GetComponent<Slider>();
         masterVolumeMuteToggle = GameObject.Find("Master Volume Mute").GetComponent<Toggle>();
-        bgmMusicMuteToggle = GameObject.Find("SFX Volume Mute").GetComponent<Toggle>();
-        sfxMuteToggle = GameObject.Find("Music Volume Mute").GetComponent<Toggle>();
-        
+        bgmMusicMuteToggle = GameObject.Find("Music Volume Mute").GetComponent<Toggle>();
+        sfxMuteToggle = GameObject.Find("SFX Volume Mute").GetComponent<Toggle>();
+
         if (applyButton != null)
         {
             applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
