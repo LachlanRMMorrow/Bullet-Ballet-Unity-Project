@@ -194,6 +194,7 @@ public class AI : MonoBehaviour {
         int layerMask = (1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemies") | 1 << LayerMask.NameToLayer("Cover"));
         //raycast from AI in the player direction for 1000 units, checking for walls, players and enemies
         if (Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up*1.2f), normPlayerDir(), out hit, 1000, layerMask)) {
+            Debug.Log(Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up * 1.5f), normPlayerDir(), out hit, 1000, layerMask));
             //is this object the player
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
                 return true;

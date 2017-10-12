@@ -77,7 +77,7 @@ public class DeathScreen : MonoBehaviour
         if (m_DeathScreenHolder == null)
         {
             //gets death Screen, using the 2nd child
-            m_DeathScreenHolder = GameObject.Find("Canvas").transform.Find("Death Screen").gameObject;
+            m_DeathScreenHolder = GameObject.Find("Canvas").transform.GetChild(3).gameObject;
 
         }
     }
