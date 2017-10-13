@@ -98,11 +98,11 @@ public class GameStateManager : MonoBehaviour {
             return;
         }
 
+#if UNITY_EDITOR == false
         //hide cursor if there is a controller present
         Cursor.visible = !m_Controller.m_IsActive;
 
         //only lock the cursor if we are not in the editor (ie: builds)
-#if UNITY_EDITOR == false
         Cursor.lockState = m_Controller.m_IsActive ?  CursorLockMode.Locked  : CursorLockMode.None;
 #endif
 
