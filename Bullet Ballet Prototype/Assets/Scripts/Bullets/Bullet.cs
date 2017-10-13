@@ -19,6 +19,9 @@ public class Bullet : MonoBehaviour {
     /// </summary>
     private bool m_HasHit = false;
 
+    [HideInInspector]
+    public bool m_ShouldStopAfterCollision = true;
+
     // Use this for initialization
     protected virtual void Awake() {
         //set force of bullet, in the forward direction
@@ -42,8 +45,10 @@ public class Bullet : MonoBehaviour {
                 return;
             }
             checkBulletHitHandler(collision.gameObject);
-            bulletHit(collision.gameObject);
-            m_HasHit = true;
+            if (m_ShouldStopAfterCollision) {
+                bulletHit(collision.gameObject);
+                m_HasHit = true;
+            }
         }
             
         
@@ -65,8 +70,10 @@ public class Bullet : MonoBehaviour {
                 return;
             }
             checkBulletHitHandler(collision.gameObject);
-            bulletHit(collision.gameObject);
-            m_HasHit = true;
+            if (m_ShouldStopAfterCollision) {
+                bulletHit(collision.gameObject);
+                m_HasHit = true;
+            }
 
         }
         
@@ -74,6 +81,7 @@ public class Bullet : MonoBehaviour {
 
 
     private void checkBulletHitHandler(GameObject a_Object) {
+        m_ShouldStopAfterCollision = true;
         BulletHitHandler bhh = a_Object.GetComponent<BulletHitHandler>();
         if(bhh != null) {
             bhh.m_BulletHit = transform;
