@@ -51,6 +51,8 @@ public class PlayerArms : MonoBehaviour {
     /// </summary>
     public float m_DistanceForMaxAssist = 20.0f;
 
+    public bool m_UseAnimatorOnStart = false;
+
     // Use this for initialization
     void Awake() {
 
@@ -64,10 +66,21 @@ public class PlayerArms : MonoBehaviour {
 
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
 
-        m_LeftArm.m_ArmAnimator = m_LeftArm.m_Model.parent.GetComponent<Animator>();
-        m_RightArm.m_ArmAnimator = m_RightArm.m_Model.parent.GetComponent<Animator>();
-        if (m_LeftArm.m_ArmAnimator == null || m_RightArm.m_ArmAnimator == null) {
-            Debug.LogError("Player Arms cant find the model animator");
+            //m_LeftArm.m_ArmAnimator = m_LeftArm.m_Model.parent.GetComponent<Animator>();
+            //m_RightArm.m_ArmAnimator = m_RightArm.m_Model.parent.GetComponent<Animator>();
+            m_LeftArm.m_ArmAnimator = transform.GetChild(2).GetChild(0).GetComponent<Animator>();
+            m_RightArm.m_ArmAnimator = transform.GetChild(2).GetChild(0).GetComponent<Animator>();
+            if (m_LeftArm.m_ArmAnimator == null || m_RightArm.m_ArmAnimator == null) {
+
+                Debug.LogError("Player Arms cant find the model animator");
+            }
+
+        if (m_UseAnimatorOnStart) {
+            m_LeftArm.m_ArmAnimator.StartPlayback();
+            m_RightArm.m_ArmAnimator.StartPlayback();
+        }else {
+            m_LeftArm.m_ArmAnimator.StopPlayback();
+            m_LeftArm.m_ArmAnimator.enabled = false;
         }
 
         m_LeftArm.m_IsRight = false;
@@ -97,14 +110,16 @@ public class PlayerArms : MonoBehaviour {
         rightStick.y = controller.getAxisValue(Keys.singleton.m_RightArmMovementY);
 
 
-        //apply stick positions to animator
-        if (m_LeftArm.m_ArmAnimator != null) {
-            m_LeftArm.m_ArmAnimator.SetFloat("Blend_X", leftStick.x);
-            m_LeftArm.m_ArmAnimator.SetFloat("Blend_Y", -leftStick.y);
-        }
-        if (m_RightArm.m_ArmAnimator != null) {
-            m_RightArm.m_ArmAnimator.SetFloat("Blend_X", rightStick.x);
-            m_RightArm.m_ArmAnimator.SetFloat("Blend_Y", -rightStick.y);
+        if (m_UseAnimatorOnStart) {
+            //apply stick positions to animator
+            if (m_LeftArm.m_ArmAnimator != null) {
+                m_LeftArm.m_ArmAnimator.SetFloat("L_Blend_X", leftStick.x);
+                m_LeftArm.m_ArmAnimator.SetFloat("L_Blend_Y", -leftStick.y);
+            }
+            if (m_RightArm.m_ArmAnimator != null) {
+                m_RightArm.m_ArmAnimator.SetFloat("R_Blend_X", rightStick.x);
+                m_RightArm.m_ArmAnimator.SetFloat("R_Blend_Y", -rightStick.y);
+            }
         }
 
         //if there is then 0.1 moved on the sticks
@@ -114,7 +129,6 @@ public class PlayerArms : MonoBehaviour {
         //apply hasDir to arms based on stick movement
         m_LeftArm.m_HasDir = isLeftStickBeingUsed;
         m_RightArm.m_HasDir = isRightStickBeingUsed;
-
 
 
         //set the rotation of the sticks if it is being used
@@ -144,9 +158,10 @@ public class PlayerArms : MonoBehaviour {
 
 
         //move both arms
-        moveArms(m_LeftArm);
-        moveArms(m_RightArm);
-
+        if (!m_UseAnimatorOnStart) {
+            moveArms(m_LeftArm);
+            moveArms(m_RightArm);
+        }
 
         //rotate players body based on arm movement
         if (m_RotateToFaceArms) {
