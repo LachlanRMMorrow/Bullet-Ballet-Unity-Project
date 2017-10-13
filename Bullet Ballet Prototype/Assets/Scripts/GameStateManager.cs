@@ -90,20 +90,23 @@ public class GameStateManager : MonoBehaviour {
     }
 
     void Update() {
-        if (SlowMoManager.m_isPaused) {
-            return;
-        }
         m_Controller = JInput.CurrentController.currentController;
 
+        if (m_Controller == null) {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            return;
+        }
+
         //hide cursor if there is a controller present
-        Cursor.visible = m_Controller == null;
+        Cursor.visible = !m_Controller.m_IsActive;
 
         //only lock the cursor if we are not in the editor (ie: builds)
 #if UNITY_EDITOR == false
-        Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.lockState = m_Controller.m_IsActive ?  CursorLockMode.Locked  : CursorLockMode.None;
 #endif
 
-        if (m_Controller == null) {            
+        if (SlowMoManager.m_isPaused) {
             return;
         }
 
