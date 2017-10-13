@@ -15,8 +15,6 @@ public class EventGameState : UnityEngine.Events.UnityEvent<GameStates> { }
 
 public class GameStateManager : MonoBehaviour {
 
-
-
     /// <summary>
     /// singleton for the gamestateManager
     /// </summary>
@@ -92,11 +90,23 @@ public class GameStateManager : MonoBehaviour {
     }
 
     void Update() {
-        if (SlowMoManager.m_isPaused) {
+        m_Controller = JInput.CurrentController.currentController;
+
+        if (m_Controller == null) {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             return;
         }
-        m_Controller = JInput.CurrentController.currentController;
-        if (m_Controller == null) {
+
+        //hide cursor if there is a controller present
+        Cursor.visible = !m_Controller.m_IsActive;
+
+        //only lock the cursor if we are not in the editor (ie: builds)
+#if UNITY_EDITOR == false
+        Cursor.lockState = m_Controller.m_IsActive ?  CursorLockMode.Locked  : CursorLockMode.None;
+#endif
+
+        if (SlowMoManager.m_isPaused) {
             return;
         }
 
