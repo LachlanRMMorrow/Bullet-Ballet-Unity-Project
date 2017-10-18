@@ -9,6 +9,7 @@ public class EndofLevelMenu : MonoBehaviour
     int scene;
 
      Button nextLevel;
+     Button restartLevel;
      Button exitToMenu;
      Button exitToDesktop;
 
@@ -27,21 +28,28 @@ public class EndofLevelMenu : MonoBehaviour
         manager.ScreenBlur(true);
         if (nextLevel == null)
         {
-nextLevel = GameObject.Find("Next Level ES").GetComponent<Button>();
+            nextLevel = GameObject.Find("Next Level ES").GetComponent<Button>();
             nextLevel.onClick.AddListener(NextLevel);
         }
         
 
+        if (restartLevel == null)
+        {
+            restartLevel = GameObject.Find("Restart ES").GetComponent<Button>();
+            restartLevel.onClick.AddListener(RestartLevel);
+        }
+
+
         if (exitToMenu == null)
         {
-exitToMenu = GameObject.Find("Exit To Menu ES").GetComponent<Button>();
+            exitToMenu = GameObject.Find("Exit To Menu ES").GetComponent<Button>();
             exitToMenu.onClick.AddListener(ExitToMenu);
         }
             
 
         if (exitToDesktop == null)
         {
-exitToDesktop = GameObject.Find("Exit To Desktop ES").GetComponent<Button>();
+            exitToDesktop = GameObject.Find("Exit To Desktop ES").GetComponent<Button>();
             exitToDesktop.onClick.AddListener(ExitToDesktop);
         }
             
@@ -54,6 +62,14 @@ exitToDesktop = GameObject.Find("Exit To Desktop ES").GetComponent<Button>();
         scene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(scene + 1);
         
+    }
+
+    void RestartLevel()
+    {
+        manager.ScreenBlur(false);
+        scene = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(scene);
+
     }
 
     void ExitToMenu()
