@@ -44,6 +44,9 @@ public class PlayerPathing : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
+        if (SlowMoManager.m_isPaused) {
+            return;
+        }
         m_Controller = JInput.CurrentController.currentController;
         if (m_Controller == null) {
             return;
