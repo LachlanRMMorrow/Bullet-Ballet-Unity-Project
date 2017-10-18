@@ -39,6 +39,14 @@ public class WeaponShooter : MonoBehaviour {
     /// </summary>
     private CameraManager m_CameraManager;
 
+    /// <summary>
+    /// 0 for only exactly horizontal
+    /// 1 to allow everything
+    /// 0.5 to only allow shooting when the gun is between horizontal and half way to facing up
+    /// </summary>
+    [Range(0,1)]
+    public float m_DontShootWhenPointIsFacingUp = 0.5f;
+
     void Awake() {
         //set up default values for weapon
         changeWeapon(m_WeaponType);
@@ -83,6 +91,10 @@ public class WeaponShooter : MonoBehaviour {
         //dont shoot if no ammo, reload instead
         if (m_CurrentAmmo == 0) {
             reload();
+            return null;
+        }
+
+        if(Mathf.Abs(Vector3.Dot(m_SpawnPoint.forward,Vector3.up)) > m_DontShootWhenPointIsFacingUp) {
             return null;
         }
 
