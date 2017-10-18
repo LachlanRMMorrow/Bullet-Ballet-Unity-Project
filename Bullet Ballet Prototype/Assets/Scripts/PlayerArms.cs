@@ -113,12 +113,14 @@ public class PlayerArms : MonoBehaviour {
         if (m_UseAnimatorOnStart) {
             //apply stick positions to animator
             if (m_LeftArm.m_ArmAnimator != null) {
-                m_LeftArm.m_ArmAnimator.SetFloat("L_Blend_X", leftStick.x);
-                m_LeftArm.m_ArmAnimator.SetFloat("L_Blend_Y", -leftStick.y);
+                Vector3 pos = transform.rotation * new Vector3(leftStick.x,0,leftStick.y);
+                m_LeftArm.m_ArmAnimator.SetFloat("L_Blend_X", pos.x);
+                m_LeftArm.m_ArmAnimator.SetFloat("L_Blend_Y", -pos.z);
             }
             if (m_RightArm.m_ArmAnimator != null) {
-                m_RightArm.m_ArmAnimator.SetFloat("R_Blend_X", rightStick.x);
-                m_RightArm.m_ArmAnimator.SetFloat("R_Blend_Y", -rightStick.y);
+                Vector3 pos = transform.rotation * new Vector3(rightStick.x,0, rightStick.y);
+                m_RightArm.m_ArmAnimator.SetFloat("R_Blend_X", pos.x);
+                m_RightArm.m_ArmAnimator.SetFloat("R_Blend_Y", -pos.z);
             }
         }
 
@@ -165,7 +167,7 @@ public class PlayerArms : MonoBehaviour {
 
         //rotate players body based on arm movement
         if (m_RotateToFaceArms) {
-            calcPlayerRotation();
+                calcPlayerRotation();
         }
 
     }
@@ -295,7 +297,7 @@ public class PlayerArms : MonoBehaviour {
                 quatRot = Quaternion.Slerp(quatRot, m_LeftArm.m_MovingTo.rotation, 0.5f);
 
             }
-            //print(Quaternion.Dot(m_RightArm.m_MovingTo.rotation, m_LeftArm.m_MovingTo.rotation));
+            //print("arm dot: " + Quaternion.Dot(m_RightArm.m_MovingTo.rotation, m_LeftArm.m_MovingTo.rotation));
             added++;
         }
 
@@ -303,8 +305,25 @@ public class PlayerArms : MonoBehaviour {
             return;
         }
 
+        if ((m_LeftArm.m_HasDir && m_RightArm.m_HasDir)) {
+            float dotRes = Quaternion.Dot(transform.rotation, quatRot);
+            print("Quat rot.transform dot: " + dotRes);
+            //dotRes = Quaternion.Dot(m_LeftArm.m_MovingTo.rotation, m_RightArm.m_MovingTo.rotation);
+            if (dotRes <= 0.1f) {
+                print("qq");
+                Vector3 rotation = quatRot.eulerAngles;
+                rotation.y += 180;
+                quatRot = Quaternion.Euler(rotation);
+            }
+        }
+
         float percentage = Time.unscaledDeltaTime * m_PlayerBodyRotateSpeed;
-        transform.rotation = Quaternion.Slerp(transform.rotation, quatRot, percentage);
+
+        Quaternion newRotation = Quaternion.Slerp(transform.rotation, quatRot, percentage);
+
+
+
+        transform.rotation = newRotation;
     }
 
     private void limitArmMovements(Arms a_Arm) {
