@@ -10,6 +10,8 @@ public class Player : MonoBehaviour {
 
     public static bool m_PlayerAlive = true;
 
+    public static bool m_HasPlayerDoneAnything = false;
+
     void Awake() {
         //add listener
         Health health = GetComponent<Health>();
@@ -17,6 +19,8 @@ public class Player : MonoBehaviour {
         health.m_ObjectHitEvent.AddListener(playerHit);
 
         m_PlayerAlive = true;
+
+        m_HasPlayerDoneAnything = false;
     }
 
     /// <summary>

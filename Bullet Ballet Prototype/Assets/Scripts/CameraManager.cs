@@ -208,6 +208,10 @@ public class CameraManager : MonoBehaviour {
             return;
         }
 
+        if (!Player.m_HasPlayerDoneAnything) {
+            return;
+        }
+
         if (SlowMoManager.m_isPaused || !Player.m_PlayerAlive) {
             return;
         }

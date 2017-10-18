@@ -107,7 +107,7 @@ public class PlayerDive : MonoBehaviour {
 
 
         if (isAboutToDive) {
-
+         
 
 
             Vector2 leftStick = controller.getAxisValue(JInput.ControllerVec2Axes.LStick);
@@ -132,6 +132,8 @@ public class PlayerDive : MonoBehaviour {
                     //apply force
                     float moveSpeed = m_Distance / m_TimeTakenToDash;
                     m_Rigidbody.AddForce(m_Direction * moveSpeed, ForceMode.Impulse);
+
+                    Player.m_HasPlayerDoneAnything = true;
                 }
             }
         } else {

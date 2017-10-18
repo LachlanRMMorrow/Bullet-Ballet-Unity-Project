@@ -44,6 +44,9 @@ public class PlayerPathing : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
+        if (SlowMoManager.m_isPaused) {
+            return;
+        }
         m_Controller = JInput.CurrentController.currentController;
         if (m_Controller == null) {
             return;
@@ -57,6 +60,10 @@ public class PlayerPathing : MonoBehaviour {
             m_Controller.getAxisValue(Keys.singleton.m_PlanningWayPointMovementX),
             0,
             -m_Controller.getAxisValue(Keys.singleton.m_PlanningWayPointMovementY));
+
+        if(leftStick.magnitude >= 0.1f) {
+            Player.m_HasPlayerDoneAnything = true;
+        }
 
         //update position of object
         Vector3 pos = transform.position;

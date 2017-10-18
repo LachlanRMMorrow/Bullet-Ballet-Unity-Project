@@ -144,6 +144,10 @@ public class PlayerArms : MonoBehaviour {
             setRotation(m_RightArm.m_MovingTo, rightStick);
         }
 
+        if (!Player.m_HasPlayerDoneAnything) {
+            Player.m_HasPlayerDoneAnything |= isLeftStickBeingUsed | isRightStickBeingUsed;
+        }
+
 
         //stop the arms from moving if m_CanMoveArms is false
         if (!m_CanMoveArms) {
@@ -305,15 +309,17 @@ public class PlayerArms : MonoBehaviour {
             return;
         }
 
-        if ((m_LeftArm.m_HasDir && m_RightArm.m_HasDir)) {
-            float dotRes = Quaternion.Dot(transform.rotation, quatRot);
-            print("Quat rot.transform dot: " + dotRes);
-            //dotRes = Quaternion.Dot(m_LeftArm.m_MovingTo.rotation, m_RightArm.m_MovingTo.rotation);
-            if (dotRes <= 0.1f) {
-                print("qq");
-                Vector3 rotation = quatRot.eulerAngles;
-                rotation.y += 180;
-                quatRot = Quaternion.Euler(rotation);
+        if (m_UseAnimatorOnStart) {
+            if ((m_LeftArm.m_HasDir && m_RightArm.m_HasDir)) {
+                float dotRes = Quaternion.Dot(transform.rotation, quatRot);
+                //print("Quat rot.transform dot: " + dotRes);
+                //dotRes = Quaternion.Dot(m_LeftArm.m_MovingTo.rotation, m_RightArm.m_MovingTo.rotation);
+                if (dotRes <= 0.1f) {
+                    //print("qq");
+                    Vector3 rotation = quatRot.eulerAngles;
+                    rotation.y += 180;
+                    quatRot = Quaternion.Euler(rotation);
+                }
             }
         }
 
