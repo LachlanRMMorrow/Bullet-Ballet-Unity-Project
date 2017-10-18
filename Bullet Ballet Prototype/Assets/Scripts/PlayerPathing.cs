@@ -58,6 +58,10 @@ public class PlayerPathing : MonoBehaviour {
             0,
             -m_Controller.getAxisValue(Keys.singleton.m_PlanningWayPointMovementY));
 
+        if(leftStick.magnitude >= 0.1f) {
+            Player.m_HasPlayerDoneAnything = true;
+        }
+
         //update position of object
         Vector3 pos = transform.position;
         Vector3 movement = leftStick * m_MoveSpeed * Time.unscaledDeltaTime;
