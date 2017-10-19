@@ -144,6 +144,7 @@ public class AI : MonoBehaviour {
             return;
         }
 
+
         updateLastKnownPosition();
 
         //if we can see the player, then return
@@ -177,18 +178,30 @@ public class AI : MonoBehaviour {
             if (m_NavMesh.hasPath) {
                 m_NavMesh.ResetPath();
             }
-            if (m_AiAnimation.gameObject.activeInHierarchy) {
-                m_AiAnimation.SetFloat("R_Blend_Y", 1.0f);
-            }
+
             //look and shoot at the player
             turnToPlayer();
             shoot();
 
             m_SeenPlayer = true;
             m_LastPlayerPos = m_PlayerTransform.position;
+
+
+            if (m_AiAnimation.gameObject.activeInHierarchy) {
+                //point arm towards player
+                Vector3 dir = m_PlayerTransform.position - m_VisibleObject.transform.position;
+                dir = new Vector3(dir.x, 0, -dir.z).normalized;
+                dir = m_VisibleObject.transform.rotation * dir;
+                m_AiAnimation.SetFloat("R_Blend_X", dir.x);
+                m_AiAnimation.SetFloat("R_Blend_Y", -dir.z);
+                //m_AiAnimation.SetFloat("L_Blend_X", dir.z);
+                //m_AiAnimation.SetFloat("L_Blend_Y", dir.x);
+            }
+
             return true;
         }
         if (m_AiAnimation.gameObject.activeInHierarchy) {
+            m_AiAnimation.SetFloat("R_Blend_X", 0.0f);
             m_AiAnimation.SetFloat("R_Blend_Y", 0.0f);
         }
         return false;
