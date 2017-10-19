@@ -90,6 +90,8 @@ public class AI : MonoBehaviour {
     /// </summary>
     private bool m_HasBeenInTheSameRoom = false;
 
+    public Animator m_AiAnimation;
+
     // Use this for initialization
     protected virtual void Start() {
         //set the static room layer variable
@@ -128,6 +130,9 @@ public class AI : MonoBehaviour {
         //get TellParentAboutCollision from collider within the model
         TellParentAboutCollision tpac = GetComponentInChildren<TellParentAboutCollision>();
         tpac.m_TriggerEnter.AddListener(OnTriggerEnter);
+
+        m_AiAnimation = m_VisibleObject.GetComponentInChildren<Animator>();
+        m_AiAnimation.StartPlayback();
     }
 
 
@@ -172,6 +177,9 @@ public class AI : MonoBehaviour {
             if (m_NavMesh.hasPath) {
                 m_NavMesh.ResetPath();
             }
+            if (m_AiAnimation.gameObject.activeInHierarchy) {
+                m_AiAnimation.SetFloat("R_Blend_Y", 1.0f);
+            }
             //look and shoot at the player
             turnToPlayer();
             shoot();
@@ -180,9 +188,12 @@ public class AI : MonoBehaviour {
             m_LastPlayerPos = m_PlayerTransform.position;
             return true;
         }
+        if (m_AiAnimation.gameObject.activeInHierarchy) {
+            m_AiAnimation.SetFloat("R_Blend_Y", 0.0f);
+        }
         return false;
     }
-  
+
     /// <summary>
     /// can the AI see the player
     /// </summary>
@@ -193,8 +204,8 @@ public class AI : MonoBehaviour {
         //convert to a bitmask (000100000000)
         int layerMask = (1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemies") | 1 << LayerMask.NameToLayer("Cover"));
         //raycast from AI in the player direction for 1000 units, checking for walls, players and enemies
-        if (Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up*1.2f), normPlayerDir(), out hit, 1000, layerMask)) {
-            Debug.Log(Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up * 1.5f), normPlayerDir(), out hit, 1000, layerMask));
+        if (Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up * 1.2f), normPlayerDir(), out hit, 1000, layerMask)) {
+            //Debug.Log(Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up * 1.5f), normPlayerDir(), out hit, 1000, layerMask));
             //is this object the player
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
                 return true;
@@ -286,12 +297,12 @@ public class AI : MonoBehaviour {
     protected void updateLastKnownPosition() {
         //IT WOULD BE BETTER TO NOT RUN THIS EVERY FRAME, BUT GOOD AS A EXAMPLE/TEST
         bool isRoomHolderEntered = false;
-        if(m_CurrentRoomHolder != null) {
+        if (m_CurrentRoomHolder != null) {
             isRoomHolderEntered = m_CurrentRoomHolder.m_Entered;
         }
         if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1 || isRoomHolderEntered) {
-        //if (m_CurrentRoomHolder.m_Entered || m_CurrentRoomIndex == -1) {
-        m_HasBeenInTheSameRoom = true;
+            //if (m_CurrentRoomHolder.m_Entered || m_CurrentRoomIndex == -1) {
+            m_HasBeenInTheSameRoom = true;
             m_VisibleObject.SetActive(true);
             m_LastKnownPositionObject.SetActive(false);
             //update position and rotation
