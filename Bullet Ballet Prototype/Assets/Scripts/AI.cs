@@ -92,6 +92,14 @@ public class AI : MonoBehaviour {
 
     public Animator m_AiAnimation;
 
+    private Vector2 m_ArmsAnimation = new Vector2();
+    private float m_ArmsScale = 0.0f;
+    private bool m_MovingDown;
+    private bool m_AreArmsUp = false;
+    private bool m_ArmsMoving = false;
+    private float m_ArmsMoveUpMoveTime = 1.5f;
+    private float m_ArmsMoveStartTime;
+
     // Use this for initialization
     protected virtual void Start() {
         //set the static room layer variable
@@ -144,6 +152,27 @@ public class AI : MonoBehaviour {
             return;
         }
 
+        if (m_ArmsMoving) {
+            float percentage = (Time.time - m_ArmsMoveStartTime) /m_ArmsMoveUpMoveTime;
+
+            if(percentage >= 1) {
+                m_ArmsMoving = false;
+                percentage = 1;
+            }
+
+            if (!m_AreArmsUp) {
+                percentage = 1 - percentage;
+            }
+
+            m_ArmsScale = percentage;
+
+        }
+
+        if (m_AiAnimation.gameObject.activeInHierarchy) {
+            m_AiAnimation.SetFloat("R_Blend_X", m_ArmsAnimation.x * m_ArmsScale);
+            m_AiAnimation.SetFloat("R_Blend_Y", m_ArmsAnimation.y * m_ArmsScale);
+
+        }
 
         updateLastKnownPosition();
 
@@ -186,24 +215,32 @@ public class AI : MonoBehaviour {
             m_SeenPlayer = true;
             m_LastPlayerPos = m_PlayerTransform.position;
 
-
-            if (m_AiAnimation.gameObject.activeInHierarchy) {
+            
                 //point arm towards player
                 Vector3 dir = m_PlayerTransform.position - m_VisibleObject.transform.position;
                 dir = new Vector3(dir.x, 0, -dir.z).normalized;
                 dir = m_VisibleObject.transform.rotation * dir;
-                m_AiAnimation.SetFloat("R_Blend_X", dir.x);
-                m_AiAnimation.SetFloat("R_Blend_Y", -dir.z);
-                //m_AiAnimation.SetFloat("L_Blend_X", dir.z);
-                //m_AiAnimation.SetFloat("L_Blend_Y", dir.x);
-            }
+
+                m_ArmsAnimation.x = dir.x;
+                m_ArmsAnimation.y = -dir.z;
+
+                if (!m_ArmsMoving && !m_AreArmsUp) {
+
+                    m_ArmsMoveStartTime = Time.time;
+                    m_ArmsMoving = true;
+                    m_AreArmsUp = true;
+                }
+                
+            
 
             return true;
         }
-        if (m_AiAnimation.gameObject.activeInHierarchy) {
-            m_AiAnimation.SetFloat("R_Blend_X", 0.0f);
-            m_AiAnimation.SetFloat("R_Blend_Y", 0.0f);
-        }
+            if (!m_ArmsMoving && m_AreArmsUp) {
+                m_ArmsMoveStartTime = Time.time;
+                m_ArmsMoving = true;
+                m_AreArmsUp = false;
+            }
+        
         return false;
     }
 
@@ -344,7 +381,11 @@ public class AI : MonoBehaviour {
     /// called using unity event system when this object is out of health
     /// </summary>
     private void AiKilled() {
-        Destroy(gameObject);
+        Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
+        if (ragdoll != null) {
+            ragdoll.RagdollOn = true;
+        }
+        Destroy(gameObject,5.0f);
     }
 
     /// <summary>

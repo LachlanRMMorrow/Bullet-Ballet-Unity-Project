@@ -41,9 +41,11 @@ public class PatrolAI : AI {
     private void doPathing() {
         //if the nav mesh doesnt have a path atm
         if (!m_NavMesh.hasPath) {
-            //lerp from m_CurrentPath to m_CurrentPath % m_PatrolPoints.Count
-            m_NavMesh.SetDestination(m_PatrolPoints[m_CurrentPath].position);
-            m_CurrentPath = (m_CurrentPath + 1) % m_PatrolPoints.Count;
+            if (m_PatrolPoints[m_CurrentPath] != null) {
+                //lerp from m_CurrentPath to m_CurrentPath % m_PatrolPoints.Count
+                m_NavMesh.SetDestination(m_PatrolPoints[m_CurrentPath].position);
+            }
+                m_CurrentPath = (m_CurrentPath + 1) % m_PatrolPoints.Count;
         }
     }
 }
