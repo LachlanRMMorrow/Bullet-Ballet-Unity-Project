@@ -163,9 +163,10 @@ public class EventSystemOverride : MonoBehaviour {
             //need a better way to get the drop down script
             Dropdown t = m_CurrentSelected.transform.parent.parent.parent.parent.GetComponent<Dropdown>();
             t.Hide();
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /// <summary>
