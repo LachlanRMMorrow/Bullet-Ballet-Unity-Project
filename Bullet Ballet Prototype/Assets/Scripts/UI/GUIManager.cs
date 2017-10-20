@@ -21,19 +21,11 @@ public class GUIManager : MonoBehaviour {
     public Button options;
     public Button exit;
 
-    GameSettings gameSettings;
-
-
-
     // Use this for initialization
     void Start ()
     {
 
         screenBlur = Resources.Load("Core Post Processing") as UnityEngine.PostProcessing.PostProcessingProfile;
-        //newGame.onClick.AddListener(NewGame);
-        //resume.onClick.AddListener(Resume);
-        //options.onClick.AddListener(Options);
-        //exit.onClick.AddListener(Exit);
 
         //remove screen blur on start
         ScreenBlur(false);
