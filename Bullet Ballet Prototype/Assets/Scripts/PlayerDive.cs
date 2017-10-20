@@ -44,6 +44,8 @@ public class PlayerDive : MonoBehaviour {
 
     private Vector3 m_Direction;
 
+    private Vector3 m_StartPos;
+
 
     //references to components that are on the player
     private PlayerArms m_PlayerArms;
@@ -80,7 +82,9 @@ public class PlayerDive : MonoBehaviour {
             m_IsDiving = false;
             m_Rigidbody.velocity = Vector3.zero;
 
-            m_Movement.modifyPath(m_Direction * m_Distance);
+            float distScale = Vector3.Distance(m_StartPos, transform.position) / m_Distance;
+
+            m_Movement.modifyPath(m_Direction * m_Distance * distScale);
 
             m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
         }
@@ -134,6 +138,8 @@ public class PlayerDive : MonoBehaviour {
                     m_Rigidbody.AddForce(m_Direction * moveSpeed, ForceMode.Impulse);
 
                     Player.m_HasPlayerDoneAnything = true;
+
+                    m_StartPos = transform.position;
                 }
             }
         } else {
