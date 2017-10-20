@@ -13,6 +13,8 @@ public class EndofLevelMenu : MonoBehaviour
      Button exitToMenu;
      Button exitToDesktop;
 
+    public GameObject m_ShakeHolder;
+
     GUIManager manager;
 
 	void Start ()
@@ -25,6 +27,9 @@ public class EndofLevelMenu : MonoBehaviour
 
     public void EndOfLeveActive()
     {
+
+        m_ShakeHolder = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
+        m_ShakeHolder.SetActive(false);
         manager.ScreenBlur(true);
         if (nextLevel == null)
         {

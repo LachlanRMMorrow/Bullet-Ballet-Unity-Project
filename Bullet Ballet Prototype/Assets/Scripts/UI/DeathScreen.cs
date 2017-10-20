@@ -13,6 +13,7 @@ public class DeathScreen : MonoBehaviour
     public Button exitToMenu;
 
     public GameObject m_DeathScreenHolder;
+    public GameObject m_ShakeHolder;
 
     GUIManager manager;
 
@@ -23,6 +24,8 @@ public class DeathScreen : MonoBehaviour
 	
     public void DeathScreenActive()
     {
+        m_ShakeHolder = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
+        m_ShakeHolder.SetActive(false);
         manager.ScreenBlur(true);
         m_DeathScreenHolder.SetActive(true);
         //Time.timeScale = 0;
