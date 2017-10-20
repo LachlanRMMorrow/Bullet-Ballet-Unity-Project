@@ -26,8 +26,13 @@ public class WeaponSelectMenu : MonoBehaviour {
     public Button weapon3Button;
     //public Button continueButton;
 
+    public GameObject m_ShakeHolder;
+
     void Awake()
     {
+        m_ShakeHolder = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
+        m_ShakeHolder.SetActive(false);
+
         weaponMenu = GameObject.Find("Canvas").transform.Find("Weapon Select Menu").gameObject;
         //weaponMenu.SetActive(true);
         WeaponMenuActive();
@@ -104,6 +109,7 @@ public class WeaponSelectMenu : MonoBehaviour {
     {
         weaponMenu.SetActive(false);
         SlowMoManager.m_isPaused = false;
+        m_ShakeHolder.SetActive(true);
         GameObject manager = GameObject.Find("MANAGER");
         manager.GetComponent<SlowMoManager>().updateTimeScale(true);
     }
