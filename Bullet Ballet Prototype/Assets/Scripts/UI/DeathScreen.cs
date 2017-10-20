@@ -25,7 +25,7 @@ public class DeathScreen : MonoBehaviour
     {
         manager.ScreenBlur(true);
         m_DeathScreenHolder.SetActive(true);
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
 
         if (restart == null)
         {
