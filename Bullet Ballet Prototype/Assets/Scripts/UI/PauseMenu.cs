@@ -16,6 +16,8 @@ public class PauseMenu : MonoBehaviour {
      public Button exitToMenu;
      public Button exitToDesktop;
 
+    public GameObject m_ShakeHolder;
+
     GUIManager manager;
 
     void Start ()
@@ -30,6 +32,9 @@ public class PauseMenu : MonoBehaviour {
 
     public void PauseActive()
     {
+        m_ShakeHolder = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
+        m_ShakeHolder.SetActive(false);
+
         manager.ScreenBlur(true);
         if (pauseMenu ==  null)
         {
@@ -76,6 +81,7 @@ public class PauseMenu : MonoBehaviour {
         SlowMoManager.m_isPaused = false;
         manager.ScreenBlur(false);
         pauseMenu.SetActive(false);
+        m_ShakeHolder.SetActive(true);
         Debug.Log("dasda");
         Time.timeScale = 1;
     }

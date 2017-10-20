@@ -13,9 +13,10 @@ public class BackGroundMusic : MonoBehaviour
     void Start()
     {
         soundMan = SoundManager.GetInstance();
-
+        //if scene is main menu
         if (SceneManager.GetActiveScene().buildIndex == 0)
         {
+            // if current background music isnt the main menu music then start playing main menu music
             if (soundMan.bgmSource.clip != clip)
             {
                 SoundManager.PlayBGM(clip, false, 2.0f);
