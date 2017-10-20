@@ -341,11 +341,7 @@ public class SettingsManager : MonoBehaviour
     {
         File.ReadAllText(Application.persistentDataPath + "/gamesettings.json");
         gameSettings = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Application.persistentDataPath + "/gamesettings.json"));
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 0)
-        {
-
-        }
-        else
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex != 0)
         {
             SetUiElements();
         }
