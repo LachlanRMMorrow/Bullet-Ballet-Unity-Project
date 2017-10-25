@@ -16,12 +16,16 @@ public class PatrolAI : AI {
 
     // Update is called once per frame
     protected override void Update() {
+        //player can be destroyed, this prevents errors
+        if (m_PlayerTransform == null) {
+            return;
+        }
 
         //if we havent seen the player
         //and we have a patrol point
         //then look for the player and do pathing
         //else run the normal update
-        if(!m_SeenPlayer && m_PatrolPoints.Count != 0) {
+        if (!m_SeenPlayer && m_PatrolPoints.Count != 0) {
 			updateLastKnownPosition();
 			if (checkForPlayer()) {
                 return;
