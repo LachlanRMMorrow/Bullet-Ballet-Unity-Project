@@ -110,7 +110,6 @@ public class EventSystemOverride : MonoBehaviour {
         if (item == null) {
             return false;
         }
-        print("Drop down Select");
         item.Show();
         return true;
 
@@ -126,7 +125,6 @@ public class EventSystemOverride : MonoBehaviour {
         if (item == null) {
             return false;
         }
-        print("toggle Select");
         item.isOn = !item.isOn;
 
         return true;
@@ -141,7 +139,6 @@ public class EventSystemOverride : MonoBehaviour {
         if (item == null) {
             return false;
         }
-        print("button Select");
         item.onClick.Invoke();
         return true;
 
