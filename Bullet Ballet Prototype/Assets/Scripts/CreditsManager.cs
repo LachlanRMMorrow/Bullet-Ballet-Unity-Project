@@ -29,7 +29,7 @@ public class CreditsManager : MonoBehaviour
 	{
 		float distCovered = (Time.time - startTime) * scrollSpeed;
 		float fracJourney = distCovered / journeyLength;
-		creditsHolder.transform.position = Vector3.Lerp (creditsStartTrans.position, creditsEndTrans.position, fracJourney);
+		creditsHolder.GetComponent<RectTransform>().position = Vector3.Lerp (creditsStartTrans.position, creditsEndTrans.position, fracJourney);
 
 		if (Time.time - timer > timeToPass) 
 		{
