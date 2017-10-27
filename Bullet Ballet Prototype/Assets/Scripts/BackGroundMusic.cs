@@ -19,12 +19,12 @@ public class BackGroundMusic : MonoBehaviour
             // if current background music isnt the main menu music then start playing main menu music
             if (soundMan.bgmSource.clip != clip)
             {
-                SoundManager.PlayBGM(clip, false, 2.0f);
+                SoundManager.PlayBGM(clip, false, 2.0f, 0);
             }
         }
         else
         {
-            SoundManager.PlayBGM(clip, false, 2.0f);
+            SoundManager.PlayBGM(clip, false, 2.0f, 0);
         }
         
 
