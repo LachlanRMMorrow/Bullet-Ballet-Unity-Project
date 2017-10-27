@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 27817a85e6cc5e140bc40bad05a2fa30
+timeCreated: 1508391200
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Warp Thruster Condensed
+  fontNames:
+  - Warp Thruster Condensed
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
