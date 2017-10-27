@@ -94,7 +94,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public static void PlayBGM(AudioClip bgmClip, bool fade, float fadeDuration)
+    public static void PlayBGM(AudioClip bgmClip, bool fade, float fadeDuration, float time)
     {
         SoundManager soundMan = GetInstance();
 
@@ -119,8 +119,15 @@ public class SoundManager : MonoBehaviour
             //Play Immediately
             soundMan.bgmSource.volume = GetBGMVolume();
             soundMan.bgmSource.clip = bgmClip;
+            soundMan.bgmSource.pitch = Time.timeScale;
+            soundMan.bgmSource.time = time;
             soundMan.bgmSource.Play();
         }
+    }
+
+    public static void PlayBGMPitchShiftSpecificTimedStart()
+    {
+
     }
 
     public static void StopBGM(bool fade, float fadeDuration)

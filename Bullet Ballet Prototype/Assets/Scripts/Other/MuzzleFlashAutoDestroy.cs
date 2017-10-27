@@ -10,11 +10,6 @@ public class MuzzleFlashAutoDestroy : MonoBehaviour {
 	
     void Update()
     {
-        counter -= 1;
-
-        if (counter <= 0)
-        {
-            Destroy(this.gameObject);
-        }
+            Destroy(this.gameObject, 5.0f);
     }
 }

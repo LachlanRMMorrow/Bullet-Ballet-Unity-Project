@@ -7,14 +7,19 @@ public class LevelRestart : MonoBehaviour {
 
     public JInput.ControllerButtons m_RestartControllerButton = JInput.ControllerButtons.Select;
     public KeyCode m_RestartKeyButton = KeyCode.R;
+    public KeyCode m_BGMSoundButton = KeyCode.B;
+
+    public AudioClip clip;
 
 	// Use this for initialization
-	void Start () {
-		
+	void Start ()
+    {
+        clip = GameObject.Find("MANAGER").GetComponent<BackGroundMusic>().clip;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         JInput.Controller controller = JInput.CurrentController.currentController;
 
         if(controller == null) {
@@ -25,5 +30,12 @@ public class LevelRestart : MonoBehaviour {
             Scene scene = SceneManager.GetActiveScene();            
             SceneManager.LoadScene(scene.buildIndex);
         }
+
+        if (Input.GetKeyDown(m_BGMSoundButton))
+        {
+            Debug.Log("Hello");
+            SoundManager.PlayBGM(clip, false, 2.0f, 0);
+        }
 	}
+
 }

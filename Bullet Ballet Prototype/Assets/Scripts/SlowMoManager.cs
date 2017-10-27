@@ -45,11 +45,17 @@ public class SlowMoManager : MonoBehaviour {
 
     /** Audio */
     [Header("Audio")]
+
+    
+    float BGMStoredPlayTime;
+
     public AudioClip m_SlowMoStart;
     public AudioClip m_SlowMoEnd;
+    public AudioClip m_BGMClip;
 
     private AudioSource m_LastUsedAudio;
 
+    SoundManager soundMan;
 
     /** Slow-mo flags */
 
@@ -83,6 +89,8 @@ public class SlowMoManager : MonoBehaviour {
         
         //add state changed listerner
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
+        m_BGMClip = GameObject.Find("MANAGER").GetComponent<BackGroundMusic>().clip;
+        soundMan = SoundManager.GetInstance();
 
         //get options and pause menus
         pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
@@ -208,6 +216,7 @@ public class SlowMoManager : MonoBehaviour {
                 {
                     //update timescale
                     Time.timeScale = m_NormalSpeed;
+                    GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
                 }
 
 
@@ -240,7 +249,6 @@ public class SlowMoManager : MonoBehaviour {
 
         if (a_UpdateTimeScale) {
             if (m_IsSlowmoOn) {
-
                 Time.timeScale = m_SlowMoTimeScale;
                 m_PlayerSpeedScale = m_PlayerWeaponSpeedScale;
 
@@ -249,6 +257,10 @@ public class SlowMoManager : MonoBehaviour {
                 Time.timeScale = m_PlayerSpeedScale = m_NormalSpeed;
 
             }
+            soundMan = SoundManager.GetInstance();
+            BGMStoredPlayTime = soundMan.bgmSource.time;
+            Debug.Log(BGMStoredPlayTime);
+            SoundManager.PlayBGM(m_BGMClip, false, 2.0f, BGMStoredPlayTime);
         }
         //update fixed delta time
         Time.fixedDeltaTime = m_FixedUpdateScale * Time.timeScale;
@@ -261,7 +273,6 @@ public class SlowMoManager : MonoBehaviour {
             m_LastUsedAudio.Pause();
         }
         //then start the new sound
-        SoundManager soundMan = SoundManager.GetInstance();
         m_LastUsedAudio = soundMan.PlayAndStoreSFX(a_Clip);
     }
 
