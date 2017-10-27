@@ -46,7 +46,7 @@ public class SlowMoManager : MonoBehaviour {
     /** Audio */
     [Header("Audio")]
 
-    SoundManager soundMan = SoundManager.GetInstance();
+    
     float BGMStoredPlayTime;
 
     public AudioClip m_SlowMoStart;
@@ -55,6 +55,7 @@ public class SlowMoManager : MonoBehaviour {
 
     private AudioSource m_LastUsedAudio;
 
+    SoundManager soundMan;
 
     /** Slow-mo flags */
 
@@ -89,6 +90,7 @@ public class SlowMoManager : MonoBehaviour {
         //add state changed listerner
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
         m_BGMClip = GameObject.Find("MANAGER").GetComponent<BackGroundMusic>().clip;
+        soundMan = SoundManager.GetInstance();
 
         //get options and pause menus
         pauseMenu = GameObject.Find("Canvas").transform.Find("Pause Menu").gameObject;
