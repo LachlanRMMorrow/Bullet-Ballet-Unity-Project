@@ -214,6 +214,7 @@ public class SlowMoManager : MonoBehaviour {
                 {
                     //update timescale
                     Time.timeScale = m_NormalSpeed;
+                    GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
                 }
 
 

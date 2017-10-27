@@ -90,6 +90,8 @@ public class AI : MonoBehaviour {
     /// </summary>
     private bool m_HasBeenInTheSameRoom = false;
 
+    public bool m_isAlive = true;
+
     public Animator m_AiAnimation;
 
     private Vector2 m_ArmsAnimation = new Vector2();
@@ -147,53 +149,67 @@ public class AI : MonoBehaviour {
 
     // Update is called once per frame
     protected virtual void Update() {
-        //player can be destroyed, this prevents errors
-        if (m_PlayerTransform == null) {
-            return;
-        }
 
-        if (m_ArmsMoving) {
-            float percentage = (Time.time - m_ArmsMoveStartTime) /m_ArmsMoveUpMoveTime;
+        if (m_isAlive)
+        {
 
-            if(percentage >= 1) {
-                m_ArmsMoving = false;
-                percentage = 1;
-            }
 
-            if (!m_AreArmsUp) {
-                percentage = 1 - percentage;
-            }
-
-            m_ArmsScale = percentage;
-
-        }
-
-        if (m_AiAnimation.gameObject.activeInHierarchy) {
-            m_AiAnimation.SetFloat("R_Blend_X", m_ArmsAnimation.x * m_ArmsScale);
-            m_AiAnimation.SetFloat("R_Blend_Y", m_ArmsAnimation.y * m_ArmsScale);
-
-        }
-
-        updateLastKnownPosition();
-
-        //if we can see the player, then return
-        if (checkForPlayer()) {
-            return;
-        }
-
-        //if the player has been seen before, then we just want to go to where the player was
-        if (m_SeenPlayer) {
-            //if we have no path and the distance between the players last pos and us is greater then 1
-            if (!m_NavMesh.hasPath && Vector3.Distance(m_LastPlayerPos, m_PlayerTransform.position) > 1) {
-                //set path
-                m_NavMesh.SetDestination(m_LastPlayerPos);
+            //player can be destroyed, this prevents errors
+            if (m_PlayerTransform == null)
+            {
                 return;
             }
 
-            //else just go back to looking in your starting direction
-            turnBackToStart();
+            if (m_ArmsMoving)
+            {
+                float percentage = (Time.time - m_ArmsMoveStartTime) / m_ArmsMoveUpMoveTime;
 
-            return;
+                if (percentage >= 1)
+                {
+                    m_ArmsMoving = false;
+                    percentage = 1;
+                }
+
+                if (!m_AreArmsUp)
+                {
+                    percentage = 1 - percentage;
+                }
+
+                m_ArmsScale = percentage;
+
+            }
+
+            if (m_AiAnimation.gameObject.activeInHierarchy)
+            {
+                m_AiAnimation.SetFloat("R_Blend_X", m_ArmsAnimation.x * m_ArmsScale);
+                m_AiAnimation.SetFloat("R_Blend_Y", m_ArmsAnimation.y * m_ArmsScale);
+
+            }
+
+            updateLastKnownPosition();
+
+            //if we can see the player, then return
+            if (checkForPlayer())
+            {
+                return;
+            }
+
+            //if the player has been seen before, then we just want to go to where the player was
+            if (m_SeenPlayer)
+            {
+                //if we have no path and the distance between the players last pos and us is greater then 1
+                if (!m_NavMesh.hasPath && Vector3.Distance(m_LastPlayerPos, m_PlayerTransform.position) > 1)
+                {
+                    //set path
+                    m_NavMesh.SetDestination(m_LastPlayerPos);
+                    return;
+                }
+
+                //else just go back to looking in your starting direction
+                turnBackToStart();
+
+                return;
+            }
         }
     }
 
@@ -381,11 +397,13 @@ public class AI : MonoBehaviour {
     /// called using unity event system when this object is out of health
     /// </summary>
     private void AiKilled() {
-        //Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
-        //if (ragdoll != null) {
-        //    ragdoll.RagdollOn = true;
-        //}
-        Destroy(gameObject);
+        Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
+        if (ragdoll != null)
+        {
+            ragdoll.RagdollOn = true;
+        }
+        Destroy(gameObject, 5.0f);
+        m_isAlive = false;
     }
 
     /// <summary>
