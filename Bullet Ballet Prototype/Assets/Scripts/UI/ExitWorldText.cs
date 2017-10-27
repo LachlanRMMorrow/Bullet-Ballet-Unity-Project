@@ -11,6 +11,9 @@ public class ExitWorldText : MonoBehaviour
 
     private void Start()
     {
+        if(mat == null) {
+            mat = GetComponent<MeshRenderer>().material;
+        }
         enemies.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
         color = mat.color;
         color.a = 0;
