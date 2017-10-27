@@ -23,6 +23,15 @@ public class PlayerMovement : MonoBehaviour {
 
     private LineRenderer m_LineRenderer;
 
+    private Animator m_Animator;
+
+
+    private bool m_RunSpeedMoveToRunning = false;
+    private bool m_RunSpeedIsTransitioning = false;
+    private float m_RunSpeedStartTime = 0;
+    [Range(0,5)]
+    public float m_RunSpeedTransitionLength = 0.5f;
+
     public void setLineRenderer(LineRenderer a_LineRenderer) {
         m_LineRenderer = a_LineRenderer;
     }
@@ -30,6 +39,9 @@ public class PlayerMovement : MonoBehaviour {
     // Use this for initialization
     void Start() {
         m_NavMesh = GetComponent<NavMeshAgent>();
+
+        m_Animator = transform.GetChild(2).GetChild(0).GetComponent<Animator>();
+        setRunSpeed(true);
     }
 
     // Update is called once per frame
@@ -37,6 +49,9 @@ public class PlayerMovement : MonoBehaviour {
         if (SlowMoManager.m_isPaused) {
             return;
         }
+
+        updateRunSpeedVariable();
+
         if (m_PathOver || m_Positions.Count == 0) {
             return;
         }
@@ -53,6 +68,7 @@ public class PlayerMovement : MonoBehaviour {
             m_LastDistance = 0;
             if (m_CurrentIndex >= m_Positions.Count - 1) {
                 m_PathOver = true;
+                setRunSpeed(false);
             } else {
                 m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
             }
@@ -65,11 +81,43 @@ public class PlayerMovement : MonoBehaviour {
             //print("NEXT");
             if (m_CurrentIndex >= m_Positions.Count - 1) {
                 m_PathOver = true;
+                setRunSpeed(false);
             } else {
                 m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
             }
             
         }
+    }
+
+    private void updateRunSpeedVariable() {
+        if (m_RunSpeedIsTransitioning) {
+            float percentage = (Time.time - m_RunSpeedStartTime) / m_RunSpeedTransitionLength;
+
+            if (percentage >= 1) {
+                percentage = 1;
+                m_RunSpeedIsTransitioning = false;
+            }
+
+            if (!m_RunSpeedMoveToRunning) {
+                percentage = 1 - percentage;
+            }
+
+            m_Animator.SetFloat("RunSpeed", percentage);
+
+        }
+    }
+
+    private void setRunSpeed(bool a_MoveToRunning) {
+
+        if (m_RunSpeedIsTransitioning) {
+            float percentage = (Time.time - m_RunSpeedStartTime) / m_RunSpeedTransitionLength;
+            m_RunSpeedStartTime = Time.time - ((1 - percentage) * m_RunSpeedTransitionLength);
+        } else {
+            m_RunSpeedStartTime = Time.time;
+        }
+
+        m_RunSpeedIsTransitioning = true;
+        m_RunSpeedMoveToRunning = a_MoveToRunning;
     }
 
     public void pathUpdated(Vector3[] a_Waypoints) {
@@ -81,6 +129,7 @@ public class PlayerMovement : MonoBehaviour {
         m_PathOver = false;
         m_Positions = new List<Vector3>(a_Waypoints);
         m_NavMesh.SetDestination(m_Positions[m_CurrentIndex]);
+        setRunSpeed(true);
         //m_NavMesh.SetDestination(a_WaypointPos);
     }
 
