@@ -76,8 +76,8 @@ public class PlayerArms : MonoBehaviour {
             }
 
         if (m_UseAnimatorOnStart) {
-            m_LeftArm.m_ArmAnimator.StartPlayback();
-            m_RightArm.m_ArmAnimator.StartPlayback();
+            //m_LeftArm.m_ArmAnimator.StartPlayback();
+            //m_RightArm.m_ArmAnimator.StartPlayback();
         }else {
             m_LeftArm.m_ArmAnimator.StopPlayback();
             m_LeftArm.m_ArmAnimator.enabled = false;
