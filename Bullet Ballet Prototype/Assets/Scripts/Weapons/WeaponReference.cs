@@ -8,6 +8,17 @@ using UnityEngine;
 [System.Serializable]
 public class WeaponReference {
 
+    [System.Serializable]
+    public class WeaponUIHolderOffsets {
+        //values defaulted to how they were in the inspector 1/11/17
+        public float m_XOffset = 50.0f;
+
+        public int m_MaxBulletsPerRow = 10;
+
+        public Vector2 m_BulletSize = new Vector2(14, 30);
+        public Vector2 m_BulletOffset = new Vector2(13.2f, 30);
+    }
+
     [HideInInspector]
     public WeaponTypes m_WeaponType;
 
@@ -28,6 +39,8 @@ public class WeaponReference {
     public AudioClip m_ShotSound;
     public AudioClip m_BulletCasingSound;
     public AudioClip m_ReloadSound;
+
+    public WeaponUIHolderOffsets m_UIBulletOffsets;
 
     //shoots a bullet from m_SpawnPoint
     //gives it a constantForce forward
