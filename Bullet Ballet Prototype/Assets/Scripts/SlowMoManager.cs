@@ -6,13 +6,18 @@ public class SlowMoManager : MonoBehaviour {
 
     /** Pause Variables */
 
-    public GameObject pauseMenu;
-    public GameObject optionsMenu;
-    public UnityEngine.UI.Button resume;
+    private GameObject pauseMenu;
+    private GameObject optionsMenu;
+    private UnityEngine.UI.Button resume;
 
     public static bool m_isPaused;
 
     /** Energy */
+
+    public bool m_UnlimitedSlowMo = false;
+    public float m_LengthOfAISlowMoTime = 2.0f;
+
+    private GameStates m_NextGameState = GameStates.Action;
 
     [Header("Energy data")]
     public float m_MaxEnergy = 100;
@@ -45,16 +50,12 @@ public class SlowMoManager : MonoBehaviour {
 
     /** Audio */
     [Header("Audio")]
-
-    
-    float BGMStoredPlayTime;
-
     public AudioClip m_SlowMoStart;
     public AudioClip m_SlowMoEnd;
-    public AudioClip m_BGMClip;
 
     private AudioSource m_LastUsedAudio;
 
+    float BGMStoredPlayTime;
     SoundManager soundMan;
 
     /** Slow-mo flags */
@@ -75,7 +76,8 @@ public class SlowMoManager : MonoBehaviour {
     /// <summary>
     /// did we use the trigger to start the current slowmo?
     /// </summary>
-    private bool m_TriggerDidUse = false;
+    private bool m_PlayerStartedSlowMo = true;
+
 
     [Header("UI Elements")]
     public UnityEngine.UI.Slider m_SlowmoSlider;
@@ -86,10 +88,9 @@ public class SlowMoManager : MonoBehaviour {
     void Awake() {
         //update energy left
         m_EnergyLeft = m_MaxEnergy;
-        
+
         //add state changed listerner
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
-        m_BGMClip = GameObject.Find("MANAGER").GetComponent<BackGroundMusic>().clip;
         soundMan = SoundManager.GetInstance();
 
         //get options and pause menus
@@ -100,7 +101,7 @@ public class SlowMoManager : MonoBehaviour {
 
         //forcing(well giving a stern error) this object to have a slider
         if (m_SlowmoSlider == null) {
-                Debug.LogError("Slow mo manager is missing it's reference to the Slow mo slider");
+            Debug.LogError("Slow mo manager is missing it's reference to the Slow mo slider");
         }
 
         //start off paused with a timescale of 0
@@ -115,30 +116,47 @@ public class SlowMoManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        //if we are not in action made return
+        if(GameStateManager.currentState != GameStates.Action) {
+            return;
+        }
+
+        //do controller input
         controllerInput();
 
+        //if game is paused, return
+        if (m_isPaused) {
+            return;
+        }
+
+        //if we have unlimited then return
+        if (m_UnlimitedSlowMo) {
+            return;
+        }
 
         if (m_IsSlowmoOn) {
-
             //if we used the trigger, then run this instead
-            if (m_TriggerDidUse) {
+            if (!m_PlayerStartedSlowMo) {
 
                 if (Time.unscaledTime - m_TriggerStartTime > m_TriggerSlowMoLength) {
                     //time is up, lets finish it
                     m_IsSlowmoOn = false;
-                    m_TriggerDidUse = false;
+                    m_PlayerStartedSlowMo = true;
                     updateTimeScale(true);
                 }
 
                 return;// no need to do the rest or update the ui since the energy left wont change
             }
 
+
+            //update energy normaly
             m_EnergyLeft -= m_EnergyDecrement * Time.unscaledDeltaTime;
             if (m_EnergyLeft <= 0) {
                 m_IsSlowmoOn = false;
                 playAudio(m_SlowMoEnd);
                 updateTimeScale(true);
             }
+
         } else {
             m_EnergyLeft += m_EnergyIncrement * Time.unscaledDeltaTime;
             if (m_EnergyLeft >= m_MaxEnergy) {
@@ -161,61 +179,47 @@ public class SlowMoManager : MonoBehaviour {
         }
 
         //pause menu if
-        if (controller.WasButtonPressed(JInput.ControllerButtons.Start))
-        {
+        if (controller.WasButtonPressed(JInput.ControllerButtons.Start)) {
             GameObject eS = GameObject.Find("EventSystem");
             PauseMenu pm = eS.GetComponent<PauseMenu>();
             GUIManager gM = eS.GetComponent<GUIManager>();
             //TODO change check for multiple menus to be cleaner after testing
-            if (optionsMenu == null || optionsMenu.activeInHierarchy == false)
-            {
+            if (optionsMenu == null || optionsMenu.activeInHierarchy == false) {
 
                 //open screen if game is paused, close it if it's not paused
-                if (pauseMenu != null)
-                {
+                if (pauseMenu != null) {
 
                     pauseMenu.SetActive(!m_isPaused);
                     gM.ScreenBlur(!m_isPaused);
 
 
 
-                }
-                else
-                {
+                } else {
                     Debug.LogError("SlowMo Manager is missing reference in pauseMenu");
                 }
 
 
                 //if not paused then:
-                if (!m_isPaused)
-                {
+                if (!m_isPaused) {
 
                     //update timescale
                     Time.timeScale = 0;
 
                     //get pauseMenu from the EventSystem and call the PauseActive function
 
-                    if (eS != null)
-                    {
+                    if (eS != null) {
 
-                        if (pm != null)
-                        {
+                        if (pm != null) {
                             pm.PauseActive();
-                        }
-                        else
-                        {
+                        } else {
                             Debug.LogError("EventSystem is missing Component, PauseMenu");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         Debug.LogError("There Is no Object called EventSystem in the scene");
                     }
-                }
-                else//if paused then:
-                {
-                    //update timescale
-                    Time.timeScale = m_NormalSpeed;
+                } else//if paused then:
+                  {
+                    updateTimeScale(true);
                     GameObject.Find("Canvas").transform.GetChild(0).gameObject.SetActive(true);
                 }
 
@@ -223,7 +227,7 @@ public class SlowMoManager : MonoBehaviour {
 
                 //flip the pause
                 m_isPaused = !m_isPaused;
-                //update timescale, (false to tell it no to change the time scale)
+                //update timescale, (false to tell it not to change the time scale)
                 updateTimeScale(false);
             }
         }
@@ -231,7 +235,7 @@ public class SlowMoManager : MonoBehaviour {
 
         //slow mo start if, also checks if the game is paused or not
         if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton) && !m_isPaused) {
-            m_TriggerDidUse = false;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
+            m_PlayerStartedSlowMo = true;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
             m_IsSlowmoOn = !m_IsSlowmoOn;
             updateTimeScale(true);
 
@@ -248,19 +252,23 @@ public class SlowMoManager : MonoBehaviour {
     public void updateTimeScale(bool a_UpdateTimeScale) {
 
         if (a_UpdateTimeScale) {
-            if (m_IsSlowmoOn) {
-                Time.timeScale = m_SlowMoTimeScale;
-                m_PlayerSpeedScale = m_PlayerWeaponSpeedScale;
-
+            //if the next state is planning (should not be able to do anything when it's in planning mode so this should work fine)
+            if (m_NextGameState == GameStates.Planning) {
+                Time.timeScale = m_PlanningModeTimeScale;
             } else {
-                //reset time.timeScale and m_PlayerSpeedScale back to m_NormalSpeed
-                Time.timeScale = m_PlayerSpeedScale = m_NormalSpeed;
+                if (m_IsSlowmoOn) {
+                    Time.timeScale = m_SlowMoTimeScale;
+                    m_PlayerSpeedScale = m_PlayerWeaponSpeedScale;
 
+                } else {
+                    //reset time.timeScale and m_PlayerSpeedScale back to m_NormalSpeed
+                    Time.timeScale = m_PlayerSpeedScale = m_NormalSpeed;
+
+                }
+                soundMan = SoundManager.GetInstance();
+                BGMStoredPlayTime = soundMan.bgmSource.time;
+                Debug.Log(BGMStoredPlayTime);
             }
-            soundMan = SoundManager.GetInstance();
-            BGMStoredPlayTime = soundMan.bgmSource.time;
-            Debug.Log(BGMStoredPlayTime);
-            SoundManager.PlayBGM(m_BGMClip, false, 2.0f, BGMStoredPlayTime);
         }
         //update fixed delta time
         Time.fixedDeltaTime = m_FixedUpdateScale * Time.timeScale;
@@ -289,28 +297,26 @@ public class SlowMoManager : MonoBehaviour {
             m_HasGameStarted = true;
             return;
         }
+        m_NextGameState = a_NewState;
         switch (a_NewState) {
             case GameStates.Action:
-                enabled = true;
-
-                Time.timeScale = m_NormalSpeed;
                 playAudio(m_SlowMoEnd);
                 break;
             case GameStates.Planning:
-                enabled = false;
-                m_IsSlowmoOn = false;
-
-                Time.timeScale = m_PlanningModeTimeScale;
                 playAudio(m_SlowMoStart);
                 break;
         }
-        updateTimeScale(false);
+        updateTimeScale(true);
     }
 
-    public void startTriggerSlowmo(float a_SlowMoTime) {
+    /// <summary>
+    /// starts the slowMo for the game
+    /// </summary>
+    /// <param name="a_SlowMoTime">how long the slowMo will last</param>
+    public void startSlowmo(float a_SlowMoTime) {
         m_TriggerSlowMoLength = a_SlowMoTime;
         m_TriggerStartTime = Time.unscaledTime;
-        m_TriggerDidUse = true;
+        m_PlayerStartedSlowMo = false;
         //start the slowmo
         m_IsSlowmoOn = true;
         updateTimeScale(true);

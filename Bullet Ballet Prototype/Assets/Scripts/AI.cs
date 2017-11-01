@@ -188,7 +188,7 @@ public class AI : MonoBehaviour {
 
             updateLastKnownPosition();
 
-            //if we can see the player, then return
+            //if we cant see the player, then return
             if (checkForPlayer())
             {
                 return;
@@ -222,6 +222,12 @@ public class AI : MonoBehaviour {
         if (canSeePlayer()) {
             if (m_NavMesh.hasPath) {
                 m_NavMesh.ResetPath();
+            }
+
+            //if this AI hasn't seen the player before
+            if (!m_SeenPlayer) {
+                SlowMoManager smm = FindObjectOfType<SlowMoManager>();
+                smm.startSlowmo(smm.m_LengthOfAISlowMoTime);
             }
 
             //look and shoot at the player
