@@ -22,7 +22,8 @@ public class PlayerArms : MonoBehaviour {
         internal Quaternion m_ShootPointStartingLocalRot;
         internal bool m_HasSetShootPoint = false;
         internal Quaternion m_StartingRot;
-        internal bool m_HasDir;
+        [HideInInspector]
+        public bool m_HasDir;
         internal bool m_IsRight = true;
         internal PlayerShoot m_ArmShootScript;
         internal Animator m_ArmAnimator;
