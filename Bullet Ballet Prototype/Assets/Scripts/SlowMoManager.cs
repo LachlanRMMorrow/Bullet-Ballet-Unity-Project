@@ -129,10 +129,8 @@ public class SlowMoManager : MonoBehaviour {
             return;
         }
 
-        //if we have unlimited then return
-        if (m_UnlimitedSlowMo) {
-            return;
-        }
+       
+
 
         if (m_IsSlowmoOn) {
             //if we used the trigger, then run this instead
@@ -148,10 +146,15 @@ public class SlowMoManager : MonoBehaviour {
                 return;// no need to do the rest or update the ui since the energy left wont change
             }
 
+            //if we have unlimited then return
+            if (m_UnlimitedSlowMo) {
+                return;
+            }
 
             //update energy normaly
             m_EnergyLeft -= m_EnergyDecrement * Time.unscaledDeltaTime;
             if (m_EnergyLeft <= 0) {
+                m_EnergyLeft = 0;
                 m_IsSlowmoOn = false;
                 playAudio(m_SlowMoEnd);
                 updateTimeScale(true);

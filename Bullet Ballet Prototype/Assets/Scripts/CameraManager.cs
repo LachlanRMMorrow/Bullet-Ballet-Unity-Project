@@ -236,6 +236,14 @@ public class CameraManager : MonoBehaviour {
         //print(a_TargetY / newCamPos.y);
         a_TargetY = Mathf.Clamp(a_TargetY, m_MinYHeight, 9999);
 
+
+        //min height clamp
+        {
+            float dist = Vector3.Distance(Vector3.Scale(YMASK, m_CameraTransform.position), Vector3.Scale(YMASK, m_PlayerTransform.position));
+            dist = Mathf.Sqrt(dist) * m_PlanningModeYDistanceScale;
+            a_TargetY = Mathf.Max(dist, a_TargetY);
+        }
+
         newCamPos.y = Mathf.Lerp(newCamPos.y, a_TargetY, Time.unscaledDeltaTime * 1.0f);
 
 
