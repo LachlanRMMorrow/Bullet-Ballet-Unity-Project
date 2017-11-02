@@ -27,6 +27,5 @@ public class ExitWorldText : MonoBehaviour
 
         }
         mat.color = color;
-        Debug.Log(color.a);
     }
 }

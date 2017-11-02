@@ -259,7 +259,6 @@ public class SlowMoManager : MonoBehaviour {
             }
             soundMan = SoundManager.GetInstance();
             BGMStoredPlayTime = soundMan.bgmSource.time;
-            Debug.Log(BGMStoredPlayTime);
             SoundManager.PlayBGM(m_BGMClip, false, 2.0f, BGMStoredPlayTime);
         }
         //update fixed delta time
