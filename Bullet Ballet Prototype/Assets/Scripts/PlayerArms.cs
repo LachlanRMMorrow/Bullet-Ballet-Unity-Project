@@ -20,8 +20,10 @@ public class PlayerArms : MonoBehaviour {
         internal Transform m_ShootPoint;
         //starting local rotation of m_ShootPoint
         internal Quaternion m_ShootPointStartingLocalRot;
+        internal bool m_HasSetShootPoint = false;
         internal Quaternion m_StartingRot;
-        internal bool m_HasDir;
+        [HideInInspector]
+        public bool m_HasDir;
         internal bool m_IsRight = true;
         internal PlayerShoot m_ArmShootScript;
         internal Animator m_ArmAnimator;
@@ -61,8 +63,8 @@ public class PlayerArms : MonoBehaviour {
 
         m_LeftArm.m_ShootPoint = m_LeftArm.m_ShootingArm.GetComponent<PlayerShoot>().m_ShootPoint;
         m_RightArm.m_ShootPoint = m_RightArm.m_ShootingArm.GetComponent<PlayerShoot>().m_ShootPoint;
-        m_LeftArm.m_ShootPointStartingLocalRot = m_LeftArm.m_ShootPoint.localRotation;
-        m_RightArm.m_ShootPointStartingLocalRot = m_RightArm.m_ShootPoint.localRotation;
+        //m_LeftArm.m_ShootPointStartingLocalRot = m_LeftArm.m_ShootPoint.localRotation;
+        //m_RightArm.m_ShootPointStartingLocalRot = m_RightArm.m_ShootPoint.localRotation;
 
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
 
@@ -79,8 +81,8 @@ public class PlayerArms : MonoBehaviour {
             //m_LeftArm.m_ArmAnimator.StartPlayback();
             //m_RightArm.m_ArmAnimator.StartPlayback();
         }else {
-            m_LeftArm.m_ArmAnimator.StopPlayback();
-            m_LeftArm.m_ArmAnimator.enabled = false;
+            //m_LeftArm.m_ArmAnimator.StopPlayback();
+            //m_LeftArm.m_ArmAnimator.enabled = false;
         }
 
         m_LeftArm.m_IsRight = false;
@@ -216,12 +218,10 @@ public class PlayerArms : MonoBehaviour {
     private void moveArms(Arms a_Arm) {
         if (a_Arm.m_HasDir) {
 
-           
+             //limit the m_MovingTo transform
+             //limitArmMovements(a_Arm);
 
-            //limit the m_MovingTo transform
-            limitArmMovements(a_Arm);
-
-            Vector3 rot2 = a_Arm.m_MovingTo.rotation.eulerAngles;
+             Vector3 rot2 = a_Arm.m_MovingTo.rotation.eulerAngles;
             //arm rotation is off by 90 degrees
             rot2.y += 90;
             Quaternion quat = Quaternion.Euler(rot2);
@@ -259,15 +259,25 @@ public class PlayerArms : MonoBehaviour {
         // - (DONE) better way to allow for easy modification of variables 
         // - (DONE) only apply offset to the shooting arm and not change the models rotation (so it doesn't effect the gun's laser)
 
+        Transform rotationDir = a_Arm.m_ShootingArm;
+        Transform moveArm = a_Arm.m_ShootPoint;
+        Transform model = a_Arm.m_Model;
+        //moveArm = a_Arm.m_Model;
+
+        if(!a_Arm.m_HasSetShootPoint) {
+            a_Arm.m_HasSetShootPoint = true;
+            a_Arm.m_ShootPointStartingLocalRot = moveArm.localRotation;
+        }
+
         RaycastHit hit;
         //only hit objects which are in the AimAssistance layer
         int layerMask = (1 << LayerMask.NameToLayer("AimAssistance"));
         //do the ray cast, with the direction, remove the y axis so it doesn't point up or down and miss the collider
-        if (Physics.Raycast(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_ShootingArm.forward), out hit, 100, layerMask)) {
+        if (Physics.Raycast(model.position, Vector3.Scale(new Vector3(1, 0, 1), rotationDir.forward), out hit, 100, layerMask)) {
             //store the current rotation
-            Quaternion normalRotation = a_Arm.m_ShootingArm.rotation;
+            Quaternion normalRotation = rotationDir.rotation;
             //have it look at the hit transform
-            a_Arm.m_ShootPoint.LookAt(hit.transform);
+            moveArm.LookAt(hit.transform);
 
             //ratio of distance between the max distance and the current distance
             //this is used to calculate the power of the aim assist
@@ -275,13 +285,13 @@ public class PlayerArms : MonoBehaviour {
             float distance = Mathf.Clamp01(hit.distance/ m_DistanceForMaxAssist);
 
             //set the rotation to be between the current rotation and the hit transform
-            a_Arm.m_ShootPoint.rotation = Quaternion.Lerp(normalRotation, a_Arm.m_ShootPoint.rotation,distance);
+            moveArm.rotation = Quaternion.Lerp(normalRotation, moveArm.rotation,distance);
         }else {
             //if were not hitting a aim assist, then reset the shoot point
-            a_Arm.m_ShootPoint.localRotation = a_Arm.m_ShootPointStartingLocalRot;
+            moveArm.localRotation = a_Arm.m_ShootPointStartingLocalRot;
         }
         //debug draw
-        Debug.DrawRay(a_Arm.m_Model.position, Vector3.Scale(new Vector3(1, 0, 1), a_Arm.m_ShootPoint.forward) * 100, Color.red);
+        Debug.DrawRay(model.position, Vector3.Scale(new Vector3(1, 0, 1), moveArm.forward) * 100, Color.red);
     }
 
     private void calcPlayerRotation() {
