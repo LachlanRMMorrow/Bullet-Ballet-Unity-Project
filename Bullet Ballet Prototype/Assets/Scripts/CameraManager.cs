@@ -20,11 +20,11 @@ public class CameraManager : MonoBehaviour {
     [Header("Dynamic Camera")]
 
     public float m_PlanningModeMinHeight = 10.0f;
-    [Range(1,20)]
+    [Range(1, 20)]
     public float m_PlanningModeYDistanceScale = 15.0f;
 
-    [Range(10,100)]
-    public float m_ActionModeHeight_TEMP = 20.0f;
+    [Range(1, 20)]
+    public float m_ActionModeYDistanceScale = 10.0f;
 
     [Range(0, 50)]
     public float m_CameraMoveSpeed = 2.0f;
@@ -32,7 +32,7 @@ public class CameraManager : MonoBehaviour {
     public float m_DistanceForMaxSpeed = 10.0f;
     [Range(0, 1)]
     public float m_MinSpeedScale = 0.01f;
-    [Range(10,150)]
+    [Range(10, 150)]
     public float m_MinYHeight = 20.0f;
 
     private Transform m_WayPointTransform;
@@ -40,6 +40,7 @@ public class CameraManager : MonoBehaviour {
     private Transform m_PlayerTransform;
     private Transform m_PlayerLeftArmTransform;
     private Transform m_PlayerRightArmTransform;
+    private PlayerArms m_PlayerArms;
 
     private float m_MaxDistancePathHasBeen = 0.0f;
     #endregion
@@ -81,6 +82,8 @@ public class CameraManager : MonoBehaviour {
     #endregion
 
     #endregion
+
+    private Vector3 m_TargetPos;
 
     #region Unity Functions
 
@@ -170,6 +173,10 @@ public class CameraManager : MonoBehaviour {
 
     private void getDynCameraVariables() {
         m_PlayerTransform = FindObjectOfType<Player>().transform;
+        m_PlayerArms = m_PlayerTransform.GetComponent<PlayerArms>();
+        //todo.. find weapon of player in a better way
+        m_PlayerLeftArmTransform = m_PlayerArms.m_LeftArm.m_Model.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetChild(0);
+        m_PlayerRightArmTransform = m_PlayerArms.m_RightArm.m_Model.GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetChild(2).GetChild(0);
 
         m_WayPointTransform = GameObject.Find("Waypoint System").transform.GetChild(0);
     }
@@ -186,16 +193,16 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void dynamicCameraPlanning() {
-        
+
         float distance = Vector3.Distance(m_WayPointTransform.position, m_PlayerTransform.position);
 
-        if(distance > m_MaxDistancePathHasBeen) {
+        if (distance > m_MaxDistancePathHasBeen) {
             //set max distance to the current, distance will be larger then the last largest value
             m_MaxDistancePathHasBeen = distance;
-        }else {
+        } else {
             //max distance is larger so just set distance to the largest value
             distance = m_MaxDistancePathHasBeen;
-        }        
+        }
 
         Vector3 centerPoint = m_WayPointTransform.position - m_CameraTransform.position;
 
@@ -206,11 +213,48 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void dynamicCameraAction() {
+        //list of positions
+        List<Vector3> positions = new List<Vector3>();
 
-        //todo write a real action camera here
+        positions.Add(m_PlayerTransform.position);
 
-        lerpToPoint(m_PlayerTransform.position);
-        lerpYpos(m_ActionModeHeight_TEMP);
+        //positions.Add(m_WayPointTransform.position);
+
+        //arms
+        int layerMask = (1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Default"));
+        RaycastHit hit;
+
+        //left arm
+        if (m_PlayerArms.m_LeftArm.m_HasDir) {
+            if (Physics.Raycast(m_PlayerLeftArmTransform.position, Vector3.Scale(YMASK, m_PlayerLeftArmTransform.forward), out hit, 100, layerMask)) {
+                positions.Add(hit.point);
+            }
+            Debug.DrawRay(m_PlayerLeftArmTransform.position, Vector3.Scale(YMASK, m_PlayerLeftArmTransform.forward) * hit.distance);
+        }
+
+        //right arm
+        if (m_PlayerArms.m_RightArm.m_HasDir) {
+            if (Physics.Raycast(m_PlayerRightArmTransform.position, Vector3.Scale(YMASK, m_PlayerRightArmTransform.forward), out hit, 100, layerMask)) {
+                positions.Add(hit.point);
+            }
+            Debug.DrawRay(m_PlayerRightArmTransform.position, Vector3.Scale(YMASK, m_PlayerRightArmTransform.forward) * hit.distance);
+        }
+        
+
+        Vector3 position = Vector3.zero;
+        float distance = 0;
+
+        for (int i = 0; i < positions.Count; i++) {
+            for (int q = i+1; q < positions.Count; q++) {
+                distance = Mathf.Max(distance, Vector3.Distance(positions[i], positions[q]));
+            }
+            position += positions[i];
+        }
+        position /= positions.Count;
+
+        float calcYPos = Mathf.Sqrt(distance) * m_ActionModeYDistanceScale;
+        lerpToPoint(position);
+        lerpYpos(calcYPos);
     }
 
     private void lerpToPoint(Vector3 a_TargetPosition) {
@@ -228,6 +272,8 @@ public class CameraManager : MonoBehaviour {
         newCamPos.y = m_CameraTransform.position.y;
 
         m_CameraTransform.position = newCamPos;
+
+        m_TargetPos = targetPos;
     }
 
     private void lerpYpos(float a_TargetY) {
@@ -248,6 +294,8 @@ public class CameraManager : MonoBehaviour {
 
 
         m_CameraTransform.position = newCamPos;
+
+        m_TargetPos.y = a_TargetY;
     }
 
     #endregion
@@ -325,4 +373,10 @@ public class CameraManager : MonoBehaviour {
     #endregion
 
     #endregion
+
+    void OnDrawGizmosSelected() {
+        // Display the explosion radius when selected
+        Gizmos.color = new Color(1, 1, 0, 0.75F);
+        Gizmos.DrawSphere(m_TargetPos, 3.0f);
+    }
 }

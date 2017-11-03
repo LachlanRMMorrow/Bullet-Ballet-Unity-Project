@@ -19,7 +19,7 @@ public class Ragdoll : MonoBehaviour {
 
 	void Start ()
     {
-        animator = transform.GetChild(0).GetChild(0).GetComponent<Animator>();
+        animator = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<Animator>();
         Transform[] allChildren = GetComponentsInChildren<Transform>();
 
         foreach(Transform child in allChildren)

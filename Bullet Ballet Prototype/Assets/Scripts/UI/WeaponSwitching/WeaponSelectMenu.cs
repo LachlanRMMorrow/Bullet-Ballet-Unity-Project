@@ -81,8 +81,8 @@ public class WeaponSelectMenu : MonoBehaviour {
 
     public void EquipWeapon1()
     {
-        currentEquippedWeaponRight.m_WeaponType = weapon1;
-        currentEquippedWeaponLeft.m_WeaponType = weapon1;
+        currentEquippedWeaponRight.changeWeapon(weapon1);
+        currentEquippedWeaponLeft.changeWeapon(weapon1);
 
         WeaponSwitch(0);
 
@@ -91,16 +91,16 @@ public class WeaponSelectMenu : MonoBehaviour {
 
     public void EquipWeapon2()
     {
-        currentEquippedWeaponRight.m_WeaponType = weapon2;
-        currentEquippedWeaponLeft.m_WeaponType = weapon2;
+        currentEquippedWeaponRight.changeWeapon(weapon2);
+        currentEquippedWeaponLeft.changeWeapon(weapon2);
 
         WeaponSwitch(180);
     }
 
     public void EquipWeapon3()
     {
-        currentEquippedWeaponRight.m_WeaponType = weapon3;
-        currentEquippedWeaponLeft.m_WeaponType = weapon3;
+        currentEquippedWeaponRight.changeWeapon(weapon3);
+        currentEquippedWeaponLeft.changeWeapon(weapon3);
 
         WeaponSwitch(0);
     }
@@ -132,8 +132,9 @@ public class WeaponSelectMenu : MonoBehaviour {
         Instantiate(wepRef.m_WeaponPrefab, rightHandRef.transform.position, (rightHandRef.transform.rotation * Quaternion.Euler(0, rotationOffset, 0)), rightHandRef.transform);
         Instantiate(wepRef.m_WeaponPrefab, leftHandRef.transform.position, (leftHandRef.transform.rotation * Quaternion.Euler(0, rotationOffset, 0)), leftHandRef.transform);
 
+        //currentEquippedWeaponRight.reload();
+        //currentEquippedWeaponLeft.reload();
 
-        currentEquippedWeaponRight.reload();
-        currentEquippedWeaponLeft.reload();
+
     }
 }

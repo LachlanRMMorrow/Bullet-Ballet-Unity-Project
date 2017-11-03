@@ -9,8 +9,8 @@ public class BulletTriggerHitDestroyChance : BulletHitHandlerBase {
 
     protected override void hit() {
         base.hit();
-
-        if (Random.value >= m_ChanceToDestroy) {
+        
+        if (Random.value >= m_ChanceToDestroy && m_BulletHitHandler.m_BulletHit.gameObject.GetComponent<BulletEnemy>() != null) {
             Destroy(m_BulletHitHandler.m_BulletHit.gameObject);
         }else {
             m_BulletHitHandler.m_BulletHit.GetComponent<Bullet>().m_ShouldStopAfterCollision = false;

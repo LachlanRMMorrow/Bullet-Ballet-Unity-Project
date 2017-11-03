@@ -403,12 +403,12 @@ public class AI : MonoBehaviour {
     /// called using unity event system when this object is out of health
     /// </summary>
     private void AiKilled() {
-        //Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
-        //if (ragdoll != null)
-        //{
-        //    ragdoll.RagdollOn = true;
-        //}
-        Destroy(gameObject);
+        Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
+        if (ragdoll != null)
+        {
+            ragdoll.RagdollOn = true;
+        }
+        Destroy(gameObject, 5.0f);
         m_isAlive = false;
     }
 
