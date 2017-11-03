@@ -17,22 +17,12 @@ public class ToggleSlowMoTrigger : MonoBehaviour {
     /// </summary>
     public bool m_DeleteAfterTrigger = false;
 
-    // Use this for initialization
-    void Start() {
-
-    }
-
-    // Update is called once per frame
-    void Update() {
-
-    }
-
     void OnTriggerEnter(Collider a_Other) {
         //check if this object is a player
         if (a_Other.gameObject.layer == LayerMask.NameToLayer("Player")) {
             SlowMoManager smm = FindObjectOfType<SlowMoManager>();
             //start the trigger
-            smm.startTriggerSlowmo(m_SlowMoTime);
+            smm.startSlowmo(m_SlowMoTime);
 
             if (m_DeleteAfterTrigger) {
                 //delete gameobject

@@ -27,20 +27,19 @@ public class Player : MonoBehaviour {
     /// event thats called after the player runs out of health
     /// </summary>
     void playerKilled() {
+        //if tutorial
+        if (false) {
+            //move player back to a point
+        } else {
+            //else if it's anything but the tutorial
+            //then die normally
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 3)
-        {
-           
-        }
-        else
-        {
             DeathScreen.runDeathScreen();
             //todo: swap this out with another object?
             Destroy(gameObject);
 
             m_PlayerAlive = false;
         }
-        
     }
 
     void playerHit() {

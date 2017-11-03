@@ -59,6 +59,9 @@ public class LevelEmissionFlash : MonoBehaviour {
 
     private void applyColorToAllMaterials(Color a_Color) {
         for(int i = 0; i < m_Materials.Length; i++) {
+            if(m_Materials[i] == null) {
+                continue;
+            }
             m_Materials[i].SetColor("_EmissionColor", a_Color);
         }
     }
