@@ -23,8 +23,24 @@ public class PlayerDive : MonoBehaviour {
     /// <summary>
     /// cool down between dashes
     /// </summary>
-    [Range(0,10)]
-    public float m_DashCooldown;
+    //[Range(0,10)]
+    //public float m_DashCooldown;
+
+    /// <summary>
+    /// ammount of dash charges
+    /// </summary>
+    //[Range(0, 10)]
+    public float m_DashChargesMax;
+
+    public float m_DashChargesCurrent;
+
+    /// <summary>
+    /// dash charge timer
+    /// </summary>
+    //[Range(0, 10)]
+    public float m_DashChargeTimerMax;
+
+    public float m_DashChargeTimerCurrent;
 
     /// <summary>
     /// is the player currently dashing or diving
@@ -54,6 +70,7 @@ public class PlayerDive : MonoBehaviour {
     private PlayerMovement m_Movement;
 
     void Start() {
+        
         m_PlayerArms = GetComponent<PlayerArms>();
         m_Movement = GetComponent<PlayerMovement>();
         m_NavMesh = GetComponent<UnityEngine.AI.NavMeshAgent>();
@@ -64,9 +81,24 @@ public class PlayerDive : MonoBehaviour {
         GameStateManager.singleton.m_StateChanged.AddListener(stateChanged);
 
         m_Rigidbody.isKinematic = true;
+
+        m_DashChargesCurrent = m_DashChargesMax;
+        m_DashChargeTimerCurrent = m_DashChargeTimerMax;
     }
 
     void Update() {
+        if (m_DashChargesCurrent < m_DashChargesMax)
+        {
+            m_DashChargeTimerCurrent -= Time.deltaTime;
+            if (m_DashChargeTimerCurrent <= 0)
+            {
+                m_DashChargeTimerCurrent = m_DashChargeTimerMax;
+                m_DashChargesCurrent += 1;
+
+            }
+        }
+        
+
         if (m_IsDiving) {
             runDive();
         } else {
@@ -75,19 +107,31 @@ public class PlayerDive : MonoBehaviour {
     }
 
     private void runDive() {
-        bool isDiveOver = m_StartTime + m_TimeTakenToDash < Time.time;
-        m_PlayerArms.m_CanMoveArms = isDiveOver;
-        //if the time is up then stop the dive
-        if (isDiveOver) {
-            m_IsDiving = false;
-            m_Rigidbody.velocity = Vector3.zero;
+        if (m_DashChargesCurrent > 0)
+        {
+            bool isDiveOver = m_StartTime + m_TimeTakenToDash < Time.time;
+            m_PlayerArms.m_CanMoveArms = isDiveOver;
+            //if the time is up then stop the dive
+            if (isDiveOver)
+            {
+                m_IsDiving = false;
+                m_Rigidbody.velocity = Vector3.zero;
 
-            float distScale = Vector3.Distance(m_StartPos, transform.position) / m_Distance;
+                float distScale = Vector3.Distance(m_StartPos, transform.position) / m_Distance;
 
-            m_Movement.modifyPath(m_Direction * m_Distance * distScale);
+                m_Movement.modifyPath(m_Direction * m_Distance * distScale);
 
-            m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
+                m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
+
+                m_DashChargesCurrent--;
+            }
+            
         }
+        else
+        {
+            Debug.Log("You have no dash charges");
+        }
+        
     }
 
     private void checkDive() {
@@ -104,15 +148,13 @@ public class PlayerDive : MonoBehaviour {
         bool isAboutToDive = controller.IsButtonDown(Keys.singleton.m_DiveDashButton);
 
         //if the dive is on cool down then pretend the player didn't press the Dive/Dash button
-        if(m_StartTime + m_TimeTakenToDash + m_DashCooldown > Time.time) {
-            isAboutToDive = false;
-        }
+        //if(m_StartTime + m_TimeTakenToDash + m_DashCooldown > Time.time) {
+        //    isAboutToDive = false;
+        //}
 
 
 
         if (isAboutToDive) {
-         
-
 
             Vector2 leftStick = controller.getAxisValue(JInput.ControllerVec2Axes.LStick);
 

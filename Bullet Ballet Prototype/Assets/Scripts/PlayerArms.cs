@@ -81,8 +81,8 @@ public class PlayerArms : MonoBehaviour {
             //m_LeftArm.m_ArmAnimator.StartPlayback();
             //m_RightArm.m_ArmAnimator.StartPlayback();
         }else {
-            m_LeftArm.m_ArmAnimator.StopPlayback();
-            m_LeftArm.m_ArmAnimator.enabled = false;
+            //m_LeftArm.m_ArmAnimator.StopPlayback();
+            //m_LeftArm.m_ArmAnimator.enabled = false;
         }
 
         m_LeftArm.m_IsRight = false;
@@ -218,12 +218,10 @@ public class PlayerArms : MonoBehaviour {
     private void moveArms(Arms a_Arm) {
         if (a_Arm.m_HasDir) {
 
-           
+             //limit the m_MovingTo transform
+             //limitArmMovements(a_Arm);
 
-            //limit the m_MovingTo transform
-            //limitArmMovements(a_Arm);
-
-            Vector3 rot2 = a_Arm.m_MovingTo.rotation.eulerAngles;
+             Vector3 rot2 = a_Arm.m_MovingTo.rotation.eulerAngles;
             //arm rotation is off by 90 degrees
             rot2.y += 90;
             Quaternion quat = Quaternion.Euler(rot2);
