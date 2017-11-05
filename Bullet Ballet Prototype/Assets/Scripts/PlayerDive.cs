@@ -114,6 +114,7 @@ public class PlayerDive : MonoBehaviour {
 
     private void runDive() {
 
+        GetComponent<Health>().m_IsInvincible = true;
             bool isDiveOver = m_StartTime + m_TimeTakenToDash < Time.time;
             m_PlayerArms.m_CanMoveArms = isDiveOver;
             //if the time is up then stop the dive
@@ -131,9 +132,9 @@ public class PlayerDive : MonoBehaviour {
                 m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
 
                 m_DashChargesCurrent--;
+            GetComponent<Health>().m_IsInvincible = false;
 
-                
-            }  
+        }  
         
     }
 

@@ -11,7 +11,9 @@ public class Ragdoll : MonoBehaviour {
     {
         set
         {
+            if (animator != null)
             animator.enabled = !value;
+
             foreach (Rigidbody r in rigidbodies)
                 r.isKinematic = !value;
         }

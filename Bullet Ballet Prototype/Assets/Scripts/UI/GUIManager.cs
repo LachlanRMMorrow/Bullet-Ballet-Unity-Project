@@ -49,6 +49,11 @@ public class GUIManager : MonoBehaviour {
         Time.timeScale = 1;
     }
 
+    public void Credits()
+    {
+        SceneManager.LoadScene(9);
+    }
+
     public void Restart()
     {
         scene = SceneManager.GetActiveScene().buildIndex;
