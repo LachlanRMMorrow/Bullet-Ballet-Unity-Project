@@ -170,7 +170,7 @@ public class PlayerDive : MonoBehaviour {
                 if (!m_HasUsedOnButtonPress) {
                     m_HasUsedOnButtonPress = true;
                     
-                        m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = false;
+                    m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = false;
 
                     //set up variables
                     m_IsDiving = true;
@@ -190,6 +190,14 @@ public class PlayerDive : MonoBehaviour {
                     m_StartPos = transform.position;
 
                     m_Animator.runtimeAnimatorController = m_Controller;
+
+                    //calc resulting angle
+                    float angle = Mathf.Atan2(leftStick.x, -leftStick.y) * Mathf.Rad2Deg;
+
+                    //get a quaternion version of angle
+                    Quaternion endRotation = Quaternion.Euler(new Vector3(0, angle, 0));
+
+                    transform.rotation = endRotation;
                 }
             }
         } else {
