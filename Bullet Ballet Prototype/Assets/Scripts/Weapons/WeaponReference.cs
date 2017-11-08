@@ -10,6 +10,7 @@ public class WeaponReference {
 
     [System.Serializable]
     public class WeaponUIHolderOffsets {
+        public Vector2 m_PositionOffset;
         //values defaulted to how they were in the inspector 1/11/17
         public float m_XOffset = 50.0f;
 

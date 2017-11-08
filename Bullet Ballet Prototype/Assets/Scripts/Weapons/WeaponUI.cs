@@ -18,6 +18,8 @@ public class WeaponUI : MonoBehaviour {
 
     public bool m_RegenerateBullets = false;
 
+    private Vector2 m_LocalStartingPosition;
+
     // Use this for initialization
     void Start() {
         //remove all transforms which are currently under this weapon ui
@@ -30,6 +32,8 @@ public class WeaponUI : MonoBehaviour {
         if (transform.name.ToLower().Contains("right")) {
             m_IsOnRightSide = true;
         }
+
+        m_LocalStartingPosition = transform.localPosition;
 
         runWeaponUpdate();
     }
@@ -101,6 +105,9 @@ public class WeaponUI : MonoBehaviour {
 
         //get current weapon
         WeaponReference wepRef = WeaponHolder.getWeapon(m_CurrentRef);
+
+        transform.localPosition = m_LocalStartingPosition + wepRef.m_UIBulletOffsets.m_PositionOffset;
+
         //create bullet objects
         for (int i = 0; i < wepRef.m_MaxAmmo; i++) {
             //create object of type RectTransform
