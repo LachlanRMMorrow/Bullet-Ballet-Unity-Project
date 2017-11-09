@@ -14,4 +14,7 @@
     public bool masterVolumeMute;
     public bool bgmMusicMute;
     public bool sfxMute;
+    public bool ragdoll;
+    public bool aimSystem;
+    public bool manualBulletTime;
 }

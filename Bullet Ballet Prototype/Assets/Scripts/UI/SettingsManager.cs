@@ -28,6 +28,9 @@ public class SettingsManager : MonoBehaviour
     public Toggle bgmMusicMuteToggle;
     public Toggle sfxMuteToggle;
     public Button applyButton;
+    public Toggle ragdollToggle;
+    public Toggle aimSystemToggle;
+    public Toggle bulletTimeToggle;
 
     public Button applyButtonIG;
     public Button backButtonIG;
@@ -37,6 +40,15 @@ public class SettingsManager : MonoBehaviour
     public PostProcessingProfile postProcessing;
 
     //*******************************************************************************************************************************
+
+    //********************************************************* Prefab Variables ******************************************
+
+    public GameObject enemyPrefab;
+    public Object playerPrefab;
+
+    //*********************************************************************************************************************
+
+
 
     public Resolution[] resolutions;
 
@@ -107,6 +119,9 @@ public class SettingsManager : MonoBehaviour
             gameSettings.masterVolumeMute = false;
             gameSettings.bgmMusicMute = false;
             gameSettings.sfxMute = false;
+            gameSettings.ragdoll = true;
+            gameSettings.aimSystem = false;
+            gameSettings.manualBulletTime = false;
 
             SaveSettings();
         }
@@ -131,7 +146,9 @@ public class SettingsManager : MonoBehaviour
         masterVolumeMuteToggle = GameObject.Find("Master Volume Mute").GetComponent<Toggle>();
         bgmMusicMuteToggle = GameObject.Find("Music Volume Mute").GetComponent<Toggle>();
         sfxMuteToggle = GameObject.Find("SFX Volume Mute").GetComponent<Toggle>();
-
+        ragdollToggle = GameObject.Find("Ragdoll").GetComponent<Toggle>();
+        aimSystemToggle = GameObject.Find("Alternate Aiming System").GetComponent<Toggle>();
+        bulletTimeToggle = GameObject.Find("Manual Bullet Time").GetComponent<Toggle>();
         if (applyButton != null)
         {
             applyButton.onClick.AddListener(delegate { OnApplyButtonClick(); });
@@ -161,6 +178,9 @@ public class SettingsManager : MonoBehaviour
         masterVolumeMuteToggle.onValueChanged.AddListener(delegate { OnMasterVolumeMute(); });
         bgmMusicMuteToggle.onValueChanged.AddListener(delegate { OnMusicMute(); });
         sfxMuteToggle.onValueChanged.AddListener(delegate { OnSFXMute(); });
+        ragdollToggle.onValueChanged.AddListener(delegate { OnRagdollToggle(); });
+        aimSystemToggle.onValueChanged.AddListener(delegate { OnAimSystemChange(); });
+        bulletTimeToggle.onValueChanged.AddListener(delegate { OnBulletTimeToggleChange(); });
     }
 
     public void OnFullscreenToggle()
@@ -307,6 +327,21 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
+    public void OnRagdollToggle()
+    {
+        gameSettings.ragdoll = enemyPrefab.GetComponent<Ragdoll>().RagdollOn = ragdollToggle.isOn;
+    }
+
+    public void OnAimSystemChange()
+    {
+        gameSettings.aimSystem = aimSystemToggle.isOn;
+    }
+
+    public void OnBulletTimeToggleChange()
+    {
+        gameSettings.manualBulletTime = bulletTimeToggle.isOn;
+    }
+
     public void OnApplyButtonClick()
     {
         SaveSettings();
@@ -367,6 +402,9 @@ public class SettingsManager : MonoBehaviour
         masterVolumeMuteToggle.isOn = gameSettings.masterVolumeMute;
         bgmMusicMuteToggle.isOn = gameSettings.bgmMusicMute;
         sfxMuteToggle.isOn = gameSettings.sfxMute;
+        ragdollToggle.isOn = gameSettings.ragdoll;
+        aimSystemToggle.isOn = gameSettings.aimSystem;
+        bulletTimeToggle.isOn = gameSettings.manualBulletTime;
 
         resolutions = Screen.resolutions;
         foreach (Resolution resolution in resolutions)

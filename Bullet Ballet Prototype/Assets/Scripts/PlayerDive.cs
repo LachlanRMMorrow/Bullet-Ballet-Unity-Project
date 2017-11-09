@@ -69,6 +69,10 @@ public class PlayerDive : MonoBehaviour {
     private Rigidbody m_Rigidbody;
     private PlayerMovement m_Movement;
 
+    private Animator m_Animator;
+    public RuntimeAnimatorController m_Controller;
+    private RuntimeAnimatorController m_StartingController;
+
     void Start() {
         
         m_PlayerArms = GetComponent<PlayerArms>();
@@ -84,6 +88,9 @@ public class PlayerDive : MonoBehaviour {
 
         m_DashChargesCurrent = m_DashChargesMax;
         m_DashChargeTimerCurrent = m_DashChargeTimerMax;
+
+        m_Animator = transform.GetChild(2).GetChild(0).GetComponent<Animator>();
+        m_StartingController = m_Animator.runtimeAnimatorController;
     }
 
     void Update() {
@@ -96,8 +103,7 @@ public class PlayerDive : MonoBehaviour {
                 m_DashChargesCurrent += 1;
 
             }
-        }
-        
+        }        
 
         if (m_IsDiving) {
             runDive();
@@ -107,13 +113,15 @@ public class PlayerDive : MonoBehaviour {
     }
 
     private void runDive() {
-        if (m_DashChargesCurrent > 0)
-        {
+
+        GetComponent<Health>().m_IsInvincible = true;
             bool isDiveOver = m_StartTime + m_TimeTakenToDash < Time.time;
             m_PlayerArms.m_CanMoveArms = isDiveOver;
             //if the time is up then stop the dive
             if (isDiveOver)
             {
+                m_Animator.runtimeAnimatorController = m_StartingController;
+
                 m_IsDiving = false;
                 m_Rigidbody.velocity = Vector3.zero;
 
@@ -124,13 +132,9 @@ public class PlayerDive : MonoBehaviour {
                 m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = true;
 
                 m_DashChargesCurrent--;
-            }
-            
-        }
-        else
-        {
-            Debug.Log("You have no dash charges");
-        }
+            GetComponent<Health>().m_IsInvincible = false;
+
+        }  
         
     }
 
@@ -147,12 +151,14 @@ public class PlayerDive : MonoBehaviour {
         }
         bool isAboutToDive = controller.IsButtonDown(Keys.singleton.m_DiveDashButton);
 
+        if (m_DashChargesCurrent <= 0) {
+            return;
+        }
+
         //if the dive is on cool down then pretend the player didn't press the Dive/Dash button
         //if(m_StartTime + m_TimeTakenToDash + m_DashCooldown > Time.time) {
         //    isAboutToDive = false;
         //}
-
-
 
         if (isAboutToDive) {
 
@@ -164,7 +170,7 @@ public class PlayerDive : MonoBehaviour {
                 if (!m_HasUsedOnButtonPress) {
                     m_HasUsedOnButtonPress = true;
                     
-                        m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = false;
+                    m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = false;
 
                     //set up variables
                     m_IsDiving = true;
@@ -182,6 +188,16 @@ public class PlayerDive : MonoBehaviour {
                     Player.m_HasPlayerDoneAnything = true;
 
                     m_StartPos = transform.position;
+
+                    m_Animator.runtimeAnimatorController = m_Controller;
+
+                    //calc resulting angle
+                    float angle = Mathf.Atan2(leftStick.x, -leftStick.y) * Mathf.Rad2Deg;
+
+                    //get a quaternion version of angle
+                    Quaternion endRotation = Quaternion.Euler(new Vector3(0, angle, 0));
+
+                    transform.rotation = endRotation;
                 }
             }
         } else {
@@ -211,5 +227,11 @@ public class PlayerDive : MonoBehaviour {
 
         transform.position = transform.position + new Vector3(0,-1,0);
     }
+
+    private void startDiveAnimation() {
+        //m_Animator.SetTrigger("RunRoll");
+       
+    }
+
 
 }

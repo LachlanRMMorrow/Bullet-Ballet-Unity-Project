@@ -27,6 +27,8 @@ public class WeaponSelectMenu : MonoBehaviour {
     //public Button continueButton;
 
     public GameObject m_ShakeHolder;
+    public UnityEngine.PostProcessing.PostProcessingProfile screenBlur;
+
 
     void Awake()
     {
@@ -34,10 +36,7 @@ public class WeaponSelectMenu : MonoBehaviour {
         m_ShakeHolder.SetActive(false);
 
         weaponMenu = GameObject.Find("Canvas").transform.Find("Weapon Select Menu").gameObject;
-        //weaponMenu.SetActive(true);
         WeaponMenuActive();
-
-        
     }
 
 	public void WeaponMenuActive()
@@ -74,6 +73,8 @@ public class WeaponSelectMenu : MonoBehaviour {
             weapon3Button = weaponMenu.transform.Find("Weapon 3 Button").GetComponent<Button>();
             weapon3Button.onClick.AddListener(StartGame);
         }
+
+        screenBlur.depthOfField.enabled = true;
 
         weapon2Button.Select();
         weapon1Button.Select();
@@ -112,6 +113,7 @@ public class WeaponSelectMenu : MonoBehaviour {
         m_ShakeHolder.SetActive(true);
         GameObject manager = GameObject.Find("MANAGER");
         manager.GetComponent<SlowMoManager>().updateTimeScale(true);
+        screenBlur.depthOfField.enabled = false;
     }
 
     private void WeaponSwitch(float rotationOffset)
@@ -131,10 +133,5 @@ public class WeaponSelectMenu : MonoBehaviour {
 
         Instantiate(wepRef.m_WeaponPrefab, rightHandRef.transform.position, (rightHandRef.transform.rotation * Quaternion.Euler(0, rotationOffset, 0)), rightHandRef.transform);
         Instantiate(wepRef.m_WeaponPrefab, leftHandRef.transform.position, (leftHandRef.transform.rotation * Quaternion.Euler(0, rotationOffset, 0)), leftHandRef.transform);
-
-        //currentEquippedWeaponRight.reload();
-        //currentEquippedWeaponLeft.reload();
-
-
     }
 }

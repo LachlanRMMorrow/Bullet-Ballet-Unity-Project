@@ -84,6 +84,9 @@ public class SlowMoManager : MonoBehaviour {
 
     private bool m_HasGameStarted = false;
 
+
+    public static bool m_ManualBulletTime;
+
     // Use this for initialization
     void Awake() {
         //update energy left
@@ -175,6 +178,7 @@ public class SlowMoManager : MonoBehaviour {
     /// check controller input to see if the slow mo button was pressed
     /// </summary>
 	private void controllerInput() {
+
         //controller, turn on/off
         JInput.Controller controller = JInput.CurrentController.currentController;
         if (controller == null) {
@@ -235,6 +239,9 @@ public class SlowMoManager : MonoBehaviour {
             }
         }
 
+        if (!m_ManualBulletTime) {
+            return;
+        }
 
         //slow mo start if, also checks if the game is paused or not
         if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton) && !m_isPaused) {

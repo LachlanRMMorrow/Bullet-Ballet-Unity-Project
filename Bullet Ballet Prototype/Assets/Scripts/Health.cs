@@ -31,11 +31,14 @@ public class Health : MonoBehaviour {
     [HideInInspector]
     public UnityEngine.Events.UnityEvent m_ObjectHitEvent;
 
+    public bool m_IsInvincible;
+
     public AudioClip m_DamageSound;
 
     void Awake() {
         //set up default health values
         m_CurrentHealth = m_MaxHealth;
+        m_IsInvincible = false;
 
 
         //forcing(well giving a stern error) the player to have a slider
@@ -55,8 +58,13 @@ public class Health : MonoBehaviour {
     /// </summary>
     /// <param name="a_Damage"></param>
     public void dealDamage(float a_Damage) {
+        if (m_IsInvincible)
+        {
+            return;
+        }
         //if we have already lost all our health, then
-        if (isDead()) {
+        if (isDead())
+        {
             return;
         }
         //remove health
@@ -65,7 +73,8 @@ public class Health : MonoBehaviour {
         m_ObjectHitEvent.Invoke();
 
         //check if this object is dead or not after the damage
-        if (isDead()) {
+        if (isDead())
+        {
             m_CurrentHealth = 0;
             m_ObjectDiedEvent.Invoke();
         }

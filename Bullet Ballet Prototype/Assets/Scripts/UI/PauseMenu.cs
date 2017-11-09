@@ -90,11 +90,12 @@ public class PauseMenu : MonoBehaviour {
     {
         pauseMenu.SetActive(false);
         optionsMenu.SetActive(true);
+        Dropdown resolution = optionsMenu.transform.Find("Resolution").GetComponent<Dropdown>();
         Toggle fullScreen = optionsMenu.transform.Find("Fullscreen").GetComponent<Toggle>();
         Toggle vSync = optionsMenu.transform.Find("Verticle Sync").GetComponent<Toggle>();
 
         vSync.Select();
-        fullScreen.Select();
+        resolution.Select();
 
        
     }
