@@ -43,6 +43,11 @@ public class PlayerDive : MonoBehaviour {
     public float m_DashChargeTimerCurrent;
 
     /// <summary>
+    /// Manager reference to get the error sound
+    /// </summary>
+    GameObject m_Manager;
+
+    /// <summary>
     /// is the player currently dashing or diving
     /// </summary>
     private bool m_IsDiving = false;
@@ -51,11 +56,6 @@ public class PlayerDive : MonoBehaviour {
     /// has the player dashed or dived on this button press
     /// </summary>
     private bool m_HasUsedOnButtonPress = false;
-
-    /// <summary>
-    /// has the player dashed or dived on this button press
-    /// </summary>
-    public AudioClip m_ErrorSound;
 
     /// <summary>
     /// time the dash/dive started
@@ -95,6 +95,8 @@ public class PlayerDive : MonoBehaviour {
 
         m_Animator = transform.GetChild(2).GetChild(0).GetComponent<Animator>();
         m_StartingController = m_Animator.runtimeAnimatorController;
+
+        m_Manager = GameObject.Find("MANAGER");
     }
 
     void Update() {
@@ -175,7 +177,7 @@ public class PlayerDive : MonoBehaviour {
 
                     if (m_DashChargesCurrent <= 0)
                     {
-                        SoundManager.PlaySFX(m_ErrorSound);
+                        m_Manager.GetComponent<ErrorSound>().PlayClip();
                         return;
                     }
 

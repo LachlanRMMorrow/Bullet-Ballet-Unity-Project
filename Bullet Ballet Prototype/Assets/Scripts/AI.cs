@@ -16,7 +16,7 @@ public class AI : MonoBehaviour {
     //visible 
     public GameObject m_VisibleObject;
     public GameObject m_LastKnownPositionObject;
-
+    public GameObject m_EnemyPrefab;
     /// <summary>
     /// reference to the player's transform
     /// used for getting the direction of the player
@@ -108,6 +108,8 @@ public class AI : MonoBehaviour {
         if (m_RoomLayer == -1) {
             m_RoomLayer = LayerMask.NameToLayer("RoomFog");
         }
+
+        m_EnemyPrefab = GameObject.Find("MANAGER").GetComponent<SettingsManager>().enemyPrefab;
 
         //add a random 90 degree rotation to the starting 
         //and store the starting position
@@ -403,13 +405,20 @@ public class AI : MonoBehaviour {
     /// called using unity event system when this object is out of health
     /// </summary>
     private void AiKilled() {
-        Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
-        if (ragdoll != null)
+        if(m_EnemyPrefab.GetComponent<Ragdoll>().enabled == true)
         {
-            ragdoll.RagdollOn = true;
+            Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
+            if (ragdoll != null)
+            {
+                ragdoll.RagdollOn = true;
+            }
+            Destroy(gameObject, 5.0f);
+            m_isAlive = false;
         }
-        Destroy(gameObject, 5.0f);
-        m_isAlive = false;
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     /// <summary>

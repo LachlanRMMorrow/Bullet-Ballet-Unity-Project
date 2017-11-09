@@ -329,7 +329,7 @@ public class SettingsManager : MonoBehaviour
 
     public void OnRagdollToggle()
     {
-        gameSettings.ragdoll = enemyPrefab.GetComponent<Ragdoll>().RagdollOn = ragdollToggle.isOn;
+        gameSettings.ragdoll = enemyPrefab.GetComponent<Ragdoll>().enabled = ragdollToggle.isOn;
     }
 
     public void OnAimSystemChange()
