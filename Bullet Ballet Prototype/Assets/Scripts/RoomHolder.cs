@@ -10,6 +10,9 @@ public class RoomHolder : MonoBehaviour {
     /// </summary>
     private bool m_InRoom = false;
 
+
+    public static int m_PlayersCurrentRoom = 0;
+
     #region Materials
 
     //reference to the room fog
@@ -21,12 +24,6 @@ public class RoomHolder : MonoBehaviour {
     #endregion
 
     #region RoomID's
-
-    /// <summary>
-    /// id of the current room
-    /// </summary>
-    public static int m_PlayersCurrentRoom = -1;
-
     /// <summary>
     /// total number of rooms
     /// incremented every time a new room is created
@@ -74,18 +71,19 @@ public class RoomHolder : MonoBehaviour {
 
     public static List<RoomHolder> m_ListOfRooms = new List<RoomHolder>();
 
-
-    // Use this for initialization
-    void Start() {
+    void Awake() {
         //set room ID while also incrementing the number of rooms
-        m_RoomID = m_NumOfRooms++;
+        m_RoomID = 1 << m_NumOfRooms++;
 
         //create a copy of this material
         m_ThisRoomsFogMaterial = new Material(m_RoomFogMaterial);
 
-        setupRoom(transform);
-
         m_ListOfRooms.Add(this);
+    }
+
+    // Use this for initialization
+    void Start() {
+        setupRoom(transform);
     }
 
     // Update is called once per frame
@@ -126,11 +124,11 @@ public class RoomHolder : MonoBehaviour {
 
     public void startFade(bool a_Entered) {
         //if room is already the same as what we want to do, then return
-        if(m_Entered == a_Entered) {
+        if (m_Entered == a_Entered) {
             return;
         }
         if (m_RoomInteractedWith) {
-        //get how far through the current animation we are, and reverse it
+            //get how far through the current animation we are, and reverse it
             float percentage = (Time.time - m_TimeInteractedWith) / m_FadeTime;
             m_TimeInteractedWith = Time.time - (1 - percentage * m_FadeTime);
         } else {
@@ -142,32 +140,26 @@ public class RoomHolder : MonoBehaviour {
 
     public void roomInteracted(bool a_Entered, RoomScript a_Script) {
         bool runFade = false;
-        bool enteredRoom = false;
+        int previousCurrentRoom = m_PlayersCurrentRoom;
+
         m_InRoom = a_Entered;
         if (m_InRoom) {
             m_InColliders++;
 
             if (m_InColliders == 1) {
-                m_PlayersCurrentRoom = m_RoomID;
+                m_PlayersCurrentRoom |= m_RoomID;
                 runFade = true;
-                enteredRoom = true;
             }
         } else {
             m_InColliders--;
             if (m_InColliders == 0) {
+                m_PlayersCurrentRoom &= ~m_RoomID;
                 runFade = true;
-                enteredRoom = false;
             }
         }
 
         if (runFade) {
-            startFade(enteredRoom);
-            for (int i = 0; i < m_Neighbors.Count; i++) {
-                if (m_Neighbors[i].m_InRoom) {
-                    continue;
-                }
-                m_Neighbors[i].startFade(enteredRoom);
-            }
+            currentRoomUpdated(previousCurrentRoom);
         }
 
     }
@@ -184,5 +176,52 @@ public class RoomHolder : MonoBehaviour {
             //set material
             child.gameObject.GetComponent<Renderer>().material = m_ThisRoomsFogMaterial;
         }
+    }
+
+    public static bool isPlayerInRoom(int a_RoomID) {
+        return (m_PlayersCurrentRoom & a_RoomID) != 0;
+    }
+
+    private static void currentRoomUpdated(int a_PreviousCurrentRooms) {
+        //print("currentRoomUpdated: current: " + m_PlayersCurrentRoom + " previous: " + a_PreviousCurrentRooms);
+
+        for (int i = 0; i < m_ListOfRooms.Count; i++) {
+            RoomHolder rh = m_ListOfRooms[i];
+            int currentBitMask = m_PlayersCurrentRoom & rh.m_RoomID;
+            int previousBitMask = a_PreviousCurrentRooms & rh.m_RoomID;
+            int bitMaskOr = currentBitMask | previousBitMask;
+            bool interacted = bitMaskOr != 0;
+            if (interacted) {
+                //print("Interacted with " + rh.m_RoomID + " - " + bitMaskOr);
+                if (currentBitMask == previousBitMask) {
+                    //print("nothing happened to this room");
+                    continue;
+                }
+                bool entered = currentBitMask > previousBitMask;
+                //print(entered ? "Entered" : "Exited");
+                bool shouldFade = true;
+                for (int q = 0; q < rh.m_Neighbors.Count; q++) {
+                    RoomHolder neighbor = rh.m_Neighbors[q];
+
+                    int neigboursBitMask = m_PlayersCurrentRoom & neighbor.m_RoomID;
+                    if(neigboursBitMask == 0) {
+                        neighbor.startFade(entered);
+                    }else {
+                        shouldFade = false;
+                    }
+                }
+                if (shouldFade) {
+                    rh.startFade(entered);
+                }
+            }
+
+        }
+        //startFade(enteredRoom);
+        //for (int i = 0; i < m_Neighbors.Count; i++) {
+        //    if (m_Neighbors[i].m_InRoom) {
+        //        continue;
+        //    }
+        //    m_Neighbors[i].startFade(enteredRoom);
+        //}
     }
 }

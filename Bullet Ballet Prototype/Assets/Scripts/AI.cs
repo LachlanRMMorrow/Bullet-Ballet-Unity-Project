@@ -374,7 +374,7 @@ public class AI : MonoBehaviour {
         if (m_CurrentRoomHolder != null) {
             isRoomHolderEntered = m_CurrentRoomHolder.m_Entered;
         }
-        if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1 || isRoomHolderEntered) {
+        if (RoomHolder.isPlayerInRoom(m_CurrentRoomIndex) || m_CurrentRoomIndex == -1 || isRoomHolderEntered) {
             //if (m_CurrentRoomHolder.m_Entered || m_CurrentRoomIndex == -1) {
             m_HasBeenInTheSameRoom = true;
             m_VisibleObject.SetActive(true);
