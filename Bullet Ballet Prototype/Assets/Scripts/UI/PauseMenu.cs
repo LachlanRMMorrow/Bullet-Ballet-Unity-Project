@@ -82,7 +82,6 @@ public class PauseMenu : MonoBehaviour {
         manager.ScreenBlur(false);
         pauseMenu.SetActive(false);
         m_ShakeHolder.SetActive(true);
-        Debug.Log("dasda");
         Time.timeScale = 1;
     }
 
