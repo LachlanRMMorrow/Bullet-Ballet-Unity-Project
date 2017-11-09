@@ -30,9 +30,9 @@ public class PlayerDive : MonoBehaviour {
     /// ammount of dash charges
     /// </summary>
     //[Range(0, 10)]
-    public float m_DashChargesMax;
+    public int m_DashChargesMax;
 
-    public float m_DashChargesCurrent;
+    public int m_DashChargesCurrent;
 
     /// <summary>
     /// dash charge timer
