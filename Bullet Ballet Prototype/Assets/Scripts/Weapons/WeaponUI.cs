@@ -106,7 +106,7 @@ public class WeaponUI : MonoBehaviour {
         //get current weapon
         WeaponReference wepRef = WeaponHolder.getWeapon(m_CurrentRef);
 
-        transform.localPosition = m_LocalStartingPosition + wepRef.m_UIBulletOffsets.m_PositionOffset;
+        transform.localPosition = m_LocalStartingPosition + Vector2.Scale(new Vector2(m_IsOnRightSide ? -1 : 1, 1), wepRef.m_UIBulletOffsets.m_PositionOffset);
 
         //create bullet objects
         for (int i = 0; i < wepRef.m_MaxAmmo; i++) {
