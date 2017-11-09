@@ -52,6 +52,10 @@ public class PlayerDive : MonoBehaviour {
     /// </summary>
     private bool m_HasUsedOnButtonPress = false;
 
+    /// <summary>
+    /// has the player dashed or dived on this button press
+    /// </summary>
+    public AudioClip m_ErrorSound;
 
     /// <summary>
     /// time the dash/dive started
@@ -112,9 +116,9 @@ public class PlayerDive : MonoBehaviour {
         }
     }
 
-    private void runDive() {
+    private void runDive() { 
 
-        GetComponent<Health>().m_IsInvincible = true;
+            GetComponent<Health>().m_IsInvincible = true;
             bool isDiveOver = m_StartTime + m_TimeTakenToDash < Time.time;
             m_PlayerArms.m_CanMoveArms = isDiveOver;
             //if the time is up then stop the dive
@@ -151,9 +155,7 @@ public class PlayerDive : MonoBehaviour {
         }
         bool isAboutToDive = controller.IsButtonDown(Keys.singleton.m_DiveDashButton);
 
-        if (m_DashChargesCurrent <= 0) {
-            return;
-        }
+        
 
         //if the dive is on cool down then pretend the player didn't press the Dive/Dash button
         //if(m_StartTime + m_TimeTakenToDash + m_DashCooldown > Time.time) {
@@ -168,36 +170,46 @@ public class PlayerDive : MonoBehaviour {
             if (leftStick.magnitude > 0.9f) {
                 //if we havent dashed on this press before
                 if (!m_HasUsedOnButtonPress) {
+
                     m_HasUsedOnButtonPress = true;
-                    
-                    m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = false;
 
-                    //set up variables
-                    m_IsDiving = true;
-                    m_StartTime = Time.time;
-                    m_PlayerArms.m_CanMoveArms = true;
+                    if (m_DashChargesCurrent <= 0)
+                    {
+                        SoundManager.PlaySFX(m_ErrorSound);
+                        return;
+                    }
 
-                    //calc direction
-                    m_Direction = leftStick.normalized;
-                    m_Direction = new Vector3(m_Direction.x, 0, -m_Direction.y);
+                    else
+                    {
+                        m_PlayerArms.m_CanMoveArms = m_NavMesh.enabled = m_Rigidbody.isKinematic = false;
 
-                    //apply force
-                    float moveSpeed = m_Distance / m_TimeTakenToDash;
-                    m_Rigidbody.AddForce(m_Direction * moveSpeed, ForceMode.Impulse);
+                        //set up variables
+                        m_IsDiving = true;
+                        m_StartTime = Time.time;
+                        m_PlayerArms.m_CanMoveArms = true;
 
-                    Player.m_HasPlayerDoneAnything = true;
+                        //calc direction
+                        m_Direction = leftStick.normalized;
+                        m_Direction = new Vector3(m_Direction.x, 0, -m_Direction.y);
 
-                    m_StartPos = transform.position;
+                        //apply force
+                        float moveSpeed = m_Distance / m_TimeTakenToDash;
+                        m_Rigidbody.AddForce(m_Direction * moveSpeed, ForceMode.Impulse);
 
-                    m_Animator.runtimeAnimatorController = m_Controller;
+                        Player.m_HasPlayerDoneAnything = true;
 
-                    //calc resulting angle
-                    float angle = Mathf.Atan2(leftStick.x, -leftStick.y) * Mathf.Rad2Deg;
+                        m_StartPos = transform.position;
 
-                    //get a quaternion version of angle
-                    Quaternion endRotation = Quaternion.Euler(new Vector3(0, angle, 0));
+                        m_Animator.runtimeAnimatorController = m_Controller;
 
-                    transform.rotation = endRotation;
+                        //calc resulting angle
+                        float angle = Mathf.Atan2(leftStick.x, -leftStick.y) * Mathf.Rad2Deg;
+
+                        //get a quaternion version of angle
+                        Quaternion endRotation = Quaternion.Euler(new Vector3(0, angle, 0));
+
+                        transform.rotation = endRotation;
+                    }
                 }
             }
         } else {
