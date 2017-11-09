@@ -42,6 +42,9 @@ public class PlayerDive : MonoBehaviour {
 
     public float m_DashChargeTimerCurrent;
 
+
+    GameObject m_Manager;
+
     /// <summary>
     /// is the player currently dashing or diving
     /// </summary>
@@ -78,6 +81,8 @@ public class PlayerDive : MonoBehaviour {
     private RuntimeAnimatorController m_StartingController;
 
     void Start() {
+
+        m_Manager = GameObject.Find("MANAGER");
 
         m_PlayerArms = GetComponent<PlayerArms>();
         m_Movement = GetComponent<PlayerMovement>();
@@ -171,7 +176,7 @@ public class PlayerDive : MonoBehaviour {
                     m_HasUsedOnButtonPress = true;
 
                     if (m_DashChargesCurrent <= 0 && m_DashChargesMax != 0) {
-                        SoundManager.PlaySFX(m_ErrorSound);
+                        m_Manager.GetComponent<ErrorSound>().PlayClip();
                         return;
                     } else {
 
