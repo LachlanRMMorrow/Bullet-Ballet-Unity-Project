@@ -115,6 +115,8 @@ public class SlowMoManager : MonoBehaviour {
 
         //update the ui
         updateUi();
+
+        Time.fixedDeltaTime = 1;
     }
 
     // Update is called once per frame

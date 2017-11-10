@@ -224,4 +224,12 @@ public class RoomHolder : MonoBehaviour {
         //    m_Neighbors[i].startFade(enteredRoom);
         //}
     }
+
+    /// <summary>
+    /// Called by GameStateManager to reset RoomHolders static variables
+    /// </summary>
+    public static void resetStaticVariables() {
+        m_PlayersCurrentRoom = 0;
+        m_NumOfRooms = 0;
+    }
 }
