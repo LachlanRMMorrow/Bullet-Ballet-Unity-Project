@@ -11,10 +11,11 @@ public class ExitWorldText : MonoBehaviour
 
     private void Start()
     {
-        if(mat == null) {
+        enemies = GameObject.Find("End of level trigger").GetComponent<LevelSwap>().enemies;
+        if (mat == null)
+        {
             mat = GetComponent<MeshRenderer>().material;
         }
-        enemies.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
         color = mat.color;
         color.a = 0;
         mat.color = color;
@@ -22,7 +23,7 @@ public class ExitWorldText : MonoBehaviour
 
     void Update()
     {
-        enemies.RemoveAll(item => item == null);
+        //enemies.RemoveAll(item => item == null);
 
         if (enemies.Count <= 0 && color.a <= 1)
         {
