@@ -144,7 +144,6 @@ public class RoomHolder : MonoBehaviour {
 
     public void roomInteracted(bool a_Entered, RoomScript a_Script) {
         bool runFade = false;
-        int previousCurrentRoom = m_PlayersCurrentRoom;
 
         m_InRoom = a_Entered;
         if (m_InRoom) {
@@ -163,7 +162,7 @@ public class RoomHolder : MonoBehaviour {
         }
 
         if (runFade) {
-            currentRoomUpdated(previousCurrentRoom);
+            currentRoomUpdated();
         }
 
     }
@@ -186,13 +185,13 @@ public class RoomHolder : MonoBehaviour {
         return (m_PlayersCurrentRoom & a_RoomID) != 0;
     }
 
-    private static void currentRoomUpdated(int a_PreviousCurrentRooms) {
+    public static void currentRoomUpdated() {
 
         for (int i = 0; i < m_ListOfRooms.Count; i++) {
             RoomHolder rh = m_ListOfRooms[i];
                         
             //is the player in this room?
-            bool showRoom = (m_PlayersCurrentRoom & rh.m_RoomID) != 0;
+            bool showRoom = (m_PlayersCurrentRoom & rh.m_RoomID) != 0 | GameStateManager.m_EndOfLevelEnemysLeft;
 
             if (!showRoom) {
                 //go through neighbors to check if the player is in them
