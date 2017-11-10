@@ -88,6 +88,10 @@ public class RoomHolder : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        //if (m_RoomID == 1) {
+        //    print("Current Room: " + m_PlayersCurrentRoom);
+        //}
+
         //set unscaled time within the shader
         m_ThisRoomsFogMaterial.SetFloat("_UnscaledTime", Time.unscaledTime);
         if (m_RoomInteractedWith) {
@@ -130,7 +134,7 @@ public class RoomHolder : MonoBehaviour {
         if (m_RoomInteractedWith) {
             //get how far through the current animation we are, and reverse it
             float percentage = (Time.time - m_TimeInteractedWith) / m_FadeTime;
-            m_TimeInteractedWith = Time.time - (1 - percentage * m_FadeTime);
+            m_TimeInteractedWith = Time.time - ((1 - percentage) * m_FadeTime);
         } else {
             m_TimeInteractedWith = Time.time;
         }
@@ -183,46 +187,33 @@ public class RoomHolder : MonoBehaviour {
     }
 
     private static void currentRoomUpdated(int a_PreviousCurrentRooms) {
-        //print("currentRoomUpdated: current: " + m_PlayersCurrentRoom + " previous: " + a_PreviousCurrentRooms);
 
         for (int i = 0; i < m_ListOfRooms.Count; i++) {
             RoomHolder rh = m_ListOfRooms[i];
-            int currentBitMask = m_PlayersCurrentRoom & rh.m_RoomID;
-            int previousBitMask = a_PreviousCurrentRooms & rh.m_RoomID;
-            int bitMaskOr = currentBitMask | previousBitMask;
-            bool interacted = bitMaskOr != 0;
-            if (interacted) {
-                //print("Interacted with " + rh.m_RoomID + " - " + bitMaskOr);
-                if (currentBitMask == previousBitMask) {
-                    //print("nothing happened to this room");
-                    continue;
-                }
-                bool entered = currentBitMask > previousBitMask;
-                //print(entered ? "Entered" : "Exited");
-                bool shouldFade = true;
+                        
+            //is the player in this room?
+            bool showRoom = (m_PlayersCurrentRoom & rh.m_RoomID) != 0;
+
+            if (!showRoom) {
+                //go through neighbors to check if the player is in them
                 for (int q = 0; q < rh.m_Neighbors.Count; q++) {
                     RoomHolder neighbor = rh.m_Neighbors[q];
-
-                    int neigboursBitMask = m_PlayersCurrentRoom & neighbor.m_RoomID;
-                    if(neigboursBitMask == 0) {
-                        neighbor.startFade(entered);
-                    }else {
-                        shouldFade = false;
+                    if(neighbor == null) {
+                        continue;
                     }
-                }
-                if (shouldFade) {
-                    rh.startFade(entered);
+                    //is the Player in this Room?
+                    int neigboursBitMask = m_PlayersCurrentRoom & neighbor.m_RoomID;
+                    //if it is then we show that room
+                    if (neigboursBitMask != 0) {
+                        showRoom = true;
+                        break;
+                    }
                 }
             }
 
+            //finally set this rooms fade
+            rh.startFade(showRoom);
         }
-        //startFade(enteredRoom);
-        //for (int i = 0; i < m_Neighbors.Count; i++) {
-        //    if (m_Neighbors[i].m_InRoom) {
-        //        continue;
-        //    }
-        //    m_Neighbors[i].startFade(enteredRoom);
-        //}
     }
 
     /// <summary>
