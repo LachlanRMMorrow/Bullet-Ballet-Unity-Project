@@ -37,18 +37,33 @@ public class LevelSwap : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other == playerCollider && enemies.Count == 0)
+        if (other == playerCollider)
         {
-            Debug.Log(enemies);
-            endOfLevelScreen.SetActive(true);
-            GameObject eS = GameObject.Find("EventSystem");
-            //eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(nextLevel);
-            SlowMoManager.m_isPaused = true;
-            eS.GetComponent<EndofLevelMenu>().EndOfLeveActive();
-            endOfLevelScreen.transform.Find("Exit To Desktop ES").GetComponent<UnityEngine.UI.Button>().Select();
-            endOfLevelScreen.transform.Find("Next Level ES").GetComponent<UnityEngine.UI.Button>().Select();
+            if (enemies.Count == 0) {
+                Debug.Log(enemies);
+                endOfLevelScreen.SetActive(true);
+                GameObject eS = GameObject.Find("EventSystem");
+                //eS.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(nextLevel);
+                SlowMoManager.m_isPaused = true;
+                eS.GetComponent<EndofLevelMenu>().EndOfLeveActive();
+                endOfLevelScreen.transform.Find("Exit To Desktop ES").GetComponent<UnityEngine.UI.Button>().Select();
+                endOfLevelScreen.transform.Find("Next Level ES").GetComponent<UnityEngine.UI.Button>().Select();
+            }else {
+                GameStateManager.m_EndOfLevelEnemysLeft = true;
+                RoomHolder.currentRoomUpdated();
+            }
         }
     }
 
-  
+    void OnTriggerExit(Collider other) {
+        if (other == playerCollider) {
+            GameStateManager.m_EndOfLevelEnemysLeft = false;
+            RoomHolder.currentRoomUpdated();
+        }
+
+    }
+
+
+
+
 }

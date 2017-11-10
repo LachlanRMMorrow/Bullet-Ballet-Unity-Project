@@ -11,6 +11,7 @@ public class CameraManager : MonoBehaviour {
     /// </summary>
     public Transform m_CameraTransform;
     public GameObject m_EventSystem;
+    private Vector3 m_StartingPosition;
 
     #region Static Common Variables
     static readonly Vector3 YMASK = new Vector3(1, 0, 1);
@@ -100,6 +101,8 @@ public class CameraManager : MonoBehaviour {
 
         m_CameraTransform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
 
+        m_StartingPosition = m_CameraTransform.position;
+
     }
 
     // Update is called once per frame
@@ -182,14 +185,23 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void dynamicCameraUpdate() {
-        switch (GameStateManager.currentState) {
-            case GameStates.Action:
-                dynamicCameraAction();
-                break;
-            case GameStates.Planning:
-                dynamicCameraPlanning();
-                break;
+        if (GameStateManager.m_EndOfLevelEnemysLeft) {
+            moveToStartPos();
+        } else {
+            switch (GameStateManager.currentState) {
+                case GameStates.Action:
+                    dynamicCameraAction();
+                    break;
+                case GameStates.Planning:
+                    dynamicCameraPlanning();
+                    break;
+            }
         }
+    }
+
+    private void moveToStartPos() {
+        lerpToPoint(m_StartingPosition);
+        lerpYpos(m_StartingPosition.y);
     }
 
     private void dynamicCameraPlanning() {

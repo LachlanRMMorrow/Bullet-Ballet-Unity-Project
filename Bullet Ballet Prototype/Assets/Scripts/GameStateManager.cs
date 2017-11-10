@@ -51,6 +51,8 @@ public class GameStateManager : MonoBehaviour {
     public Sprite m_StateModeDebugText1;
     public Sprite m_StateModeDebugText2;
 
+    public static bool m_EndOfLevelEnemysLeft = false;
+
     /// <summary>
     /// changes the game state to a_State
     /// and invokes the unity Event m_StateChanged with the new state
@@ -68,6 +70,7 @@ public class GameStateManager : MonoBehaviour {
     void Awake() {
         m_Singleton = this;
 
+        m_EndOfLevelEnemysLeft = false;
         RoomHolder.resetStaticVariables();
 
     }
