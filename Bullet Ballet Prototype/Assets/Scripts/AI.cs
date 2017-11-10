@@ -90,6 +90,13 @@ public class AI : MonoBehaviour {
     /// </summary>
     private bool m_HasBeenInTheSameRoom = false;
 
+    /// <summary>
+    /// Colliders to disable/enable so that you cant shoot enemy arms
+    /// </summary>
+    public Collider m_Elbow;
+    public Collider m_Shoulder;
+
+
     public bool m_isAlive = true;
 
     public Animator m_AiAnimation;
@@ -145,6 +152,9 @@ public class AI : MonoBehaviour {
 
         m_AiAnimation = m_VisibleObject.GetComponentInChildren<Animator>();
         m_AiAnimation.StartPlayback();
+
+        m_Elbow = GetComponent<PatrolAI>().m_Elbow;
+        m_Shoulder = GetComponent<PatrolAI>().m_Shoulder;
     }
 
 
@@ -405,7 +415,10 @@ public class AI : MonoBehaviour {
     /// called using unity event system when this object is out of health
     /// </summary>
     private void AiKilled() {
-        if(m_EnemyPrefab.GetComponent<Ragdoll>().enabled == true)
+
+        m_Shoulder.enabled = true;
+        m_Elbow.enabled = true;
+        if (m_EnemyPrefab.GetComponent<Ragdoll>().enabled == true)
         {
             Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
             if (ragdoll != null)

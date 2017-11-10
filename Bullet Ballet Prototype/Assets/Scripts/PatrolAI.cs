@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class PatrolAI : AI {
 
+    /// <summary>
+    /// Colliders to disable/enable so that you cant shoot enemy arms
+    /// </summary>
+    public Collider m_Elbow;
+    public Collider m_Shoulder;
+
     public List<Transform> m_PatrolPoints;
     public int m_CurrentPath = 0;
 
