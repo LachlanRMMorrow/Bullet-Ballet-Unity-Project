@@ -67,6 +67,9 @@ public class GameStateManager : MonoBehaviour {
     /// </summary>
     void Awake() {
         m_Singleton = this;
+
+        RoomHolder.resetStaticVariables();
+
     }
     /// <summary>
     /// if code is changed and unity is playing
