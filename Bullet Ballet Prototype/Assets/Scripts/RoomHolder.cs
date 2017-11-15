@@ -10,6 +10,9 @@ public class RoomHolder : MonoBehaviour {
     /// </summary>
     private bool m_InRoom = false;
 
+
+    public static int m_PlayersCurrentRoom = 0;
+
     #region Materials
 
     //reference to the room fog
@@ -21,12 +24,6 @@ public class RoomHolder : MonoBehaviour {
     #endregion
 
     #region RoomID's
-
-    /// <summary>
-    /// id of the current room
-    /// </summary>
-    public static int m_PlayersCurrentRoom = -1;
-
     /// <summary>
     /// total number of rooms
     /// incremented every time a new room is created
@@ -74,22 +71,27 @@ public class RoomHolder : MonoBehaviour {
 
     public static List<RoomHolder> m_ListOfRooms = new List<RoomHolder>();
 
-
-    // Use this for initialization
-    void Start() {
+    void Awake() {
         //set room ID while also incrementing the number of rooms
-        m_RoomID = m_NumOfRooms++;
+        m_RoomID = 1 << m_NumOfRooms++;
 
         //create a copy of this material
         m_ThisRoomsFogMaterial = new Material(m_RoomFogMaterial);
 
-        setupRoom(transform);
-
         m_ListOfRooms.Add(this);
+    }
+
+    // Use this for initialization
+    void Start() {
+        setupRoom(transform);
     }
 
     // Update is called once per frame
     void Update() {
+        //if (m_RoomID == 1) {
+        //    print("Current Room: " + m_PlayersCurrentRoom);
+        //}
+
         //set unscaled time within the shader
         m_ThisRoomsFogMaterial.SetFloat("_UnscaledTime", Time.unscaledTime);
         if (m_RoomInteractedWith) {
@@ -126,13 +128,13 @@ public class RoomHolder : MonoBehaviour {
 
     public void startFade(bool a_Entered) {
         //if room is already the same as what we want to do, then return
-        if(m_Entered == a_Entered) {
+        if (m_Entered == a_Entered) {
             return;
         }
         if (m_RoomInteractedWith) {
-        //get how far through the current animation we are, and reverse it
+            //get how far through the current animation we are, and reverse it
             float percentage = (Time.time - m_TimeInteractedWith) / m_FadeTime;
-            m_TimeInteractedWith = Time.time - (1 - percentage * m_FadeTime);
+            m_TimeInteractedWith = Time.time - ((1 - percentage) * m_FadeTime);
         } else {
             m_TimeInteractedWith = Time.time;
         }
@@ -142,32 +144,25 @@ public class RoomHolder : MonoBehaviour {
 
     public void roomInteracted(bool a_Entered, RoomScript a_Script) {
         bool runFade = false;
-        bool enteredRoom = false;
+
         m_InRoom = a_Entered;
         if (m_InRoom) {
             m_InColliders++;
 
             if (m_InColliders == 1) {
-                m_PlayersCurrentRoom = m_RoomID;
+                m_PlayersCurrentRoom |= m_RoomID;
                 runFade = true;
-                enteredRoom = true;
             }
         } else {
             m_InColliders--;
             if (m_InColliders == 0) {
+                m_PlayersCurrentRoom &= ~m_RoomID;
                 runFade = true;
-                enteredRoom = false;
             }
         }
 
         if (runFade) {
-            startFade(enteredRoom);
-            for (int i = 0; i < m_Neighbors.Count; i++) {
-                if (m_Neighbors[i].m_InRoom) {
-                    continue;
-                }
-                m_Neighbors[i].startFade(enteredRoom);
-            }
+            currentRoomUpdated();
         }
 
     }
@@ -184,5 +179,47 @@ public class RoomHolder : MonoBehaviour {
             //set material
             child.gameObject.GetComponent<Renderer>().material = m_ThisRoomsFogMaterial;
         }
+    }
+
+    public static bool isPlayerInRoom(int a_RoomID) {
+        return (m_PlayersCurrentRoom & a_RoomID) != 0;
+    }
+
+    public static void currentRoomUpdated() {
+
+        for (int i = 0; i < m_ListOfRooms.Count; i++) {
+            RoomHolder rh = m_ListOfRooms[i];
+                        
+            //is the player in this room?
+            bool showRoom = (m_PlayersCurrentRoom & rh.m_RoomID) != 0 | GameStateManager.m_EndOfLevelEnemysLeft;
+
+            if (!showRoom) {
+                //go through neighbors to check if the player is in them
+                for (int q = 0; q < rh.m_Neighbors.Count; q++) {
+                    RoomHolder neighbor = rh.m_Neighbors[q];
+                    if(neighbor == null) {
+                        continue;
+                    }
+                    //is the Player in this Room?
+                    int neigboursBitMask = m_PlayersCurrentRoom & neighbor.m_RoomID;
+                    //if it is then we show that room
+                    if (neigboursBitMask != 0) {
+                        showRoom = true;
+                        break;
+                    }
+                }
+            }
+
+            //finally set this rooms fade
+            rh.startFade(showRoom);
+        }
+    }
+
+    /// <summary>
+    /// Called by GameStateManager to reset RoomHolders static variables
+    /// </summary>
+    public static void resetStaticVariables() {
+        m_PlayersCurrentRoom = 0;
+        m_NumOfRooms = 0;
     }
 }

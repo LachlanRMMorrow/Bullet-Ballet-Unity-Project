@@ -16,7 +16,7 @@ public class AI : MonoBehaviour {
     //visible 
     public GameObject m_VisibleObject;
     public GameObject m_LastKnownPositionObject;
-
+    public GameObject m_EnemyPrefab;
     /// <summary>
     /// reference to the player's transform
     /// used for getting the direction of the player
@@ -90,6 +90,13 @@ public class AI : MonoBehaviour {
     /// </summary>
     private bool m_HasBeenInTheSameRoom = false;
 
+    /// <summary>
+    /// Colliders to disable/enable so that you cant shoot enemy arms
+    /// </summary>
+    public Collider m_Elbow;
+    public Collider m_Shoulder;
+
+
     public bool m_isAlive = true;
 
     public Animator m_AiAnimation;
@@ -108,6 +115,8 @@ public class AI : MonoBehaviour {
         if (m_RoomLayer == -1) {
             m_RoomLayer = LayerMask.NameToLayer("RoomFog");
         }
+
+        m_EnemyPrefab = GameObject.Find("MANAGER").GetComponent<SettingsManager>().enemyPrefab;
 
         //add a random 90 degree rotation to the starting 
         //and store the starting position
@@ -143,6 +152,9 @@ public class AI : MonoBehaviour {
 
         m_AiAnimation = m_VisibleObject.GetComponentInChildren<Animator>();
         m_AiAnimation.StartPlayback();
+
+        m_Elbow = GetComponent<PatrolAI>().m_Elbow;
+        m_Shoulder = GetComponent<PatrolAI>().m_Shoulder;
     }
 
 
@@ -275,9 +287,11 @@ public class AI : MonoBehaviour {
         //eg. get the layer of the Bullets, which is 9
         //convert to a bitmask (000100000000)
         int layerMask = (1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Walls") | 1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Enemies") | 1 << LayerMask.NameToLayer("Cover"));
+        Vector3 playerDir = normPlayerDir();
         //raycast from AI in the player direction for 1000 units, checking for walls, players and enemies
-        if (Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up * 1.2f), normPlayerDir(), out hit, 1000, layerMask)) {
+        if (Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up * 1.2f) + playerDir, playerDir, out hit, 1000, layerMask)) {
             //Debug.Log(Physics.Raycast(m_VisibleObject.transform.position + (Vector3.up * 1.5f), normPlayerDir(), out hit, 1000, layerMask));
+            //print(hit.transform.name);
             //is this object the player
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Player")) {
                 return true;
@@ -372,7 +386,7 @@ public class AI : MonoBehaviour {
         if (m_CurrentRoomHolder != null) {
             isRoomHolderEntered = m_CurrentRoomHolder.m_Entered;
         }
-        if (m_CurrentRoomIndex == RoomHolder.m_PlayersCurrentRoom || m_CurrentRoomIndex == -1 || isRoomHolderEntered) {
+        if (RoomHolder.isPlayerInRoom(m_CurrentRoomIndex) || m_CurrentRoomIndex == -1 || isRoomHolderEntered) {
             //if (m_CurrentRoomHolder.m_Entered || m_CurrentRoomIndex == -1) {
             m_HasBeenInTheSameRoom = true;
             m_VisibleObject.SetActive(true);
@@ -403,13 +417,23 @@ public class AI : MonoBehaviour {
     /// called using unity event system when this object is out of health
     /// </summary>
     private void AiKilled() {
-        Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
-        if (ragdoll != null)
+
+        m_Shoulder.enabled = true;
+        m_Elbow.enabled = true;
+        if (m_EnemyPrefab.GetComponent<Ragdoll>().enabled == true)
         {
-            ragdoll.RagdollOn = true;
+            Ragdoll ragdoll = gameObject.GetComponentInParent<Ragdoll>();
+            if (ragdoll != null)
+            {
+                ragdoll.RagdollOn = true;
+            }
+            Destroy(gameObject, 5.0f);
+            m_isAlive = false;
         }
-        Destroy(gameObject, 5.0f);
-        m_isAlive = false;
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     /// <summary>

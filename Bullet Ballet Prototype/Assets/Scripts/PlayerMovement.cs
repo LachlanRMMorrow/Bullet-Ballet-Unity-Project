@@ -41,7 +41,6 @@ public class PlayerMovement : MonoBehaviour {
         m_NavMesh = GetComponent<NavMeshAgent>();
 
         m_Animator = transform.GetChild(2).GetChild(0).GetComponent<Animator>();
-        setRunSpeed(true);
     }
 
     // Update is called once per frame

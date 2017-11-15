@@ -115,6 +115,8 @@ public class SlowMoManager : MonoBehaviour {
 
         //update the ui
         updateUi();
+
+        Time.fixedDeltaTime = 1;
     }
 
     // Update is called once per frame
@@ -245,6 +247,12 @@ public class SlowMoManager : MonoBehaviour {
 
         //slow mo start if, also checks if the game is paused or not
         if (controller.WasButtonPressed(Keys.singleton.m_SlowMoButton) && !m_isPaused) {
+
+            if (m_EnergyLeft <= 0)
+            {
+                GameObject.Find("MANAGER").GetComponent<ErrorSound>().PlayClip();
+            }
+
             m_PlayerStartedSlowMo = true;//remove the trigger did use flag, if it's on then this will stop it, otherwise this wont do anything
             m_IsSlowmoOn = !m_IsSlowmoOn;
             updateTimeScale(true);
