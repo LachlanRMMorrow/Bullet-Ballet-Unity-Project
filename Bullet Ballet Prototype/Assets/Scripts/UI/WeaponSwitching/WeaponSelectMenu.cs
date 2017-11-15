@@ -29,9 +29,13 @@ public class WeaponSelectMenu : MonoBehaviour {
     public GameObject m_ShakeHolder;
     public UnityEngine.PostProcessing.PostProcessingProfile screenBlur;
 
+    private Transform m_FogCamera;
 
     void Awake()
     {
+        //gets the fog camera, it is the main camera, probably due to it's depth
+        m_FogCamera = Camera.main.transform;
+
         m_ShakeHolder = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
         m_ShakeHolder.SetActive(false);
 
@@ -75,6 +79,7 @@ public class WeaponSelectMenu : MonoBehaviour {
         }
 
         screenBlur.depthOfField.enabled = true;
+        m_FogCamera.gameObject.SetActive(false);
 
         weapon2Button.Select();
         weapon1Button.Select();
@@ -114,6 +119,8 @@ public class WeaponSelectMenu : MonoBehaviour {
         GameObject manager = GameObject.Find("MANAGER");
         manager.GetComponent<SlowMoManager>().updateTimeScale(true);
         screenBlur.depthOfField.enabled = false;
+        m_FogCamera.gameObject.SetActive(true);
+
     }
 
     private void WeaponSwitch(float rotationOffset)
