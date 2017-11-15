@@ -34,7 +34,7 @@ public class WeaponSelectMenu : MonoBehaviour {
     void Awake()
     {
         //gets the fog camera, it is the main camera, probably due to it's depth
-        m_FogCamera = Camera.main.transform;
+//        m_FogCamera = Camera.main.transform;
 
         m_ShakeHolder = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
         m_ShakeHolder.SetActive(false);
