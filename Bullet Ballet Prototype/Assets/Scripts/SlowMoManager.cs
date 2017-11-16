@@ -87,6 +87,8 @@ public class SlowMoManager : MonoBehaviour {
 
     public static bool m_ManualBulletTime;
 
+	private GameSettings m_SettingsManager;
+
     // Use this for initialization
     void Awake() {
         //update energy left
@@ -106,6 +108,8 @@ public class SlowMoManager : MonoBehaviour {
         if (m_SlowmoSlider == null) {
             Debug.LogError("Slow mo manager is missing it's reference to the Slow mo slider");
         }
+
+		m_SettingsManager = GetComponent<SettingsManager>().gameSettings;
 
         //start off paused with a timescale of 0
         //update the fixedTimescale aswell
@@ -152,7 +156,7 @@ public class SlowMoManager : MonoBehaviour {
             }
 
             //if we have unlimited then return
-            if (m_UnlimitedSlowMo) {
+			if (m_UnlimitedSlowMo && !m_SettingsManager.manualBulletTime) {
                 return;
             }
 
@@ -241,7 +245,7 @@ public class SlowMoManager : MonoBehaviour {
             }
         }
 
-        if (!m_ManualBulletTime) {
+		if (!m_ManualBulletTime  && !m_SettingsManager.manualBulletTime) {
             return;
         }
 
