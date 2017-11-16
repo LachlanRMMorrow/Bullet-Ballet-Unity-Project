@@ -4,48 +4,29 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
-    //todo: make this into a struct and use an array
-    public Slider m_HealthSlider;
-    public Slider m_SlowmoSlider;
-    public Slider m_DashSlider;
-    private RectTransform m_HealthSliderTransform;
-    private RectTransform m_SlowmoSliderTransform;
-    private RectTransform m_DashSliderTransform;
-    public RectTransform m_HealthMask;
-    public RectTransform m_SlowmoMask;
-    public RectTransform m_DashMask;
 
-    private Vector2 m_HealthStartSize;
-    private Vector2 m_SlowmoStartSize;
-    private Vector2 m_DashStartSize;
+    [System.Serializable]
+    public struct SliderData {
+        public Slider m_Slider;
+        internal RectTransform m_SliderTransform;
+        public RectTransform m_SliderMask;
+        internal Vector2 m_StartSize;
+    }
+
+    public SliderData[] m_SliderMasks;
 
     void Start() {
-        m_HealthSliderTransform = m_HealthSlider.transform as RectTransform;
-        m_HealthStartSize = m_HealthSliderTransform.sizeDelta;
-
-        m_SlowmoSliderTransform = m_SlowmoSlider.transform as RectTransform;
-        m_SlowmoStartSize = m_SlowmoSliderTransform.sizeDelta;
-
-        m_DashSliderTransform = m_DashSlider.transform as RectTransform;
-        m_DashStartSize = m_DashSliderTransform.sizeDelta;
-
+        for(int i = 0; i < m_SliderMasks.Length; i++) {
+            m_SliderMasks[i].m_SliderTransform = m_SliderMasks[i].m_Slider.transform as RectTransform;
+            m_SliderMasks[i].m_StartSize = m_SliderMasks[i].m_SliderTransform.sizeDelta;
+        }
     }
 
     void Update() {
-        {
-            Vector3 size = m_HealthMask.sizeDelta;
-            size.y = m_HealthSlider.value * m_HealthStartSize.y;
-            m_HealthMask.sizeDelta = size;
-        }
-        {
-            Vector3 size = m_SlowmoMask.sizeDelta;
-            size.y = m_SlowmoSlider.value * m_SlowmoStartSize.y;
-            m_SlowmoMask.sizeDelta = size;
-        }
-        {
-            Vector3 size = m_DashMask.sizeDelta;
-            size.y = m_DashSlider.value * m_DashStartSize.y;
-            m_DashMask.sizeDelta = size;
+        for (int i = 0; i < m_SliderMasks.Length; i++) {
+            Vector3 size = m_SliderMasks[i].m_SliderMask.sizeDelta;
+            size.y = m_SliderMasks[i].m_Slider.value * m_SliderMasks[i].m_StartSize.y;
+            m_SliderMasks[i].m_SliderMask.sizeDelta = size;
         }
     }
 }
