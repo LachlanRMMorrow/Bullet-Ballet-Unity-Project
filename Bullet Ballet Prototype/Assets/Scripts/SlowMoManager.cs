@@ -335,6 +335,9 @@ public class SlowMoManager : MonoBehaviour {
     /// </summary>
     /// <param name="a_SlowMoTime">how long the slowMo will last</param>
     public void startSlowmo(float a_SlowMoTime) {
+		if (m_SettingsManager.manualBulletTime) {
+			return;
+		}
         m_TriggerSlowMoLength = a_SlowMoTime;
         m_TriggerStartTime = Time.unscaledTime;
         m_PlayerStartedSlowMo = false;
