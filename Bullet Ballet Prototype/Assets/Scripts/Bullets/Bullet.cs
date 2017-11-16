@@ -69,6 +69,21 @@ public class Bullet : MonoBehaviour {
             {
                 return;
             }
+
+            PlayerDive pd = collision.GetComponentInParent<PlayerDive>();
+            if (pd != null) {
+                if (pd.isDiving) {
+                    m_HasHit = true;
+                    return;
+                }
+            }
+            Ragdoll rd = collision.GetComponentInParent<Ragdoll>();
+            if(rd != null) {
+                if (rd.enabled) {
+                    m_HasHit = true;
+                    return;
+                }
+            }
             checkBulletHitHandler(collision.gameObject);
             if (m_ShouldStopAfterCollision) {
                 bulletHit(collision.gameObject);

@@ -50,6 +50,10 @@ public class PlayerDive : MonoBehaviour {
     /// </summary>
     private bool m_IsDiving = false;
 
+    public bool isDiving {
+        get { return m_IsDiving; }
+    }
+
     /// <summary>
     /// has the player dashed or dived on this button press
     /// </summary>
@@ -201,7 +205,7 @@ public class PlayerDive : MonoBehaviour {
 
                         m_Animator.runtimeAnimatorController = m_Controller;
                         AnimatorStateInfo clip = m_Animator.GetCurrentAnimatorStateInfo(0);
-                        float speedScale = clip.length/m_TimeTakenToDash;
+                        float speedScale = clip.length / m_TimeTakenToDash;
                         m_Animator.speed = speedScale;
 
                         //calc resulting angle
